@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MementoMori.Server")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8c586bb073479fa62bde9428a92a9ed45f0b0741")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a4ca8db8c6b02ecc722b6be9164b465cefe11f05")]
 [assembly: System.Reflection.AssemblyProductAttribute("MementoMori.Server")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MementoMori.Server")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
