@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\User\\source\\repos\\SEMementoMori\\MementoMori\\MementoMori\\MementoMori.csproj": {}
+    "C:\\Users\\User\\source\\repos\\SEMementoMori\\MementoMori\\MementoMori.Server\\MementoMori.Server.csproj": {}
   },
   "projects": {
-    "C:\\Users\\User\\source\\repos\\SEMementoMori\\MementoMori\\MementoMori\\MementoMori.csproj": {
+    "C:\\Users\\User\\source\\repos\\SEMementoMori\\MementoMori\\MementoMori.Server\\MementoMori.Server.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\User\\source\\repos\\SEMementoMori\\MementoMori\\MementoMori\\MementoMori.csproj",
-        "projectName": "MementoMori",
-        "projectPath": "C:\\Users\\User\\source\\repos\\SEMementoMori\\MementoMori\\MementoMori\\MementoMori.csproj",
+        "projectUniqueName": "C:\\Users\\User\\source\\repos\\SEMementoMori\\MementoMori\\MementoMori.Server\\MementoMori.Server.csproj",
+        "projectName": "MementoMori.Server",
+        "projectPath": "C:\\Users\\User\\source\\repos\\SEMementoMori\\MementoMori\\MementoMori.Server\\MementoMori.Server.csproj",
         "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\User\\source\\repos\\SEMementoMori\\MementoMori\\MementoMori\\obj\\",
+        "outputPath": "C:\\Users\\User\\source\\repos\\SEMementoMori\\MementoMori\\MementoMori.Server\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -49,6 +49,16 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.SpaProxy": {
+              "target": "Package",
+              "version": "[8.*-*, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.4.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
