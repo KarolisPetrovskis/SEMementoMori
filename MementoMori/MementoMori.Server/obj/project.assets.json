@@ -459,23 +459,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\User\\.nuget\\packages\\": {},
+    "C:\\Users\\nikas\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\User\\source\\repos\\SEMementoMori\\MementoMori\\MementoMori.Server\\MementoMori.Server.csproj",
+      "projectUniqueName": "C:\\Users\\nikas\\source\\repos\\SEMementoMori\\MementoMori\\MementoMori.Server\\MementoMori.Server.csproj",
       "projectName": "MementoMori.Server",
-      "projectPath": "C:\\Users\\User\\source\\repos\\SEMementoMori\\MementoMori\\MementoMori.Server\\MementoMori.Server.csproj",
-      "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\User\\source\\repos\\SEMementoMori\\MementoMori\\MementoMori.Server\\obj\\",
+      "projectPath": "C:\\Users\\nikas\\source\\repos\\SEMementoMori\\MementoMori\\MementoMori.Server\\MementoMori.Server.csproj",
+      "packagesPath": "C:\\Users\\nikas\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\nikas\\source\\repos\\SEMementoMori\\MementoMori\\MementoMori.Server\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\nikas\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],

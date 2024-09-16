@@ -3,7 +3,7 @@
 "ServerUrl": "https://localhost:5173",
 "RedirectUrl": "",
 "LaunchCommand": "npm run dev",
-"WorkingDirectory": "C:\\Users\\User\\source\\repos\\SEMementoMori\\MementoMori\\MementoMori.Server\\..\\mementomori.client",
+"WorkingDirectory": "C:\\Users\\nikas\\source\\repos\\SEMementoMori\\MementoMori\\MementoMori.Server\\..\\mementomori.client",
 "MaxTimeoutInSeconds": "120",
 "KeepRunning": "false"
 }
