@@ -12,7 +12,7 @@ export default function SearchBar(props: {
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        props.setSearchString(data); // return to main comp what to search for
+        props.setSearchString(data);
       }}
       id="browserSearchBar"
     >
