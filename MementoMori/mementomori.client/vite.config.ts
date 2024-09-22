@@ -46,6 +46,10 @@ export default defineConfig({
             '^/weatherforecast': {
                 target,
                 secure: false
+            },
+            '^/DeckBrowser/getDecks': {
+                target,
+                secure: false
             }
         },
         port: 5173,
