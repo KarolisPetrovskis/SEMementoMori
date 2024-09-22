@@ -114,7 +114,7 @@ export default function Browser() {
                         gap: 1,
                       }}
                     >
-                      <Link href={`/decks/${deck.id}/deck`} underline="hover">
+                      <Link href={`/decks/${deck.id}`} underline="hover">
                         {deck.title}
                       </Link>
                       {deck.tags?.map((tag) => (
