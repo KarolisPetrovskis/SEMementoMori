@@ -1,6 +1,6 @@
 ﻿namespace MementoMori.Server
 {
-    public static class DeckTag
+    public struct DeckTag
     {
         public const string Biology = "Biology";
         public const string History = "History";
