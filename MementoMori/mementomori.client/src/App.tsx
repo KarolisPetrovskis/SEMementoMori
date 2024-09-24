@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import './App.css';
+import './MainFunctionality.tsx'
 
+import Button from '@mui/material/Button';
 
 
 function App() {
-    return <span> Development will begin soon </span>;
+    return <p> developing</p>
 }
 
 export default App;
