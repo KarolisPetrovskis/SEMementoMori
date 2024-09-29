@@ -38,9 +38,11 @@
 
         public required DateOnly Modified { get; set; }
 
-        public required long Cards { get; set; }
+        public required long CardCount { get; set; }
 
         public string[]? Tags { get; set; }
+
+        public Card[]? Cards { get; set; }
 
 
         public int CompareTo(Deck? other)
