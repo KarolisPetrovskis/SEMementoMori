@@ -11,7 +11,9 @@
 
         public required string Anwser { get; set; }
 
-        public int priority { get; set; }
+        public int lastInterval { get; set; }
+
+        public DateOnly nextShow { get; set; }
 
     }
 }
