@@ -1,2 +1,0 @@
-C:\Users\User\source\repos\SEMementoMori\MementoMori\mementomori.client\obj\Debug\mementomori.client.esproj.CoreCompileInputs.cache
-C:\Users\nikas\source\repos\SEMementoMori\MementoMori\mementomori.client\obj\Debug\mementomori.client.esproj.CoreCompileInputs.cache

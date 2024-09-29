@@ -1,23 +1,11 @@
 {
   "Version": 1,
-  "Hash": "3pKU/DtEMlWn08gqs8PFdxOR4V7kdoPqrMc/XRyCqk8=",
+  "Hash": "FDy4NxndIoAGi2AgG1OELRIPcqP/Gyo0cLBHldeGDxA=",
   "Source": "MementoMori.Server",
   "BasePath": "_content/MementoMori.Server",
   "Mode": "Default",
   "ManifestType": "Build",
-  "ReferencedProjectsConfiguration": [
-    {
-      "Identity": "C:\\Users\\nikas\\source\\repos\\SEMementoMori\\MementoMori\\mementomori.client\\mementomori.client.esproj",
-      "Version": 2,
-      "Source": "mementomori.client",
-      "GetPublishAssetsTargets": "GetCurrentProjectPublishStaticWebAssetItems",
-      "AdditionalPublishProperties": "Configuration=Debug;Platform=AnyCPU",
-      "AdditionalPublishPropertiesToRemove": "WebPublishProfileFile;TargetFramework;RuntimeIdentifier;SelfContained",
-      "GetBuildAssetsTargets": "GetCurrentProjectBuildStaticWebAssetItems",
-      "AdditionalBuildProperties": "Configuration=Debug;Platform=AnyCPU",
-      "AdditionalBuildPropertiesToRemove": "WebPublishProfileFile;TargetFramework;RuntimeIdentifier;SelfContained"
-    }
-  ],
+  "ReferencedProjectsConfiguration": [],
   "DiscoveryPatterns": [],
   "Assets": []
 }

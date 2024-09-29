@@ -2,8 +2,8 @@
 "SpaProxyServer": {
 "ServerUrl": "https://localhost:5173",
 "RedirectUrl": "",
-"LaunchCommand": "npm run dev",
-"WorkingDirectory": "C:\\Users\\nikas\\source\\repos\\SEMementoMori\\MementoMori\\MementoMori.Server\\..\\mementomori.client",
+"LaunchCommand": "",
+"WorkingDirectory": "C:\\Users\\nikas\\Source\\Repos\\SEMementoMori\\MementoMori\\MementoMori.Server",
 "MaxTimeoutInSeconds": "120",
 "KeepRunning": "false"
 }
