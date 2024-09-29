@@ -86,10 +86,18 @@ export default function Browser() {
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>Title</TableCell>
-              <TableCell align="right">Rating</TableCell>
-              <TableCell align="right">Modified</TableCell>
-              <TableCell align="right">Cards</TableCell>
+              <TableCell>
+                <b>Title</b>
+              </TableCell>
+              <TableCell align="right">
+                <b>Rating</b>
+              </TableCell>
+              <TableCell align="right">
+                <b>Modified</b>
+              </TableCell>
+              <TableCell align="right">
+                <b>Cards</b>
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -115,7 +123,7 @@ export default function Browser() {
                       }}
                     >
                       <Link href={`/decks/${deck.id}`} underline="hover">
-                        {deck.title}
+                        <b>{deck.title}</b>
                       </Link>
                       {deck.tags?.map((tag) => (
                         <Chip label={tag} variant="outlined" />
