@@ -8,28 +8,29 @@ import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import { TagValidator } from './Validator';
 
+import axios from 'axios';
+
 export default function OutlinedCard() {
-    const [dynamicInputValue, setDynamicInputValue] = React.useState(''); // State for dynamic text field
-    const [staticInputValue, setStaticInputValue] = React.useState(''); // State for static text field
-    const [fontSize, setFontSize] = React.useState(24); // Initial font size for dynamic field
-    const [tagError, setTagError] = React.useState(''); // State for tag errors
-    const [dynamicTextError, setDynamicTextError] = React.useState(''); // State for dynamic text errors
+    const [dynamicInputValue, setDynamicInputValue] = React.useState('');
+    const [staticInputValue, setStaticInputValue] = React.useState('');
+    const [fontSize, setFontSize] = React.useState(24); 
+    const [tagError, setTagError] = React.useState(''); 
+    const [dynamicTextError, setDynamicTextError] = React.useState(''); 
+    const [requestError, setRequestError] = React.useState(''); 
 
     // Handle change for the dynamic text field with increasing height and dynamic font size
     const handleDynamicChange = (event: { target: { value: any } }) => {
         const value = event.target.value;
         setDynamicInputValue(value);
 
-        // Remove newlines from length calculation for dynamic font size
         const textLength = value.replace(/\n/g, '').length;
 
-        // Adjust font size dynamically based on length of input
         if (textLength < 100) {
-            setFontSize(24); // Larger font for shorter text
+            setFontSize(24);
         } else if (textLength < 250) {
-            setFontSize(18); // Medium font for moderate text
+            setFontSize(18);
         } else {
-            setFontSize(14); // Smaller font for longer text
+            setFontSize(14);
         }
     };
 
@@ -39,7 +40,6 @@ export default function OutlinedCard() {
         setStaticInputValue(value);
     };
 
-    // Use the TagValidator class to validate the tags
     const validateTags = (tags: string) => {
         const validator = new TagValidator();
         validator.setTags(tags);
@@ -47,7 +47,6 @@ export default function OutlinedCard() {
         return validationError;
     };
 
-    // Validate the dynamic text field
     const validateDynamicText = (text: string) => {
         if (!text.trim()) {
             return 'Error: Dynamic text cannot be empty.';
@@ -55,8 +54,8 @@ export default function OutlinedCard() {
         return '';
     };
 
-    // Handle saving data to a local file with validation
-    const handleCreate = () => {
+    // Send form data to backend server
+    const handleCreate = async () => {
         const tagValidationError = validateTags(staticInputValue);
         if (tagValidationError) {
             setTagError(tagValidationError);
@@ -73,19 +72,26 @@ export default function OutlinedCard() {
             setDynamicTextError('');
         }
 
-        const Prefix = '!Start!';
-        const Suffix = '!End!';
-        const fileContent = `${Prefix}\nTags: ${staticInputValue}\nText: ${dynamicInputValue}\n${Suffix}`;
+        try {
+            // Create an object to send to the backend
+            const cardData = {
+                tags: staticInputValue,
+                text: dynamicInputValue,
+            };
 
-        const blob = new Blob([fileContent], { type: 'text/plain' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'inputData.txt';
-        link.click();
+            // Send POST request to the server
+            const response = await axios.post('http://localhost:5001/CardData/postCards', cardData);
 
-        // Clear any previous errors after successful save
-        setTagError('');
-        setDynamicTextError('');
+            if (response.status === 200) {
+                console.log("Card data successfully saved");
+                // Optionally, you can clear the form here or give feedback to the user
+            } else {
+                setRequestError('Error: Failed to save card data');
+            }
+        } catch (error) {
+            console.error(error);
+            setRequestError('Error: An unexpected error occurred. Error message: ' + error.message);
+        }
     };
 
     return (
@@ -112,7 +118,7 @@ export default function OutlinedCard() {
                             marginBottom: '16px',
                         }}
                         error={Boolean(tagError)}
-                        helperText={tagError} // Show validation error for tags
+                        helperText={tagError}
                     />
                     <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 14 }}>
                         Enter Text For Card
@@ -124,16 +130,23 @@ export default function OutlinedCard() {
                         onChange={handleDynamicChange}
                         label="Write something"
                         InputProps={{
-                            style: { fontSize: fontSize }, // Dynamic font size for the dynamic field
+                            style: { fontSize: fontSize },
                         }}
                         sx={{
-                            overflowY: 'auto', // Allow scrolling if input gets too large
-                            resize: 'none', // Disable manual resizing
-                            marginBottom: '16px', // Add some spacing between text fields
+                            overflowY: 'auto',
+                            resize: 'none',
+                            marginBottom: '16px',
                         }}
                         error={Boolean(dynamicTextError)}
-                        helperText={dynamicTextError} // Show validation error for dynamic text
+                        helperText={dynamicTextError}
                     />
+
+                    {requestError && (
+                        <Typography color="error" sx={{ marginTop: '16px' }}>
+                            {requestError}
+                        </Typography>
+                    )}
+
                 </CardContent>
                 <CardActions>
                     <Button size="medium" onClick={handleCreate} sx={{ backgroundColor: '#7FFFD4' }}>
@@ -144,3 +157,4 @@ export default function OutlinedCard() {
         </Box>
     );
 }
+

@@ -1,20 +1,11 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App.tsx';
 import Buttonn from './button.tsx';
-import './App.css';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import './index.css';
 
-const client = new QueryClient();
-
-function App() {
-    return (
-        <QueryClientProvider client={client}>
-            <BrowserRouter>
-                <Routes>
-                    <Route path="/" element={<Buttonn />} />
-                </Routes>
-            </BrowserRouter>
-        </QueryClientProvider>
-    );
-}
-
-export default App;
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+        <App />
+  </StrictMode>
+);
