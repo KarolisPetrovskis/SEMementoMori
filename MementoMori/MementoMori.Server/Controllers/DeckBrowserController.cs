@@ -21,7 +21,7 @@ namespace MementoMori.Server.Controllers
                 creatorId = Guid.NewGuid(),
                 isPublic = true,
                 Modified = DateOnly.FromDateTime(DateTime.Now.AddDays(-10)),
-                Cards = 50,
+                CardCount = 50,
                 Tags = new[] { DeckTag.Biology, DeckTag.Beginner }
             },
             new Deck
@@ -33,7 +33,7 @@ namespace MementoMori.Server.Controllers
                 creatorId = Guid.NewGuid(),
                 isPublic = true,
                 Modified = DateOnly.FromDateTime(DateTime.Now.AddDays(-5)),
-                Cards = 75,
+                CardCount = 75,
                 Tags = new[] { DeckTag.Physics, DeckTag.Advanced }
             },
             new Deck
@@ -45,7 +45,7 @@ namespace MementoMori.Server.Controllers
                 creatorId = Guid.NewGuid(),
                 isPublic = true,
                 Modified = DateOnly.FromDateTime(DateTime.Now.AddDays(-15)),
-                Cards = 45,
+                CardCount = 45,
                 Tags = new[] { DeckTag.Chemistry, DeckTag.Beginner }
             },
             new Deck
@@ -57,7 +57,7 @@ namespace MementoMori.Server.Controllers
                 creatorId = Guid.NewGuid(),
                 isPublic = true,
                 Modified = DateOnly.FromDateTime(DateTime.Now.AddDays(-7)),
-                Cards = 60,
+                CardCount = 60,
                 Tags = new[] { DeckTag.History, DeckTag.Intermediate }
             },
             new Deck
@@ -69,7 +69,7 @@ namespace MementoMori.Server.Controllers
                 creatorId = Guid.NewGuid(),
                 isPublic = true,
                 Modified = DateOnly.FromDateTime(DateTime.Now.AddDays(-3)),
-                Cards = 90,
+                CardCount = 90,
                 Tags = new[] { DeckTag.Mathematics, DeckTag.Expert }
             },
             new Deck
@@ -81,7 +81,7 @@ namespace MementoMori.Server.Controllers
                 creatorId = Guid.NewGuid(),
                 isPublic = true,
                 Modified = DateOnly.FromDateTime(DateTime.Now.AddDays(-20)),
-                Cards = 30,
+                CardCount = 30,
                 Tags = new[] { DeckTag.Geography, DeckTag.Beginner }
             },
             new Deck
@@ -93,7 +93,7 @@ namespace MementoMori.Server.Controllers
                 creatorId = Guid.NewGuid(),
                 isPublic = true,
                 Modified = DateOnly.FromDateTime(DateTime.Now.AddDays(-12)),
-                Cards = 55,
+                CardCount = 55,
                 Tags = new[] { DeckTag.Languages, DeckTag.Intermediate }
             },
             new Deck
@@ -105,7 +105,7 @@ namespace MementoMori.Server.Controllers
                 creatorId = Guid.NewGuid(),
                 isPublic = true,
                 Modified = DateOnly.FromDateTime(DateTime.Now.AddDays(-8)),
-                Cards = 40,
+                CardCount = 40,
                 Tags = new[] { DeckTag.Literature, DeckTag.Advanced }
             },
             new Deck
@@ -117,7 +117,7 @@ namespace MementoMori.Server.Controllers
                 creatorId = Guid.NewGuid(),
                 isPublic = true,
                 Modified = DateOnly.FromDateTime(DateTime.Now.AddDays(-25)),
-                Cards = 35,
+                CardCount = 35,
                 Tags = new[] { DeckTag.Art, DeckTag.History, DeckTag.Beginner }
             },
             new Deck
@@ -129,7 +129,7 @@ namespace MementoMori.Server.Controllers
                 creatorId = Guid.NewGuid(),
                 isPublic = true,
                 Modified = DateOnly.FromDateTime(DateTime.Now.AddDays(-4)),
-                Cards = 65,
+                CardCount = 65,
                 Tags = new[] { DeckTag.Mathematics, DeckTag.Intermediate }
             },
             new Deck
@@ -141,7 +141,7 @@ namespace MementoMori.Server.Controllers
                 creatorId = Guid.NewGuid(),
                 isPublic = true,
                 Modified = DateOnly.FromDateTime(DateTime.Now.AddDays(-6)),
-                Cards = 70,
+                CardCount = 70,
                 Tags = new[] { DeckTag.Mathematics, DeckTag.Beginner }
             },
             new Deck
@@ -153,7 +153,7 @@ namespace MementoMori.Server.Controllers
                 creatorId = Guid.NewGuid(),
                 isPublic = true,
                 Modified = DateOnly.FromDateTime(DateTime.Now.AddDays(-30)),
-                Cards = 30,
+                CardCount = 30,
                 Tags = new[] { DeckTag.Music }
             },
             new Deck
@@ -165,7 +165,7 @@ namespace MementoMori.Server.Controllers
                 creatorId = Guid.NewGuid(),
                 isPublic = true,
                 Modified = DateOnly.FromDateTime(DateTime.Now.AddDays(-22)),
-                Cards = 35,
+                CardCount = 35,
                 Tags = new[] { DeckTag.Philosophy, DeckTag.Expert }
             },
             new Deck
@@ -177,7 +177,7 @@ namespace MementoMori.Server.Controllers
                 creatorId = Guid.NewGuid(),
                 isPublic = true,
                 Modified = DateOnly.FromDateTime(DateTime.Now.AddDays(-14)),
-                Cards = 55,
+                CardCount = 55,
                 Tags = new[] { DeckTag.ComputerScience, DeckTag.Beginner }
             },
             new Deck
@@ -189,7 +189,7 @@ namespace MementoMori.Server.Controllers
                 creatorId = Guid.NewGuid(),
                 isPublic = true,
                 Modified = DateOnly.FromDateTime(DateTime.Now.AddDays(-9)),
-                Cards = 50,
+                CardCount = 50,
             }
         };
 
