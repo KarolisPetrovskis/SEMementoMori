@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "title": "Daily Quest",
+    "description": "Complete 3 workouts",
+    "reward": "100 coins"
+  },
+  {
+    "id": 2,
+    "title": "Weekly Quest",
+    "description": "Read 5 books",
+    "reward": "500 experience points"
+  },
+  {
+    "id": 3,
+    "title": "Yearly Quest",
+    "description": "Ascend",
+    "reward": "Freedom..."
+  } 
+]
