@@ -51,10 +51,14 @@ export default defineConfig({
                 target,
                 secure: false
             },
-            '^/decks/.*?/cards': {
+            '^/CardData/postCard': {
                 target,
-                secure: false,
+                secure: false
             },
+            '^/CardFile/getFileContent': {
+                target,
+                secure: false
+            }
         },
         port: 5173,
         https: {

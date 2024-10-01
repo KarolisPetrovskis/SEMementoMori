@@ -7,140 +7,236 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import { TagValidator } from './Validator';
+import axios from 'axios';
 
 export default function OutlinedCard() {
-    const [dynamicInputValue, setDynamicInputValue] = React.useState(''); // State for dynamic text field
-    const [staticInputValue, setStaticInputValue] = React.useState(''); // State for static text field
-    const [fontSize, setFontSize] = React.useState(24); // Initial font size for dynamic field
-    const [tagError, setTagError] = React.useState(''); // State for tag errors
-    const [dynamicTextError, setDynamicTextError] = React.useState(''); // State for dynamic text errors
+  const [dynamicInputValue, setDynamicInputValue] = React.useState('');
+  const [staticInputValue, setStaticInputValue] = React.useState('');
+  const [cardIdField, setCardIdField] = React.useState('');
+  const [fontSize, setFontSize] = React.useState(24);
+  const [tagError, setTagError] = React.useState('');
+  const [deckIdError, setDeckIdError] = React.useState('');
+  const [dynamicTextError, setDynamicTextError] = React.useState('');
+  const [requestError, setRequestError] = React.useState('');
 
-    // Handle change for the dynamic text field with increasing height and dynamic font size
-    const handleDynamicChange = (event: { target: { value: any } }) => {
-        const value = event.target.value;
-        setDynamicInputValue(value);
+  const [postedTags, setPostedTags] = React.useState('');
+  const [postedText, setPostedText] = React.useState('');
 
-        // Remove newlines from length calculation for dynamic font size
-        const textLength = value.replace(/\n/g, '').length;
+  // Handle change for the dynamic text field with increasing height and dynamic font size
+  const handleDynamicChange = (event: { target: { value: any } }) => {
+    const value = event.target.value;
+    setDynamicInputValue(value);
 
-        // Adjust font size dynamically based on length of input
-        if (textLength < 100) {
-            setFontSize(24); // Larger font for shorter text
-        } else if (textLength < 250) {
-            setFontSize(18); // Medium font for moderate text
-        } else {
-            setFontSize(14); // Smaller font for longer text
-        }
-    };
+    // Remove newlines from length calculation for dynamic font size
+    const textLength = value.replace(/\n/g, '').length;
 
-    // Handle change for the static text field
-    const handleStaticChange = (event: { target: { value: any } }) => {
-        const value = event.target.value;
-        setStaticInputValue(value);
-    };
+    // Adjust font size dynamically based on length of input
+    if (textLength < 100) {
+      setFontSize(24); // Larger font for shorter text
+    } else if (textLength < 250) {
+      setFontSize(18); // Medium font for moderate text
+    } else {
+      setFontSize(14); // Smaller font for longer text
+    }
+  };
 
-    // Use the TagValidator class to validate the tags
-    const validateTags = (tags: string) => {
-        const validator = new TagValidator();
-        validator.setTags(tags);
-        const validationError = validator.returnError();
-        return validationError;
-    };
+  // Handle change for the static text field
+  const handleStaticChange = (event: { target: { value: any } }) => {
+    const value = event.target.value;
+    setStaticInputValue(value);
+  };
 
-    // Validate the dynamic text field
-    const validateDynamicText = (text: string) => {
-        if (!text.trim()) {
-            return 'Error: Dynamic text cannot be empty.';
-        }
-        return '';
-    };
+  const handleCardIdField = (event: { target: { value: any } }) => {
+    const value = event.target.value;
+    setCardIdField(value);
+  };
 
-    // Handle saving data to a local file with validation
-    const handleCreate = () => {
-        const tagValidationError = validateTags(staticInputValue);
-        if (tagValidationError) {
-            setTagError(tagValidationError);
-            return;
-        } else {
-            setTagError('');
-        }
+  const validateTags = (tags: string) => {
+    const validator = new TagValidator();
+    validator.setTags(tags);
+    const validationError = validator.returnError();
+    return validationError;
+  };
 
-        const dynamicTextValidationError = validateDynamicText(dynamicInputValue);
-        if (dynamicTextValidationError) {
-            setDynamicTextError(dynamicTextValidationError);
-            return;
-        } else {
-            setDynamicTextError('');
-        }
+  // Validate the dynamic text field
+  const validateDynamicText = (text: string) => {
+    if (!text.trim()) {
+      return 'Error: Dynamic text cannot be empty.';
+    }
+    return '';
+  };
 
-        const Prefix = '!Start!';
-        const Suffix = '!End!';
-        const fileContent = `${Prefix}\nTags: ${staticInputValue}\nText: ${dynamicInputValue}\n${Suffix}`;
+  // Handle saving data to a local file with validation
+  const handleCreate = () => {
+    const tagValidationError = validateTags(staticInputValue);
+    if (tagValidationError) {
+      setTagError(tagValidationError);
+      return;
+    } else {
+      setTagError('');
+    }
 
-        const blob = new Blob([fileContent], { type: 'text/plain' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'inputData.txt';
-        link.click();
+    const dynamicTextValidationError = validateDynamicText(dynamicInputValue);
+    if (dynamicTextValidationError) {
+      setDynamicTextError(dynamicTextValidationError);
+      return;
+    } else {
+      setDynamicTextError('');
+    }
+    if (cardIdField.length === 0) {
+      setDeckIdError('Deck Id cannot be empty');
+    } else setDeckIdError('');
 
-        // Clear any previous errors after successful save
-        setTagError('');
-        setDynamicTextError('');
-    };
+    try {
+      // Create an object to send to the backend
+      const cardData = {
+        deckId: cardIdField,
+        tags: staticInputValue,
+        text: dynamicInputValue,
+      };
 
-    return (
-        <Box
+      // Send POST request to the server
+      const response = await axios.post('/CardData/postCard', cardData);
+
+      if (response.status === 200) {
+        console.log('Card data successfully saved');
+        setRequestError('Woooho');
+
+        setPostedTags(response.data.tags);
+        setPostedText(response.data.text);
+
+        // Optionally, you can clear the form here or give feedback to the user
+      } else {
+        setRequestError('Error: Failed to save card data');
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 409) {
+        // Handle the case where the file already exists
+        setRequestError('Error: The file "CardInfo.txt" already exists.');
+      } else {
+        // Handle other errors
+        setRequestError(
+          'Error: An unexpected error occurred. Error message: ' + error.message
+        );
+      }
+    }
+  };
+
+  return (
+    <Box
+      sx={{
+        minWidth: '50vw',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 'auto',
+      }}
+    >
+      <Card
+        variant="outlined"
+        sx={{ width: '100%', height: 'auto', minHeight: '30vh' }}
+      >
+        <CardContent>
+          {/* Existing input fields and logic */}
+          <Typography
+            gutterBottom
+            sx={{ color: 'text.secondary', fontSize: 14 }}
+          >
+            Enter the Id of an exsisting Deck
+          </Typography>
+          <TextField
+            fullWidth
+            variant="outlined"
+            onChange={handleCardIdField}
+            label="Deck Id"
             sx={{
-                minWidth: '50vw',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                margin: 'auto',
+              marginBottom: '16px',
             }}
-        >
-            <Card variant="outlined" sx={{ width: '100%', height: 'auto', minHeight: '30vh' }}>
-                <CardContent>
-                    <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 14 }}>
-                        Enter Tag Names (Each Subsequent Tag Must Be Divided By ';')
-                    </Typography>
-                    <TextField
-                        fullWidth
-                        variant="outlined"
-                        onChange={handleStaticChange}
-                        label="Tags"
-                        sx={{
-                            marginBottom: '16px',
-                        }}
-                        error={Boolean(tagError)}
-                        helperText={tagError} // Show validation error for tags
-                    />
-                    <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 14 }}>
-                        Enter Text For Card
-                    </Typography>
-                    <TextField
-                        fullWidth
-                        multiline
-                        variant="outlined"
-                        onChange={handleDynamicChange}
-                        label="Write something"
-                        InputProps={{
-                            style: { fontSize: fontSize }, // Dynamic font size for the dynamic field
-                        }}
-                        sx={{
-                            overflowY: 'auto', // Allow scrolling if input gets too large
-                            resize: 'none', // Disable manual resizing
-                            marginBottom: '16px', // Add some spacing between text fields
-                        }}
-                        error={Boolean(dynamicTextError)}
-                        helperText={dynamicTextError} // Show validation error for dynamic text
-                    />
-                </CardContent>
-                <CardActions>
-                    <Button size="medium" onClick={handleCreate} sx={{ backgroundColor: '#7FFFD4' }}>
-                        Create
-                    </Button>
-                </CardActions>
-            </Card>
-        </Box>
-    );
+            value={cardIdField} // Reset field on form submission
+            error={Boolean(deckIdError)}
+            helperText={deckIdError}
+          />
+          <Typography
+            gutterBottom
+            sx={{ color: 'text.secondary', fontSize: 14 }}
+          >
+            Enter Tag Names (Each Subsequent Tag Must Be Divided By ';')
+          </Typography>
+          <TextField
+            fullWidth
+            variant="outlined"
+            onChange={handleStaticChange}
+            label="Tags"
+            sx={{
+              marginBottom: '16px',
+            }}
+            value={staticInputValue} // Reset field on form submission
+            error={Boolean(tagError)}
+            helperText={tagError} // Show validation error for tags
+          />
+          <Typography
+            gutterBottom
+            sx={{ color: 'text.secondary', fontSize: 14 }}
+          >
+            Enter Text For Card
+          </Typography>
+          <TextField
+            fullWidth
+            multiline
+            variant="outlined"
+            onChange={handleDynamicChange}
+            label="Write something"
+            InputProps={{
+              style: { fontSize: fontSize }, // Dynamic font size for the dynamic field
+            }}
+            value={dynamicInputValue} // Reset field on form submission
+            sx={{
+              overflowY: 'auto', // Allow scrolling if input gets too large
+              resize: 'none', // Disable manual resizing
+              marginBottom: '16px', // Add some spacing between text fields
+            }}
+            error={Boolean(dynamicTextError)}
+            helperText={dynamicTextError} // Show validation error for dynamic text
+          />
+
+          {requestError && (
+            <Typography color="error" sx={{ marginTop: '16px' }}>
+              {requestError}
+            </Typography>
+          )}
+
+          {/* Display the posted tags and text */}
+          {postedTags && (
+            <Box sx={{ marginTop: '16px' }}>
+              <Typography sx={{ fontWeight: 'bold', marginBottom: '8px' }}>
+                Posted Tags:
+              </Typography>
+              <Typography>{postedTags}</Typography>
+            </Box>
+          )}
+
+          {postedText && (
+            <Box sx={{ marginTop: '16px' }}>
+              <Typography sx={{ fontWeight: 'bold', marginBottom: '8px' }}>
+                Posted Text:
+              </Typography>
+              <Typography sx={{ whiteSpace: 'pre-line' }}>
+                {postedText}
+              </Typography>
+            </Box>
+          )}
+        </CardContent>
+        <CardActions>
+          <Button
+            size="medium"
+            onClick={handleCreate}
+            variant="contained"
+            sx={{ backgroundColor: '#7FFFD4' }}
+          >
+            Create
+          </Button>
+        </CardActions>
+      </Card>
+    </Box>
+  );
 }
