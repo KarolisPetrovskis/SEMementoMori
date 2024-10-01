@@ -50,6 +50,14 @@ export default defineConfig({
             '^/DeckBrowser/getDecks': {
                 target,
                 secure: false
+            },
+            '^/CardData/postCard': {
+                target,
+                secure: false
+            },
+            '^/CardFile/getFileContent': {
+                target,
+                secure: false
             }
         },
         port: 5173,

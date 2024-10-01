@@ -3,6 +3,7 @@ import Home from './Home';
 import Broswer from './deckBrowser/Browser';
 import './App.css';
 import Cards from './CardEditor.tsx';
+import SpecificDeck from './SpecificDeck.tsx';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const client = new QueryClient();
@@ -14,7 +15,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/browser" element={<Broswer />} />
-          <Route path="/cards" element={<Cards/>} />
+          <Route path="/cards" element={<Cards />} />
+          <Route path="/001" element={<SpecificDeck />} />
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>
