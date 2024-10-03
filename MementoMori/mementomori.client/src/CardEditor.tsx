@@ -96,12 +96,10 @@ export default function OutlinedCard() {
       };
 
       // Send POST request to the server
-      const response = await axios.post('/CardData/postCard', cardData);
+      const response = await axios.post('/CardData/createCard', cardData);
 
       if (response.status === 200) {
-        console.log('Card data successfully saved');
-        setRequestError('Woooho');
-
+        //console.log("Card data successfully saved");
         setPostedTags(response.data.tags);
         setPostedText(response.data.text);
 

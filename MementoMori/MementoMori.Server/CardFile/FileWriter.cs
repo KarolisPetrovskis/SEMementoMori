@@ -12,7 +12,7 @@ namespace MementoMori.Server
             // Get the current directory of the MementoMori.Server project
             string serverDirectory = Directory.GetCurrentDirectory();
 
-            // Set the path to "CardFile" folde
+            // Set the path to "CardFile" folder
             _directoryPath = Path.Combine(serverDirectory, "CardFile");
 
         }
@@ -26,14 +26,14 @@ namespace MementoMori.Server
             Guid cardId = Guid.NewGuid();
 
             // Validate based on the whole direcotry or smth
-            if(fileName != deckId + ".txt")
+            if (fileName != deckId + ".txt")
                 throw new InvalidOperationException("Error: The deck file does not exist.");
 
             var fileInfo = new FileInfo(filePath);
 
-            if(fileInfo.Length == 0)
+            if (fileInfo.Length == 0)
             {
-                using(StreamWriter sw = File.AppendText(filePath))
+                using (StreamWriter sw = File.AppendText(filePath))
                 {
                     sw.WriteLine("DeckId: " + deckId);
                     sw.WriteLine("Number of cards: " + 1);
@@ -48,12 +48,7 @@ namespace MementoMori.Server
                 File.WriteAllLines(filePath, fileLines);
 
                 string[] cardIds = fileLines[2].Substring(fileLines[2].IndexOf(':') + 1).Split(';', StringSplitOptions.RemoveEmptyEntries);
-                int i = 0;
-                foreach(string y in cardIds)
-                {
-                    i++;
-                }
-                fileLines[1] = "Number of cards: " + i;
+                fileLines[1] = "Number of cards: " + cardIds.Length;
                 File.WriteAllLines(filePath, fileLines);
             }
 

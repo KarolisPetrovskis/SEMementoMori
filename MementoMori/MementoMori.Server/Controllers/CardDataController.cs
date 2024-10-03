@@ -5,7 +5,7 @@ namespace MementoMori.Server.Controllers
     [Route("[controller]")]
     public class CardDataController : ControllerBase
     {
-        [HttpPost("postCard")]
+        [HttpPost("createCard")]
         public IActionResult PostInputData([FromBody] CardData data)
         {
             if (data == null || string.IsNullOrEmpty(data.Tags) || string.IsNullOrEmpty(data.Text))
@@ -21,7 +21,7 @@ namespace MementoMori.Server.Controllers
                 FileWriter fileWriter = new FileWriter();
 
                 // Attempt to create the file with the posted tags and text
-                fileWriter.CreateFile(data.Tags, data.Text, data.DeckId);;
+                fileWriter.CreateFile(data.Tags, data.Text, data.DeckId); ;
 
                 // Return a success response if the file was created successfully
                 return Ok(new { message = "Data received successfully", tags = data.Tags, text = data.Text, cardId = data.DeckId });
