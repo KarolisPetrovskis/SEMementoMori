@@ -1,6 +1,6 @@
 DeckId: 001
-Number of cards: 1
-CardIds: b881f659-d5bc-456d-915b-b680813d8ece
+Number of cards: 2
+CardIds: b881f659-d5bc-456d-915b-b680813d8ece; 43767160-36cc-40ee-8612-5616f2882bab
 
 (Start)
 CardId b881f659-d5bc-456d-915b-b680813d8ece
@@ -13,6 +13,16 @@ fe
 f
 
 f
+
+(End)
+
+(Start)
+CardId 43767160-36cc-40ee-8612-5616f2882bab
+Tags: Testing; Changes
+
+Text:
+123
+456
 
 (End)
 

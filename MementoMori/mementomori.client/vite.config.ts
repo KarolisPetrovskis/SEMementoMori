@@ -51,7 +51,7 @@ export default defineConfig({
                 target,
                 secure: false
             },
-            '^/CardData/postCard': {
+            '^/CardData/createCard': {
                 target,
                 secure: false
             },
