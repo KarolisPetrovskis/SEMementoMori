@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './Home';
-import Broswer from './deckBrowser/Browser';
+import Browser from './deckBrowser/Browser';
 import './App.css';
 import Cards from './CardEditor.tsx';
 import SpecificDeck from './SpecificDeck.tsx';
@@ -14,7 +14,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/browser" element={<Broswer />} />
+          <Route path="/browser" element={<Browser />} />
           <Route path="/cards" element={<Cards />} />
           <Route path="/001" element={<SpecificDeck />} />
         </Routes>

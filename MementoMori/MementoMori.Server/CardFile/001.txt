@@ -1,0 +1,18 @@
+DeckId: 001
+Number of cards: 1
+CardIds: b881f659-d5bc-456d-915b-b680813d8ece
+
+(Start)
+CardId b881f659-d5bc-456d-915b-b680813d8ece
+Tags: 545151; 6566
+
+Text:
+ffef
+ef
+fe
+f
+
+f
+
+(End)
+
