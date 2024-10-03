@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './Home';
-import Broswer from './deckBrowser/Browser';
+import Browser from './deckBrowser/Browser';
 import './App.css';
 import DeckPage from './mainFunctionality/DeckPage';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
