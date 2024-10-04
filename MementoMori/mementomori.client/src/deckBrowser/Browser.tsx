@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { useMutation } from "@tanstack/react-query";
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useMutation } from '@tanstack/react-query';
 
 import {
   Chip,
@@ -14,10 +14,10 @@ import {
   Box,
   Table,
   Link,
-} from "@mui/material";
-import SearchBar from "./SearchBar";
-import { Tag } from "./TagSelector";
-import TagSelector from "./TagSelector";
+} from '@mui/material';
+import SearchBar from './SearchBar';
+import { Tag } from './TagSelector';
+import TagSelector from './TagSelector';
 
 export type browserRowData = {
   id: string;
@@ -29,13 +29,13 @@ export type browserRowData = {
 };
 
 export default function Browser() {
-  const [searchString, setSearchString] = useState<string>("");
+  const [searchString, setSearchString] = useState<string>('');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [tableRows, setTableRows] = useState<browserRowData[]>([]);
 
   const { mutate, isPending } = useMutation({
     mutationFn: (params: { searchString: string; selectedTags: string[] }) => {
-      return axios.get("/DeckBrowser/getDecks", {
+      return axios.get('/DeckBrowser/getDecks', {
         params: params,
         paramsSerializer: { indexes: null },
       });
@@ -52,29 +52,29 @@ export default function Browser() {
   return (
     <Box
       sx={{
-        flexDirection: "column",
-        display: "flex",
-        alignItems: "flex-start",
-        justifyContent: "flex-start",
-        minWidth: "100%",
+        flexDirection: 'column',
+        display: 'flex',
+        alignItems: 'flex-start',
+        justifyContent: 'flex-start',
+        minWidth: '100%',
       }}
     >
       <Box
         sx={{
-          width: "100%",
-          flexDirection: "row",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
+          width: '100%',
+          flexDirection: 'row',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
         }}
       >
         <h2>Shared decks</h2>
 
         <Box
           sx={{
-            flexDirection: "row",
-            display: "flex",
-            alignItems: "center",
+            flexDirection: 'row',
+            display: 'flex',
+            alignItems: 'center',
             gap: 1,
           }}
         >
@@ -111,14 +111,14 @@ export default function Browser() {
               tableRows.map((deck) => (
                 <TableRow
                   key={deck.id}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
                   <TableCell component="th" scope="row">
                     <Box
                       sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        flexDirection: "row",
+                        display: 'flex',
+                        alignItems: 'center',
+                        flexDirection: 'row',
                         gap: 1,
                       }}
                     >
