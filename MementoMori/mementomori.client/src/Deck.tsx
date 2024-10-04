@@ -6,6 +6,8 @@ type CardInfo = {
     // ...
 }
 export default function Deck() {
-    // tanstack querry that gets cards: CardInfo[]  /decks/deck
+    //  localhost:5173/deck/deckId
+    // tanstack querry that gets deck info from  /controllerName/deckId/deck
+    // onSuccess show card
     // return first card
 }

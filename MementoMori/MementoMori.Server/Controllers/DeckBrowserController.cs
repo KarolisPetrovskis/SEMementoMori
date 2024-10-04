@@ -193,9 +193,9 @@ namespace MementoMori.Server.Controllers
             }
         };
 
-    /*
-     * 
-     */
+        /*
+         * 
+         */
 
 
         [HttpGet("getDecks")]
@@ -221,7 +221,7 @@ namespace MementoMori.Server.Controllers
                 Title = deck.Title,
                 Rating = deck.Rating,
                 Modified = deck.Modified,
-                Cards = deck.Cards,
+                Cards = deck.CardCount,
                 Tags = deck.Tags
             }).ToArray();
 

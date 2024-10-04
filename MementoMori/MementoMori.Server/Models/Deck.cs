@@ -42,7 +42,7 @@
 
         public string[]? Tags { get; set; }
 
-        public Card[]? Cards { get; set; }
+        public List<Card> Cards { get; set; }
 
 
         public int CompareTo(Deck? other)
