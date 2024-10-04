@@ -18,7 +18,7 @@ namespace MementoMori.Server
         }
 
         // Method to create a file using tags and text
-        public void CreateFile(string tags, string text, string deckId)
+        public void CreateFile(string[]? tags, string text, string deckId)
         {
             // Use the specified file name "001.txt"
             string fileName = "001.txt";
@@ -30,7 +30,7 @@ namespace MementoMori.Server
                 throw new InvalidOperationException("Error: The deck file does not exist.");
 
             var fileInfo = new FileInfo(filePath);
-
+            string tagsLine = "";
             if (fileInfo.Length == 0)
             {
                 using (StreamWriter sw = File.AppendText(filePath))
@@ -50,10 +50,32 @@ namespace MementoMori.Server
                 string[] cardIds = fileLines[2].Substring(fileLines[2].IndexOf(':') + 1).Split(';', StringSplitOptions.RemoveEmptyEntries);
                 fileLines[1] = "Number of cards: " + cardIds.Length;
                 File.WriteAllLines(filePath, fileLines);
+                
+                if (tags != null && tags.Length != 0)
+                {
+                    int x = tags.Length;
+                    for (int i = 0; i < x; ++i)
+                    {
+                        if (i + 1 != x)
+                        {
+                            tagsLine += " " + tags[i] + ";";
+                        }
+                        else
+                        {
+                            tagsLine += " " + tags[i];
+                        }
+                    }
+                }
+                else
+                {
+                    tagsLine = " None";
+                }
+
             }
 
+
             // Create the content to write to the file
-            string fileContent = "(Start)\nCardId " + cardId + $"\nTags: {tags}\n\nText:\n{text}\n" + "\n(End)\n";
+            string fileContent = "(Start)\nCardId " + cardId + $"\nTags:{tagsLine}\n\nText:\n{text}\n" + "\n(End)\n";
 
             try
             {

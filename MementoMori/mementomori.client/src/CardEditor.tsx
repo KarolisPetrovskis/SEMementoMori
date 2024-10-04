@@ -6,15 +6,15 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
-import { TagValidator } from './Validator';
+//import { TagValidator } from './Validator';
 import axios from 'axios';
-
+import TagSelector from './deckBrowser/TagSelector';
 export default function OutlinedCard() {
     const [dynamicInputValue, setDynamicInputValue] = React.useState('');
-    const [staticInputValue, setStaticInputValue] = React.useState('');
+    //const [staticInputValue, setStaticInputValue] = React.useState('');
     const [cardIdField, setCardIdField] = React.useState('');
     const [fontSize, setFontSize] = React.useState(24); 
-    const [tagError, setTagError] = React.useState(''); 
+    //const [tagError, setTagError] = React.useState(''); 
     const [deckIdError, setDeckIdError] = React.useState(''); 
     const [dynamicTextError, setDynamicTextError] = React.useState(''); 
     const [requestError, setRequestError] = React.useState(''); 
@@ -22,6 +22,7 @@ export default function OutlinedCard() {
     const [postedTags, setPostedTags] = React.useState('');
     const [postedText, setPostedText] = React.useState('');
 
+    const [selectedTags, setSelectedTags] = React.useState<string[]>([]);
 
     // Handle change for the dynamic text field with increasing height and dynamic font size
     const handleDynamicChange = (event: { target: { value: any } }) => {
@@ -39,23 +40,26 @@ export default function OutlinedCard() {
         }
     };
 
+    {/*
     // Handle change for the static text field
     const handleStaticChange = (event: { target: { value: any } }) => {
         const value = event.target.value;
         setStaticInputValue(value);
     };
-
+    */}
     const handleCardIdField = (event: { target: { value: any } }) => {
         const value = event.target.value;
         setCardIdField(value);
     };
 
+    {/*
     const validateTags = (tags: string) => {
         const validator = new TagValidator();
         validator.setTags(tags);
         const validationError = validator.returnError();
         return validationError;
     };
+    */}
 
     const validateDynamicText = (text: string) => {
         if (!text.trim()) {
@@ -66,14 +70,16 @@ export default function OutlinedCard() {
 
     // Send form data to backend server
     const handleCreate = async () => {
+        {/* Temporary commenting of tag validation
         const tagValidationError = validateTags(staticInputValue);
         if (tagValidationError) {
             setTagError(tagValidationError);
             return;
-        } else {
+        }
+        else {
             setTagError('');
         }
-
+        */}
         const dynamicTextValidationError = validateDynamicText(dynamicInputValue);
         if (dynamicTextValidationError) {
             setDynamicTextError(dynamicTextValidationError);
@@ -92,7 +98,7 @@ export default function OutlinedCard() {
             // Create an object to send to the backend
             const cardData = {
                 deckId: cardIdField,
-                tags: staticInputValue,
+                tags: selectedTags,
                 text: dynamicInputValue,
             };
 
@@ -150,6 +156,7 @@ export default function OutlinedCard() {
                     <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 14 }}>
                         Enter Tag Names (Each Subsequent Tag Must Be Divided By ';')
                     </Typography>
+                    {/*
                     <TextField
                         fullWidth
                         variant="outlined"
@@ -162,6 +169,12 @@ export default function OutlinedCard() {
                         error={Boolean(tagError)}
                         helperText={tagError}
                     />
+
+
+                    */}
+
+                    <TagSelector setSelectedTags={setSelectedTags} />
+
                     <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 14 }}>
                         Enter Text For Card
                     </Typography>
@@ -172,7 +185,7 @@ export default function OutlinedCard() {
                         onChange={handleDynamicChange}
                         label="Write something"
                         InputProps={{
-                            style: { fontSize: fontSize },
+                            style: { fontSize: fontSize, zIndex: 10000 },
                         }}
                         value={dynamicInputValue}  // Reset field on form submission
                         sx={{
@@ -194,7 +207,7 @@ export default function OutlinedCard() {
                     {postedTags && (
                         <Box sx={{ marginTop: '16px' }}>
                             <Typography sx={{ fontWeight: 'bold', marginBottom: '8px' }}>Posted Tags:</Typography>
-                            <Typography>{postedTags}</Typography>
+                            <Typography>{selectedTags}</Typography>
                         </Box>
                     )}
 

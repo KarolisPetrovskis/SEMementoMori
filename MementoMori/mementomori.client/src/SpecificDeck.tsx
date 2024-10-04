@@ -39,14 +39,14 @@ const FileDisplay: React.FC = () => {
 
             if (skipNextLine) {
                 // Now skip this line (which contains the cardId)
-                skipNextLine = false; 
+                skipNextLine = false;
                 return;
             }
 
             if (isCard) {
                 if (!line.includes('(End)')) {
                     // Add all lines except '(Start)' and '(End)' and the cardId line
-                    card += line + '\n'; 
+                    card += line + '\n';
                 }
             }
 
