@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.IO;
+using MementoMori.Server;
 
 namespace MementoMori.Server.Controllers
 {
@@ -25,7 +26,15 @@ namespace MementoMori.Server.Controllers
 
 			try
 			{
-				string[] fileContent = System.IO.File.ReadAllLines(_filePath);
+
+				// Do all the information packaging here
+
+
+				CardFileDataReturner deckInfo = new CardFileDataReturner(_filePath);
+				string[] fileContent = deckInfo.ExtractCards();
+
+				//string[] fileContent = System.IO.File.ReadAllLines(_filePath);
+				
 				return Ok(fileContent); // Return file content as an array of strings
 			}
 			catch (Exception ex)

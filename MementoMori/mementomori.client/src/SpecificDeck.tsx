@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Box, Typography, Paper, Button, Divider } from '@mui/material';
 
 const FileDisplay: React.FC = () => {
-    const [fileContent, setFileContent] = useState<string[]>([]);
+    const [cards, setCards] = useState<string[]>([]);
     const [currentCardIndex, setCurrentCardIndex] = useState(0); // To track the current card
     const [error, setError] = useState<string | null>(null);
 
@@ -12,7 +12,7 @@ const FileDisplay: React.FC = () => {
         const fetchFileContent = async () => {
             try {
                 const response = await axios.get('/CardFile/getFileContent');
-                setFileContent(response.data);
+                setCards(response.data);
             } catch (err) {
                 setError('Error fetching file content.');
                 console.error(err);
@@ -21,6 +21,9 @@ const FileDisplay: React.FC = () => {
 
         fetchFileContent();
     }, []);
+
+
+    {/*
 
     // Function to extract card content from the file
     const extractCards = () => {
@@ -61,6 +64,9 @@ const FileDisplay: React.FC = () => {
     };
 
     const cards = extractCards(); // Get all card contents
+
+
+    */}
 
     // Function to move to the next card
     const handleNext = () => {
