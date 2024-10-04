@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using MementoMori.Server.Extensions;
+
 namespace MementoMori.Server.Controllers
 {
     [ApiController]
@@ -8,22 +10,18 @@ namespace MementoMori.Server.Controllers
         [HttpPost("createCard")]
         public IActionResult PostInputData([FromBody] CardData data)
         {
-            if (data == null || string.IsNullOrEmpty(data.Tags) || string.IsNullOrEmpty(data.Text))
+            // Usage of extension method
+            if (!data.IsValid())
             {
                 return BadRequest("Invalid input data");
             }
 
-            // Process the data (e.g., save to the database or handle the logic)
-
             try
             {
-                // Create an instance of the FileWriter (no need to pass path now)
-                FileWriter fileWriter = new FileWriter();
+                // Usage of the extension method to initialize FileWriter class
+                var fileWriter = this.InitializeFileWriter();
+                fileWriter.CreateFile(data.Tags, data.Text, data.DeckId);
 
-                // Attempt to create the file with the posted tags and text
-                fileWriter.CreateFile(data.Tags, data.Text, data.DeckId); ;
-
-                // Return a success response if the file was created successfully
                 return Ok(new { message = "Data received successfully", tags = data.Tags, text = data.Text, cardId = data.DeckId });
             }
             catch (InvalidOperationException ex)
@@ -36,9 +34,6 @@ namespace MementoMori.Server.Controllers
                 // Handle any other exceptions that might occur
                 return StatusCode(500, new { error = "An unexpected error occurred: " + ex.Message });
             }
-
         }
-
-
     }
 }
