@@ -22,52 +22,6 @@ const FileDisplay: React.FC = () => {
         fetchFileContent();
     }, []);
 
-
-    {/*
-
-    // Function to extract card content from the file
-    const extractCards = () => {
-        const cards: string[] = [];
-        let isCard = false;
-        let card = '';
-        let skipNextLine = false;
-
-        fileContent.forEach((line) => {
-            if (line.includes('(Start)')) {
-                isCard = true;
-                card = '';
-                skipNextLine = true;
-                return;
-            }
-
-            if (skipNextLine) {
-                // Now skip this line (which contains the cardId)
-                skipNextLine = false;
-                return;
-            }
-
-            if (isCard) {
-                if (!line.includes('(End)')) {
-                    // Add all lines except '(Start)' and '(End)' and the cardId line
-                    card += line + '\n';
-                }
-            }
-
-            if (line.includes('(End)')) {
-                isCard = false;
-                // Push the card into array after the "(End)" line
-                cards.push(card.trim());
-            }
-        });
-
-        return cards;
-    };
-
-    const cards = extractCards(); // Get all card contents
-
-
-    */}
-
     // Function to move to the next card
     const handleNext = () => {
         if (currentCardIndex < cards.length - 1) {
