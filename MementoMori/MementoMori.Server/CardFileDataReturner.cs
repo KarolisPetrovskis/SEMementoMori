@@ -11,10 +11,21 @@ namespace MementoMori.Server
 
 		public string[] ExtractCards()
 		{
-			string[] fileContent = System.IO.File.ReadAllLines(_filePath);
+			// Read all lines into a list first
+			List<string> linesList = new List<string>();
 
+			using (StreamReader reader = new StreamReader(_filePath))
+			{
+				while (!reader.EndOfStream)
+				{
+					linesList.Add(reader.ReadLine());
+				}
+			}
 
-			// May want to validate it (probably no need unlesss someone goes into files to delete things
+			// Convert list to array
+			string[] fileContent = linesList.ToArray();
+
+			// May want to validate it (probably no need unless someone goes into files to delete things)
 			string[] parts = fileContent[1].Split(':');
 			int numberOfCards = int.Parse(parts[1].Trim());
 
@@ -66,6 +77,5 @@ namespace MementoMori.Server
 
 			return cards;
 		}
-
 	}
 }
