@@ -42,30 +42,10 @@ export default function OutlinedCard() {
     }
   };
 
-  {
-    /*
-    // Handle change for the static text field
-    const handleStaticChange = (event: { target: { value: any } }) => {
-        const value = event.target.value;
-        setStaticInputValue(value);
-    };
-    */
-  }
   const handleCardIdField = (event: { target: { value: any } }) => {
     const value = event.target.value;
     setCardIdField(value);
   };
-
-  {
-    /*
-    const validateTags = (tags: string) => {
-        const validator = new TagValidator();
-        validator.setTags(tags);
-        const validationError = validator.returnError();
-        return validationError;
-    };
-    */
-  }
 
   // Validate the dynamic text field
   const validateDynamicText = (text: string) => {
@@ -77,18 +57,6 @@ export default function OutlinedCard() {
 
   // Send form data to backend server
   const handleCreate = async () => {
-    {
-      /* Temporary commenting of tag validation
-        const tagValidationError = validateTags(staticInputValue);
-        if (tagValidationError) {
-            setTagError(tagValidationError);
-            return;
-        }
-        else {
-            setTagError('');
-        }
-        */
-    }
     const dynamicTextValidationError = validateDynamicText(dynamicInputValue);
     if (dynamicTextValidationError) {
       setDynamicTextError(dynamicTextValidationError);
@@ -173,22 +141,6 @@ export default function OutlinedCard() {
           >
             Enter Tag Names (Each Subsequent Tag Must Be Divided By ';')
           </Typography>
-          {/*
-                    <TextField
-                        fullWidth
-                        variant="outlined"
-                        onChange={handleStaticChange}
-                        label="Tags"
-                        sx={{
-                            marginBottom: '16px',
-                        }}
-                        value={staticInputValue}  // Reset field on form submission
-                        error={Boolean(tagError)}
-                        helperText={tagError}
-                    />
-
-
-                    */}
 
           <TagSelector setSelectedTags={setSelectedTags} />
 
