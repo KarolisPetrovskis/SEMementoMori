@@ -2,14 +2,14 @@
   {
     "id": 1,
     "title": "Daily Quest",
-    "description": "Complete 3 workouts",
+    "description": "Review 15 Cards",
     "reward": "100 coins"
   },
   {
     "id": 2,
     "title": "Weekly Quest",
-    "description": "Read 5 books",
-    "reward": "500 experience points"
+    "description": "Add 10 Cards to any decks",
+    "reward": "500 coins"
   },
   {
     "id": 3,

@@ -3,13 +3,14 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 
 import ListItemText from "@mui/material/ListItemText";
+
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 
 import { useEffect, useState } from "react";
-import fs from "fs";
+import axios from "axios";
 
 // Define the Quest interface
 interface Quest {
@@ -27,17 +28,9 @@ export default function QuestList() {
   useEffect(() => {
     const fetchQuests = async () => {
       try {
-        const readableStream = fs.createReadStream("quests.json");
-
-        readableStream.on("data", (chunk) => {
-          const quests: Quest[] = JSON.parse(chunk.toString()); // Cast to Quest[]
-          console.log(quests); // Log the fetched quests
-          setQuestData(quests);
-        });
-
-        readableStream.on("end", () => {
-          console.log("Quest data loaded.");
-        });
+        const response = await axios.get("/Quests.json"); // Replace with actual endpoint
+        const quests: Quest[] = response.data; // Cast to Quest[]
+        setQuestData(quests);
       } catch (error) {
         console.error("Error fetching quests:", error);
       }
@@ -45,6 +38,36 @@ export default function QuestList() {
 
     fetchQuests();
   }, []);
+
+  const renderedQuests: React.ReactNode[] = []; // Explicitly annotate type
+
+  questData.forEach((quest) => {
+    renderedQuests.push(
+      <ListItem key={quest.id} alignItems="center">
+        <ListItemAvatar>
+          <Avatar>
+            <AssignmentIcon />
+          </Avatar>
+        </ListItemAvatar>
+        <ListItemText
+          primary={quest.title}
+          sx={{ color: "#6be0fe" }}
+          secondary={
+            <React.Fragment>
+              <Typography
+                component="span"
+                variant="body2"
+                sx={{ color: "#ecffff", display: "inline" }}
+              >
+                {quest.description}
+              </Typography>
+              {" — " + quest.reward}
+            </React.Fragment>
+          }
+        />
+      </ListItem>
+    );
+  });
 
   return (
     <List
@@ -62,33 +85,7 @@ export default function QuestList() {
         overflowY: "auto", // Enable scrolling if there are many quests
       }}
     >
-      {/* Map over quest data and render each quest */}
-      {questData.map((quest) => (
-        <ListItem key={quest.id} alignItems="center">
-          console.log("1")
-          <ListItemAvatar>
-            <Avatar>
-              <AssignmentIcon />
-            </Avatar>
-          </ListItemAvatar>
-          <ListItemText
-            primary={quest.title}
-            sx={{ color: "#6be0fe" }}
-            secondary={
-              <React.Fragment>
-                <Typography
-                  component="span"
-                  variant="body2"
-                  sx={{ color: "#ecffff", display: "inline" }}
-                >
-                  {quest.description}
-                </Typography>
-                {" — " + quest.reward}
-              </React.Fragment>
-            }
-          />
-        </ListItem>
-      ))}
+      {renderedQuests}
     </List>
   );
 }
