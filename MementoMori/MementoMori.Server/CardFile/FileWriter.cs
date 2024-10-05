@@ -21,13 +21,18 @@ namespace MementoMori.Server
         public void CreateFile(string[]? tags, string text, string deckId)
         {
             // Use the specified file name "001.txt"
-            string fileName = "001.txt";
+            string fileName= deckId + ".txt";
+            //Console.WriteLine(fileName);
             string filePath = Path.Combine(_directoryPath, fileName);
             Guid cardId = Guid.NewGuid();
 
-            // Validate based on the whole direcotry or smth
-            if (fileName != deckId + ".txt")
-                throw new InvalidOperationException("Error: The deck file does not exist.");
+            if(!File.Exists(filePath))
+            {
+                using (FileStream fs = File.Create(filePath))
+                {
+                }
+            }
+
 
             var fileInfo = new FileInfo(filePath);
             string tagsLine = "";
@@ -40,39 +45,6 @@ namespace MementoMori.Server
                     sw.WriteLine("CardIds: " + cardId + "\n");
                 }
             }
-            else
-            {
-                // Add change to the nr of cards, add extra card id to the line seperated by ';'
-                string[] fileLines = File.ReadAllLines(filePath);
-                fileLines[2] += $"; {cardId}";
-                File.WriteAllLines(filePath, fileLines);
-
-                string[] cardIds = fileLines[2].Substring(fileLines[2].IndexOf(':') + 1).Split(';', StringSplitOptions.RemoveEmptyEntries);
-                fileLines[1] = "Number of cards: " + cardIds.Length;
-                File.WriteAllLines(filePath, fileLines);
-                
-                if (tags != null && tags.Length != 0)
-                {
-                    int x = tags.Length;
-                    for (int i = 0; i < x; ++i)
-                    {
-                        if (i + 1 != x)
-                        {
-                            tagsLine += " " + tags[i] + ";";
-                        }
-                        else
-                        {
-                            tagsLine += " " + tags[i];
-                        }
-                    }
-                }
-                else
-                {
-                    tagsLine = " None";
-                }
-
-            }
-
 
             // Create the content to write to the file
             string fileContent = "(Start)\nCardId " + cardId + $"\nTags:{tagsLine}\n\nText:\n{text}\n" + "\n(End)\n";
