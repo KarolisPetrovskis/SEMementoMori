@@ -4,7 +4,8 @@ import { Box, Typography, Paper, Button, Divider } from '@mui/material';
 
 const FileDisplay: React.FC = () => {
     const [cards, setCards] = useState<string[]>([]);
-    const [currentCardIndex, setCurrentCardIndex] = useState(0); // To track the current card
+    // To track the current card
+    const [currentCardIndex, setCurrentCardIndex] = useState(0); 
     const [error, setError] = useState<string | null>(null);
 
     // Fetch file content from the backend
@@ -45,8 +46,6 @@ const FileDisplay: React.FC = () => {
                     <Typography variant="h6" gutterBottom>
                         <b>Card {currentCardIndex + 1} of {cards.length}</b>
                     </Typography>
-
-                    {/* Add Divider between the header and card content */}
                     <Divider sx={{ marginY: '12px', borderBottomWidth: 3, bgcolor: '#245dab' }} />
                     {cards.length > 0 ? (
                         <Typography component="pre" sx={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace' }}>
@@ -57,7 +56,7 @@ const FileDisplay: React.FC = () => {
                     )}
                 </Paper>
             )}
-            {/* Navigation Buttons */}
+
             <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '50%' }}>
                 <Button variant="contained" onClick={handlePrevious} disabled={currentCardIndex === 0}>
                     Previous

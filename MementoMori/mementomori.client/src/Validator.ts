@@ -25,7 +25,7 @@ export class TagValidator {
         let emptyTagsCount = 0;
         let invalidStartCount = 0;
 
-        // Rule 2: Check for empty or invalid tags
+        // Check for empty or invalid tags
         for (const tag of this.tagList) {
             if (!tag) {
                 emptyTagsCount++;

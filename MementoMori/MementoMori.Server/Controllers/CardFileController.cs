@@ -13,7 +13,8 @@ namespace MementoMori.Server.Controllers
 		public CardFileController()
 		{
 			string serverDirectory = Directory.GetCurrentDirectory();
-			_filePath = Path.Combine(serverDirectory, "CardFile", "001.txt"); // Assuming the file is always 001.txt
+			// Assuming the file is always 001.txt if you want to display more files in a static way then you can do modifications inf GetFileContent
+			_filePath = Path.Combine(serverDirectory, "CardFile", "001.txt"); 
 		}
 
 		[HttpGet("getFileContent")]
@@ -29,7 +30,8 @@ namespace MementoMori.Server.Controllers
 				// Do all the information packaging here
 				CardFileDataReturner deckInfo = new CardFileDataReturner(_filePath);
 				string[] fileContent = deckInfo.ExtractCards();
-				return Ok(fileContent); // Return file content as an array of strings
+				// Return file content as an array of strings
+				return Ok(fileContent);
 			}
 			catch (Exception ex)
 			{

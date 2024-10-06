@@ -6,12 +6,9 @@ namespace MementoMori.Server
     {
         private readonly string _directoryPath;
 
-        // Constructor to initialize the directory where files will be stored
         public FileWriter()
         {
-            // Get the current directory of the MementoMori.Server project
             string serverDirectory = Directory.GetCurrentDirectory();
-
             // Set the path to "CardFile" folder
             _directoryPath = Path.Combine(serverDirectory, "CardFile");
 
@@ -20,9 +17,7 @@ namespace MementoMori.Server
         // Method to create a file using tags and text
         public void CreateFile(string[]? tags, string text, string deckId)
         {
-            // Use the specified file name "001.txt"
             string fileName= deckId + ".txt";
-            //Console.WriteLine(fileName);
             string filePath = Path.Combine(_directoryPath, fileName);
             Guid cardId = Guid.NewGuid();
 
@@ -56,13 +51,13 @@ namespace MementoMori.Server
                 {
                     sw.WriteLine(fileContent);
                 }
-                //Console.WriteLine($"File created successfully at {filePath}");
             }
             catch (Exception ex)
             {
                 // Handle any exceptions that occur during file writing
                 Console.WriteLine($"Error creating file: {ex.Message}");
-                throw; // Rethrow the exception to be caught by the controller
+                // Rethrow the exception to be caught by the controller
+                throw;
             }
         }
     }
