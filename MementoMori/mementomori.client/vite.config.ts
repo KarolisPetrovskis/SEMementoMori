@@ -50,7 +50,11 @@ export default defineConfig({
             '^/DeckBrowser/getDecks': {
                 target,
                 secure: false
-            }
+            },
+            '^/decks/.*?/cards': {
+                target,
+                secure: false,
+            },
         },
         port: 5173,
         https: {

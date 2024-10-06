@@ -14,7 +14,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/browser" element={<Broswer />} />
-          <Route path="/decks/:deckId" element ={<DeckPage />} />
+          <Route path="/decks/:deckId" element={<DeckPage />} />
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>
