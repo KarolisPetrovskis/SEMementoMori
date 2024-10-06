@@ -27,8 +27,8 @@ namespace MementoMori.Server.Controllers
 
 			try
 			{
-				// Do all the information packaging here
-				CardFileDataReturner deckInfo = new CardFileDataReturner(_filePath);
+                // Do all the information packaging here
+                CardFileReader deckInfo = new CardFileReader(_filePath);
 				string[] fileContent = deckInfo.ExtractCards();
 				// Return file content as an array of strings
 				return Ok(fileContent);
