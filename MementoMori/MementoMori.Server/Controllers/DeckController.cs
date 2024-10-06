@@ -12,7 +12,7 @@ namespace MementoMori.Server.Controllers
         [Route("[controller]")]
 
 
-        public class DeckBrowserController : ControllerBase
+        public class DecksController : ControllerBase
         {
 
             [HttpGet]
@@ -22,7 +22,7 @@ namespace MementoMori.Server.Controllers
 
             }
 
-            [HttpGet("{deckId}/deck")]
+            [HttpGet("{deckId}/cards")]
             public IActionResult GetDeck(Guid deckId)
             {
                 var deck = TestDeck.Decks.FirstOrDefault(deck => deck.Id == deckId);
