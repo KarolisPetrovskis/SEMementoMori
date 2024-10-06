@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './Home';
 import Browser from './deckBrowser/Browser';
 import './App.css';
-import Cards from './CardEditor.tsx';
+import Cards from './CardCreator.tsx';
 import SpecificDeck from './SpecificDeck.tsx';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
