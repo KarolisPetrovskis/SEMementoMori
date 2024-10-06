@@ -31,7 +31,6 @@ namespace MementoMori.Server.Controllers
             }
             catch (Exception ex)
             {
-                // Handle any other exceptions that might occur
                 return StatusCode(500, new { error = "An unexpected error occurred: " + ex.Message });
             }
         }

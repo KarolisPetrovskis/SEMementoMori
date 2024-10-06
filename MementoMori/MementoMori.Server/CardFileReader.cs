@@ -1,10 +1,10 @@
 using System.IO;
 namespace MementoMori.Server
 {
-	public class CardFileDataReturner
-	{
+	public class CardFileReader
+    {
 		private string _filePath;
-		public CardFileDataReturner(string _filePath)
+		public CardFileReader(string _filePath)
 		{
 			this._filePath = _filePath;
 		}
