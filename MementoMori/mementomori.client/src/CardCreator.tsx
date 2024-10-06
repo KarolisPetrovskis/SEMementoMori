@@ -6,22 +6,18 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
-//import { TagValidator } from './Validator';
 import axios from 'axios';
 import TagSelector from './deckBrowser/TagSelector';
+
 export default function OutlinedCard() {
   const [dynamicInputValue, setDynamicInputValue] = React.useState('');
-  //const [staticInputValue, setStaticInputValue] = React.useState('');
   const [cardIdField, setCardIdField] = React.useState('');
   const [fontSize, setFontSize] = React.useState(24);
-  //const [tagError, setTagError] = React.useState('');
   const [deckIdError, setDeckIdError] = React.useState('');
   const [dynamicTextError, setDynamicTextError] = React.useState('');
   const [requestError, setRequestError] = React.useState('');
-
   const [postedTags, setPostedTags] = React.useState('');
   const [postedText, setPostedText] = React.useState('');
-
   const [selectedTags, setSelectedTags] = React.useState<string[]>([]);
 
   // Handle change for the dynamic text field with increasing height and dynamic font size

@@ -24,8 +24,6 @@ namespace MementoMori.Server
 
 			// Convert list to array
 			string[] fileContent = linesList.ToArray();
-
-			// May want to validate it (probably no need unless someone goes into files to delete things)
 			string[] parts = fileContent[1].Split(':');
 			int numberOfCards = int.Parse(parts[1].Trim());
 
@@ -70,7 +68,8 @@ namespace MementoMori.Server
 
 					if (cardCount >= numberOfCards)
 					{
-						break; // Stop if we have extracted the expected number of cards
+						// Stop if we have extracted the expected number of cards
+						break; 
 					}
 				}
 			}
