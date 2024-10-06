@@ -1,4 +1,4 @@
-import BasicCard from './MainFunctionality.tsx'
+import BasicCard from '../MainFunctionality.tsx'
 
 type CardInfo = {
     show: string,
