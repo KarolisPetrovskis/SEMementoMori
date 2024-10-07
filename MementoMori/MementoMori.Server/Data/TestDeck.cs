@@ -22,8 +22,8 @@ namespace MementoMori.Server
 
                 Cards = new List<Card> //public Card[] Cards = new Card[] //new list<Cards>
                 {
-                    new Card { Id = Guid.NewGuid(), Question = "Which organ is the aorta a part of? ", Anwser = "Heart"},
-                    new Card { Id = Guid.NewGuid(), Question = "How many bones are in the human body?", Anwser = "206"}
+                    new Card { Id = Guid.NewGuid(), Question = "Which organ is the aorta a part of? ", Answer = "Heart"},
+                    new Card { Id = Guid.NewGuid(), Question = "How many bones are in the human body?", Answer = "206"}
                 }
             },
             new Deck

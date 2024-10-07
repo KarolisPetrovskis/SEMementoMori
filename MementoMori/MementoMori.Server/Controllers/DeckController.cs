@@ -1,16 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MementoMori.Server.DTOS;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MementoMori.Server.Controllers
 {
-    using Microsoft.AspNetCore.Mvc;
-    using System.Collections.Generic;
-    using System.Linq;
 
     namespace MementoMori.Server.Controllers
     {
         [ApiController]
         [Route("[controller]")]
-
 
         public class DecksController : ControllerBase
         {
@@ -26,17 +26,21 @@ namespace MementoMori.Server.Controllers
             public IActionResult GetDeck(Guid deckId)
             {
                 var deck = TestDeck.Decks.FirstOrDefault(deck => deck.Id == deckId);
+                var Cards = deck.Cards.Select(Card => new CardDTO
+                {
+                    Id = Card.Id,
+                    Question = Card.Question,
+                    Description = Card.Description,
+                    Answer = Card.Answer,
+
+                }).ToList();
 
                 if (deck == null)
                     return NotFound("Deck not found.");
 
-                return Ok(deck);
+                return Ok(Cards);
             }
 
-
-            //Create deck
-
-            //Get the next card of a deck by priority (don't know if it should be in the controller)
         }
     }
 }
