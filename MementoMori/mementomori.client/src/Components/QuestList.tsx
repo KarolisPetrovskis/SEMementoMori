@@ -1,21 +1,18 @@
 import * as React from "react";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
-
 import ListItemText from "@mui/material/ListItemText";
-
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-
 import { useEffect, useState } from "react";
 import axios from "axios";
 
 // Define the Quest interface
 interface Quest {
-  id: number; // Or string depending on your data format
+  id: number;
   title: string;
   description: string;
   valueNeeded: number;
@@ -26,14 +23,17 @@ interface Quest {
 
 export default function QuestList() {
   const [questData, setQuestData] = useState<Quest[]>([]);
-  const [isComplete, setIsComplete] = useState(false); // Initialize for conditional rendering
+  const [isComplete, setIsComplete] = useState(false);
 
   useEffect(() => {
     const fetchQuests = async () => {
       try {
-        const response = await axios.get("/Quests.json");
+        const response = await axios.get(
+          "MementoMori/MementoMori.Server/quests.json"
+        );
         const quests: Quest[] = response.data;
         setQuestData(quests);
+
         // Fetch isComplete status (separate API call)
         const isCompleteResponse = await axios.get(
           "/QuestController/isComplete"
@@ -73,10 +73,7 @@ export default function QuestList() {
             </React.Fragment>
           }
         />
-        {isComplete &&
-          quest.id === 1 && ( // Assuming quest ID check for the specific quest
-            <CheckCircleIcon color="success" />
-          )}
+        {isComplete && quest.id === 1 && <CheckCircleIcon color="success" />}
       </ListItem>
     );
   });

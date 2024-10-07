@@ -50,6 +50,10 @@ export default defineConfig({
             '^/DeckBrowser/getDecks': {
                 target,
                 secure: false
+            },
+            '^/QuestController/isComplete': {
+                target,
+                secure: false
             }
         },
         port: 5173,
