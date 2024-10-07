@@ -8,6 +8,7 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import AssignmentIcon from "@mui/icons-material/Assignment";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -17,6 +18,7 @@ interface Quest {
   id: number; // Or string depending on your data format
   title: string;
   description: string;
+  valueNeeded: number;
   reward: string;
   color?: string; // Optional color for Avatar
   status?: string; // Optional status property
@@ -24,13 +26,19 @@ interface Quest {
 
 export default function QuestList() {
   const [questData, setQuestData] = useState<Quest[]>([]);
+  const [isComplete, setIsComplete] = useState(false); // Initialize for conditional rendering
 
   useEffect(() => {
     const fetchQuests = async () => {
       try {
-        const response = await axios.get("/Quests.json"); // Replace with actual endpoint
-        const quests: Quest[] = response.data; // Cast to Quest[]
+        const response = await axios.get("/Quests.json");
+        const quests: Quest[] = response.data;
         setQuestData(quests);
+        // Fetch isComplete status (separate API call)
+        const isCompleteResponse = await axios.get(
+          "/QuestController/isComplete"
+        );
+        setIsComplete(isCompleteResponse.data);
       } catch (error) {
         console.error("Error fetching quests:", error);
       }
@@ -65,6 +73,10 @@ export default function QuestList() {
             </React.Fragment>
           }
         />
+        {isComplete &&
+          quest.id === 1 && ( // Assuming quest ID check for the specific quest
+            <CheckCircleIcon color="success" />
+          )}
       </ListItem>
     );
   });
