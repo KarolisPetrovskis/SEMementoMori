@@ -6,41 +6,39 @@ using System.Linq;
 
 namespace MementoMori.Server.Controllers
 {
+    [ApiController]
+    [Route("[controller]")]
 
-    namespace MementoMori.Server.Controllers
+    public class DecksController : ControllerBase
     {
-        [ApiController]
-        [Route("[controller]")]
 
-        public class DecksController : ControllerBase
+        [HttpGet("{deckId}/cards")]
+        public IActionResult GetDeck(Guid deckId)
         {
 
-            [HttpGet]
-            public IActionResult GetDecks()
+            if (deckId == Guid.Empty)
             {
-                return Ok(TestDeck.Decks);
-
+                return BadRequest(new { errorCode = ErrorCode.InvalidInput, message = "Invalid deck ID." });
             }
+            
+            var deck = TestDeck.Decks.FirstOrDefault(deck => deck.Id == deckId);
 
-            [HttpGet("{deckId}/cards")]
-            public IActionResult GetDeck(Guid deckId)
+            if (deck == null)
+                return NotFound("Deck not found.");
+
+            var Cards = deck.Cards.Select(Card => new CardDTO
             {
-                var deck = TestDeck.Decks.FirstOrDefault(deck => deck.Id == deckId);
-                var Cards = deck.Cards.Select(Card => new CardDTO
-                {
-                    Id = Card.Id,
-                    Question = Card.Question,
-                    Description = Card.Description,
-                    Answer = Card.Answer,
+                Id = Card.Id,
+                Question = Card.Question,
+                Description = Card.Description,
+                Answer = Card.Answer,
 
-                }).ToList();
+            }).ToList();
 
-                if (deck == null)
-                    return NotFound("Deck not found.");
+            return Ok(Cards);
 
-                return Ok(Cards);
-            }
-
+            
         }
+
     }
 }
