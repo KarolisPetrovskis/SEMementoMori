@@ -1,6 +1,6 @@
-﻿namespace MementoMori.Server
+﻿namespace MementoMori.Server.DTOS
 {
-    public class DeckBrowserDeck
+    public class DeckBrowserDTO
     {
         public required Guid Id { get; set; }
 

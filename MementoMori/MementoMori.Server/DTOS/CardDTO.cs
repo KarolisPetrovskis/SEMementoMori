@@ -1,7 +1,6 @@
-﻿namespace MementoMori.Server
+﻿namespace MementoMori.Server.DTOS
 {
-
-    public class Card
+    public class CardDTO
     {
         public required Guid Id { get; set; }
 
@@ -11,10 +10,5 @@
 
         public required string Answer { get; set; }
 
-        public int lastInterval { get; set; }
-
-        public DateOnly nextShow { get; set; }
-
     }
 }
-

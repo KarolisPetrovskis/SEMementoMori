@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MementoMori.Server.DTOS;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MementoMori.Server.Controllers
 {
@@ -8,7 +9,7 @@ namespace MementoMori.Server.Controllers
     {
 
         [HttpGet("getDecks")]
-        public ActionResult<DeckBrowserDeck> GetDecks([FromQuery] string[] selectedTags, string? searchString)
+        public ActionResult<DeckBrowserDTO> GetDecks([FromQuery] string[] selectedTags, string? searchString)
         {
             var Decks = TestDeck.Decks;
 
@@ -26,7 +27,7 @@ namespace MementoMori.Server.Controllers
 
             filteredDecks = filteredDecks.Order().Reverse();
 
-            var result = filteredDecks.Select(deck => new DeckBrowserDeck
+            var result = filteredDecks.Select(deck => new DeckBrowserDTO
             {
                 Id = deck.Id,
                 Title = deck.Title,
