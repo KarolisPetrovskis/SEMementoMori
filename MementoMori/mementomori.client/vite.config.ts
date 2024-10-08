@@ -55,6 +55,14 @@ export default defineConfig({
                 target,
                 secure: false,
             },
+            '^/CardData/createCard': {
+                target,
+                secure: false
+            },
+            '^/CardFile/getFileContent': {
+                target,
+                secure: false
+            }
         },
         port: 5173,
         https: {

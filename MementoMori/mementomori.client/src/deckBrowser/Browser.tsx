@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { useMutation } from "@tanstack/react-query";
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useMutation } from '@tanstack/react-query';
 
 import {
   Chip,
