@@ -43,10 +43,6 @@ export default defineConfig({
     },
     server: {
         proxy: {
-            '^/weatherforecast': {
-                target,
-                secure: false
-            },
             '^/DeckBrowser/getDecks': {
                 target,
                 secure: false

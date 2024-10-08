@@ -190,15 +190,17 @@ export default function TagSelector(props: {
       </div>
       {groupedOptions.length > 0 ? (
         <Listbox {...getListboxProps()}>
-          {(groupedOptions as unknown as typeof options).map((option, index) => {
-            const { ...optionProps } = getOptionProps({ option, index });
-            return (
-              <li key={index} {...optionProps}>
-                <span>{option}</span>
-                <CheckIcon fontSize="small" />
-              </li>
-            );
-          })}
+          {(groupedOptions as unknown as typeof options).map(
+            (option, index) => {
+              const { ...optionProps } = getOptionProps({ option, index });
+              return (
+                <li key={index} {...optionProps}>
+                  <span>{option}</span>
+                  <CheckIcon fontSize="small" />
+                </li>
+              );
+            }
+          )}
         </Listbox>
       ) : null}
     </Root>
