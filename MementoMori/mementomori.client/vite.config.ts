@@ -51,6 +51,10 @@ export default defineConfig({
                 target,
                 secure: false
             },
+            '^/decks/.*?/cards': {
+                target,
+                secure: false,
+            },
             '^/CardData/createCard': {
                 target,
                 secure: false

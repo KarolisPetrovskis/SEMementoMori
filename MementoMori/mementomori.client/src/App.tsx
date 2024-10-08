@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './Home';
 import Browser from './deckBrowser/Browser';
 import './App.css';
+import DeckPage from './mainFunctionality/DeckPage';
 import Cards from './CardCreator.tsx';
 import SpecificDeck from './SpecificDeck.tsx';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -14,6 +15,8 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/browser" element={<Broswer />} />
+          <Route path="/decks/:deckId" element={<DeckPage />} />
           <Route path="/browser" element={<Browser />} />
           <Route path="/cards" element={<Cards />} />
           <Route path="/001" element={<SpecificDeck />} />
