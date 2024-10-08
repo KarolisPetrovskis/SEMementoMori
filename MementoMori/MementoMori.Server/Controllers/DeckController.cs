@@ -18,7 +18,8 @@ namespace MementoMori.Server.Controllers
         }
 
         [HttpGet("deck")]
-        public IActionResult View(Guid deckId) {
+        public IActionResult View(Guid deckId)
+        {
 
             if (deckId == Guid.Empty)
             {
@@ -40,13 +41,13 @@ namespace MementoMori.Server.Controllers
                 Tags = Deck.TagsToString(),
                 Title = Deck.Title,
                 Description = Deck.Description
-                
+
             };
             return Ok(DeckDTO);
         }
 
         [HttpGet("EditorView")]
-        public IActionResult EditorView(Guid deckId) 
+        public IActionResult EditorView(Guid deckId)
         {
 
             if (deckId == Guid.Empty)
@@ -92,9 +93,9 @@ namespace MementoMori.Server.Controllers
 
             if (deck == null)
                 return NotFound("Deck not found.");
-            
+
             return Ok(deck.Cards);
-            
+
         }
 
     }

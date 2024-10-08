@@ -10,13 +10,13 @@ namespace MementoMori.Server.Controllers
     public class DeckBrowserController : ControllerBase
     {
         private readonly DeckHelper _deckHelper;
-        public DeckBrowserController(DeckHelper deckHelper) 
+        public DeckBrowserController(DeckHelper deckHelper)
         {
             _deckHelper = deckHelper;
         }
 
         [HttpGet("getDecks")]
-        public ActionResult<DeckBrowserDTO> getDecks([FromQuery] string[] selectedTags, string? searchString)
+        public ActionResult<DeckBrowserDTO> DeckBrowserVM([FromQuery] string[] selectedTags, string? searchString)
         {
             var filteredDecksList = _deckHelper.Filter(titleSubstring: searchString, selectedTags: selectedTags);
             filteredDecksList.Sort();
