@@ -16,7 +16,7 @@ namespace MementoMori.Server.Controllers
         }
 
         [HttpGet("getDecks")]
-        public ActionResult<DeckBrowserDTO> GetDecks([FromQuery] string[] selectedTags, string? searchString)
+        public ActionResult<DeckBrowserDTO> DeckBrowserVM([FromQuery] string[] selectedTags, string? searchString)
         {
             var filteredDecksList = _deckHelper.Filter(titleSubstring: searchString, selectedTags: selectedTags);
             filteredDecksList.Sort();
