@@ -1,4 +1,3 @@
-using System.IO;
 namespace MementoMori.Server
 {
 	public class CardFileReader

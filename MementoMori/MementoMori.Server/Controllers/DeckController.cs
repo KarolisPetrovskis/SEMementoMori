@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MementoMori.Server.DTOS;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace MementoMori.Server.Controllers
 {
@@ -13,7 +10,7 @@ namespace MementoMori.Server.Controllers
     {
 
         [HttpGet("{deckId}/cards")]
-        public IActionResult GetDeck(Guid deckId)
+        public IActionResult GetCards(Guid deckId)
         {
 
             if (deckId == Guid.Empty)
