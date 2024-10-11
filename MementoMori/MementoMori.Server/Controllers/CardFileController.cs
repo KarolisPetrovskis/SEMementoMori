@@ -9,7 +9,7 @@ namespace MementoMori.Server.Controllers
 	public class CardFileController : ControllerBase
 	{
 		private readonly string _filePath;
-		private ICardFileReader _cardFileReader;
+		private readonly ICardFileReader _cardFileReader;
 
 		public CardFileController(ICardFileReader cardFileReader)
 		{
