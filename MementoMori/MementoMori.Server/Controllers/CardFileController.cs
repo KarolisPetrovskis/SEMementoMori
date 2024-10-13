@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.IO;
 using MementoMori.Server;
-using System.Diagnostics;
+
 namespace MementoMori.Server.Controllers
 {
 	[ApiController]
@@ -31,7 +31,6 @@ namespace MementoMori.Server.Controllers
 			{
                 // Do all the information packaging here
 				Card[] fileContent = _cardFileReader.ExtractCards(_filePath);
-				Console.WriteLine(fileContent.Length);
                 // Return file content as an array of CardData
                 return Ok(fileContent);
 			}
