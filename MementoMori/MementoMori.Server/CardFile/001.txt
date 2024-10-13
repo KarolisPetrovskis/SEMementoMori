@@ -1,72 +1,53 @@
 DeckId: 001
-Number of cards: 7
-CardIds: b881f659-d5bc-456d-915b-b680813d8ece; 43767160-36cc-40ee-8612-5616f2882bab; f22de605-26c2-4e26-9912-94c187f10a07; 172ae836-7ff0-4744-b6a7-3957cca0c602; 071afb77-f635-4fec-ae3d-c5c3a40687a2; 7da3102f-e599-4dd6-adce-fb12eadbec17; 32b1fd83-9dc0-47b6-bc57-c0b32b541a2c
+Number of cards: 5
+CardIds: 54741a23-d4ed-4371-b9f0-8b51cb403549; c8fc9810-e2b1-4d8a-8306-9b269b4ac8c2; 2f3b89a6-07e7-4b75-9e44-58904fdbb2f0; 30f8cc24-c4c9-47df-bae3-46ac21b17e06; 3a80bcba-5b34-4330-94a8-813b94e61dc3
 
 (Start)
-CardId b881f659-d5bc-456d-915b-b680813d8ece
-Tags: 545151; 6566
-
-Text:
-ffef
-ef
-fe
-f
-
-f
+CardId 54741a23-d4ed-4371-b9f0-8b51cb403549
+(Question)
+What is 2+2^3?
+(Answer)
+The answer is:
+10
 
 (End)
 
 (Start)
-CardId 43767160-36cc-40ee-8612-5616f2882bab
-Tags: Testing; Changes
-
-Text:
-123
-456
-
-(End)
-
-(Start)
-CardId f22de605-26c2-4e26-9912-94c187f10a07
-Tags: TestingExtensions
-
-Text:
-There were three rabbits once. As the river of time ebbed the rabbits grew old, weak, slow - no better prey. And thus they fell to a preadator becoming a sumptious feast.
+CardId c8fc9810-e2b1-4d8a-8306-9b269b4ac8c2
+(Question)
+Will this be displayed in the card?
+(Answer)
+Is
+the answer
+not evident
+enough?
 
 (End)
 
 (Start)
-CardId 172ae836-7ff0-4744-b6a7-3957cca0c602
-Tags: Physics; Mathematics; Chemistry
-
-Text:
-Test
-
-(End)
-(Start)
-CardId 071afb77-f635-4fec-ae3d-c5c3a40687a2
-Tags: None
-
-Text:
-No tags in the input
+CardId 2f3b89a6-07e7-4b75-9e44-58904fdbb2f0
+(Question)
+Is this the 3rd card?
+(Answer)
+Yep?
 
 (End)
 
 (Start)
-CardId 7da3102f-e599-4dd6-adce-fb12eadbec17
-Tags: Computer Science; Psychology; Expert
-
-Text:
-3 Tags in the input
+CardId 30f8cc24-c4c9-47df-bae3-46ac21b17e06
+(Question)
+4th card
+(Answer)
+Text....
 
 (End)
 
 (Start)
-CardId 32b1fd83-9dc0-47b6-bc57-c0b32b541a2c
-Tags: Biology; Physics; Literature
-
-Text:
-Testing backend for reading
+CardId 3a80bcba-5b34-4330-94a8-813b94e61dc3
+(Question)
+Testing input for cards
+(Answer)
+Looking
 
 (End)
 

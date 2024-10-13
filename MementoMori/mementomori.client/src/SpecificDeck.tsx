@@ -2,8 +2,14 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Box, Typography, Paper, Button, Divider } from '@mui/material';
 
+interface CardData {
+  deckId: string;
+  question: string;
+  answer: string;
+}
+
 const FileDisplay: React.FC = () => {
-  const [cards, setCards] = useState<string[]>([]);
+  const [cards, setCards] = useState<CardData[]>([]);
   // To track the current card
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -12,7 +18,9 @@ const FileDisplay: React.FC = () => {
   useEffect(() => {
     const fetchFileContent = async () => {
       try {
-        const response = await axios.get('/CardFile/getFileContent');
+        const response = await axios.get<CardData[]>(
+          '/CardFile/getFileContent'
+        );
         setCards(response.data);
       } catch (err) {
         setError('Error fetching file content.');
@@ -71,7 +79,8 @@ const FileDisplay: React.FC = () => {
               component="pre"
               sx={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace' }}
             >
-              {cards[currentCardIndex]}
+              {cards[currentCardIndex].question}
+              {cards[currentCardIndex].answer}
             </Typography>
           ) : (
             <Typography>No content found in the file.</Typography>

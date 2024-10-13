@@ -30,9 +30,9 @@ namespace MementoMori.Server.Controllers
 			try
 			{
                 // Do all the information packaging here
-				string[] fileContent = _cardFileReader.ExtractCards(_filePath);
-				// Return file content as an array of strings
-				return Ok(fileContent);
+				CardData[] fileContent = _cardFileReader.ExtractCards(_filePath);
+                // Return file content as an array of CardData
+                return Ok(fileContent);
 			}
 			catch (Exception ex)
 			{

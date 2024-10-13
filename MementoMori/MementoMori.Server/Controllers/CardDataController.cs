@@ -15,14 +15,14 @@ namespace MementoMori.Server.Controllers
             {
                 return BadRequest("Invalid input data");
             }
-
+            
             try
             {
                 // Usage of the extension method to initialize FileWriter class
                 var fileWriter = this.InitializeFileWriter();
-                fileWriter.CreateFile(data.Tags, data.Text, data.DeckId);
+                fileWriter.CreateFile(data.Question, data.Answer, data.DeckId);
 
-                return Ok(new { message = "Data received successfully", tags = data.Tags, text = data.Text, cardId = data.DeckId });
+                return Ok(new { message = "Data received successfully", question = data.Question, text = data.Answer, cardId = data.DeckId });
             }
             catch (InvalidOperationException ex)
             {
