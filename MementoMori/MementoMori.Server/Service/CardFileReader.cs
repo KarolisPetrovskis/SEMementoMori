@@ -21,7 +21,7 @@ namespace MementoMori.Server
 
             // Convert list to array
             string[] fileContent = linesList.ToArray();
-            string deckId = fileContent[0].Split(':')[1].Trim(); // Extract DeckId from the first line
+            Guid deckId = new Guid (fileContent[0].Split(':')[1].Trim()); // Extract DeckId from the first line
             string[] parts = fileContent[1].Split(':');
             int numberOfCards = int.Parse(parts[1].Trim());
 
