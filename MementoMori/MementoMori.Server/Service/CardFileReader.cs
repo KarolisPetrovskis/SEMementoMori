@@ -5,7 +5,7 @@ namespace MementoMori.Server
 {
     public class CardFileReader : ICardFileReader
     {
-        public CardData[] ExtractCards(string filePath)
+        public Card[] ExtractCards(string filePath)
         {
             // Read all lines into a list first
             List<string> linesList = new List<string>();
@@ -24,7 +24,7 @@ namespace MementoMori.Server
             string[] parts = fileContent[1].Split(':');
             int numberOfCards = int.Parse(parts[1].Trim());
 
-            CardData[] cards = new CardData[numberOfCards];
+            Card[] cards = new Card[numberOfCards];
             int cardCount = 0;
             bool isCard = false;
             bool isQuestion = false;
@@ -59,9 +59,9 @@ namespace MementoMori.Server
                     isQuestion = false;
                     isAnswer = false;
 
-                    cards[cardCount] = new CardData
+                    cards[cardCount] = new Card
                     {
-                        DeckId = deckId,
+                        Id = deckId,
                         Question = question,
                         Answer = text
                     };

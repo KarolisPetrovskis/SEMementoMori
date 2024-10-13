@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Box, Typography, Paper, Button, Divider } from '@mui/material';
 
 interface CardData {
-  deckId: string;
+  id: string;
   question: string;
   answer: string;
 }
