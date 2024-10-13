@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.IO;
-using System.Diagnostics;
 using MementoMori.Server;
 namespace MementoMori.Server
 {
@@ -25,7 +24,6 @@ namespace MementoMori.Server
             string[] parts = fileContent[1].Split(':');
             int numberOfCards = int.Parse(parts[1].Trim());
 
-            //string[] cards = new string[numberOfCards];
             CardData[] cards = new CardData[numberOfCards];
             int cardCount = 0;
             bool isCard = false;
@@ -39,7 +37,6 @@ namespace MementoMori.Server
             {      
                 if (line.Contains("(Start)"))
                 {
-                    Debug.WriteLine("Start");
                     isCard = true;
                     question = ""; // Reset question content
                     text = ""; // Reset answer content
