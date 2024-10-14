@@ -9,15 +9,20 @@ namespace MementoMori.Server
         {
             // Read all lines into a list first
             List<string> linesList = new List<string>();
-
-            using (StreamReader reader = new StreamReader(filePath))
+            try
             {
-                while (!reader.EndOfStream)
+                using (StreamReader reader = new StreamReader(filePath))
                 {
-                    linesList.Add(reader.ReadLine());
+                    while (!reader.EndOfStream)
+                    {
+                        linesList.Add(reader.ReadLine());
+                    }
                 }
             }
-
+            catch (Exception ex)
+            {
+                return [];
+            }
             // Convert list to array
             string[] fileContent = linesList.ToArray();
             Guid deckId = new Guid (fileContent[0].Split(':')[1].Trim()); // Extract DeckId from the first line

@@ -8,6 +8,15 @@ namespace MementoMori.Server.Controllers
 
     public class DecksController : ControllerBase
     {
+        
+        private readonly ICardFileReader _cardFileReader;
+
+
+        public DecksController(ICardFileReader cardFileReader)
+        {
+   			_cardFileReader = cardFileReader;
+
+        }
 
         [HttpGet("{deckId}/cards")]
         public IActionResult GetCards(Guid deckId)
@@ -22,8 +31,14 @@ namespace MementoMori.Server.Controllers
 
             if (deck == null)
                 return NotFound("Deck not found.");
+            
+			string serverDirectory = Directory.GetCurrentDirectory();
+			// Assuming the file is always 001.txt if you want to display more files in a static way then you can do modifications inf GetFileContent
+			string _filePath = Path.Combine(serverDirectory, "CardFile", deckId.ToString() + ".txt");
 
-            var Cards = deck.Cards.Select(Card => new CardDTO
+			var fileContent = _cardFileReader.ExtractCards(_filePath).AsQueryable();
+            
+            var Cards = fileContent.Select(Card => new CardDTO
             {
                 Id = Card.Id,
                 Question = Card.Question,
@@ -33,7 +48,6 @@ namespace MementoMori.Server.Controllers
             }).ToList();
 
             return Ok(Cards);
-
             
         }
 
