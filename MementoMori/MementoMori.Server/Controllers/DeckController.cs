@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MementoMori.Server.DTOS;
+using MementoMori.Server.Extensions;
 
 namespace MementoMori.Server.Controllers
 {
@@ -37,7 +38,7 @@ namespace MementoMori.Server.Controllers
                 CardCount = Deck.CardCount,
                 Modified = Deck.Modified,
                 Rating = Deck.Rating,
-                Tags = Deck.Tags,
+                Tags = Deck.TagsToString(),
                 Title = Deck.Title,
                 Description = Deck.Description
                 
@@ -66,7 +67,7 @@ namespace MementoMori.Server.Controllers
                 isPublic = deck.isPublic,
                 CardCount = deck.CardCount,
                 Description = deck.Description,
-                Tags = deck.Tags,
+                Tags = deck.TagsToString(),
                 Title = deck.Title,
                 Cards = deck.Cards.Select(Card => new CardDTO
                 {

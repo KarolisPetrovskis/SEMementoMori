@@ -1,4 +1,5 @@
 ﻿using MementoMori.Server.DTOS;
+using MementoMori.Server.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MementoMori.Server.Controllers
@@ -17,7 +18,7 @@ namespace MementoMori.Server.Controllers
 
             if (selectedTags.Length != 0)
             {
-                filteredDecks = filteredDecks.Where(deck => deck.Tags != null && selectedTags.All(tag => deck.Tags.Contains(tag)));
+                filteredDecks = filteredDecks.Where(deck => deck.Tags != null && selectedTags.All(tag => deck.TagsToString().Contains(tag)));
             }
 
             if (!string.IsNullOrEmpty(searchString))
@@ -35,7 +36,7 @@ namespace MementoMori.Server.Controllers
                 Rating = deck.Rating,
                 Modified = deck.Modified,
                 Cards = deck.CardCount,
-                Tags = deck.Tags
+                Tags = deck.TagsToString(),
             }).ToArray();
 
             return Ok(result);
