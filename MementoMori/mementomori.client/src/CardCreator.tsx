@@ -7,18 +7,18 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
 export default function OutlinedCard() {
   const [dynamicInputValue, setDynamicInputValue] = React.useState('');
-  const [cardIdField, setCardIdField] = React.useState('');
   const [fontSize, setFontSize] = React.useState(24);
-  const [deckIdError, setDeckIdError] = React.useState('');
   const [dynamicTextError, setDynamicTextError] = React.useState('');
   const [requestError, setRequestError] = React.useState('');
   const [postedText, setPostedText] = React.useState('');
   const [questionText, setQuestionText] = React.useState('');
   const [questionTextError, setQuestionTextError] = React.useState('');
   const [postedQuestion, setPostedQuestion] = React.useState('');
+  const { deckId } = useParams<{ deckId: string }>();
 
   // Handle change for the dynamic text field with increasing height and dynamic font size
   const handleDynamicChange = (event: { target: { value: any } }) => {
@@ -34,11 +34,6 @@ export default function OutlinedCard() {
     } else {
       setFontSize(14);
     }
-  };
-
-  const handleCardIdField = (event: { target: { value: any } }) => {
-    const value = event.target.value;
-    setCardIdField(value);
   };
 
   const handleQuestionText = (event: { target: { value: any } }) => {
@@ -62,9 +57,6 @@ export default function OutlinedCard() {
     } else {
       setDynamicTextError('');
     }
-    if (cardIdField.length === 0) {
-      setDeckIdError('Deck Id cannot be empty');
-    } else setDeckIdError('');
     if (questionText.length === 0) {
       setQuestionTextError('Cannot be empty');
       return;
@@ -74,7 +66,7 @@ export default function OutlinedCard() {
     try {
       // Create an object to send to the backend
       const cardData = {
-        deckId: cardIdField,
+        deckId: deckId,
         question: questionText,
         answer: dynamicInputValue,
       };
@@ -117,25 +109,6 @@ export default function OutlinedCard() {
       >
         <CardContent>
           {/* Existing input fields and logic */}
-          <Typography
-            gutterBottom
-            sx={{ color: 'text.secondary', fontSize: 14 }}
-          >
-            Enter the Id of an exsisting Deck
-          </Typography>
-          <TextField
-            fullWidth
-            variant="outlined"
-            onChange={handleCardIdField}
-            label="Deck Id"
-            sx={{
-              marginBottom: '16px',
-            }}
-            value={cardIdField} // Reset field on form submission
-            error={Boolean(deckIdError)}
-            helperText={deckIdError}
-          />
-
           <TextField
             fullWidth
             multiline
