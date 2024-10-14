@@ -16,7 +16,6 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/decks/:deckId" element={<DeckPage />} />
           <Route path="/decks/:deckId/create" element={<Cards />} />
           <Route path="/decks/:deckId" element={<Deck />} />
           <Route path="/decks/:deckId/practice" element={<DeckPage />} />

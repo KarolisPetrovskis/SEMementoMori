@@ -80,7 +80,7 @@ namespace MementoMori.Server.Controllers
             return Ok(DTO);
         }
 
-        [HttpGet("{deckId}/cards")]
+        [HttpGet("cards")]
         public IActionResult GetCards(Guid deckId)
         {
 
@@ -95,7 +95,6 @@ namespace MementoMori.Server.Controllers
                 return NotFound("Deck not found.");
             
 			string serverDirectory = Directory.GetCurrentDirectory();
-			// Assuming the file is always 001.txt if you want to display more files in a static way then you can do modifications inf GetFileContent
 			string _filePath = Path.Combine(serverDirectory, "CardFile", deckId.ToString() + ".txt");
 
 			var fileContent = _cardFileReader.ExtractCards(_filePath).AsQueryable();
