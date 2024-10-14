@@ -1,0 +1,23 @@
+[
+    {
+      "id": 1,
+      "title": "Daily Quest",
+      "description": "Review 15 Cards",
+      "valueNeeded": 15,
+      "reward": "100 coins"
+    },
+    {
+      "id": 2,
+      "title": "Weekly Quest",
+      "description": "Add 10 Cards to any decks",
+      "valueNeeded": 10,
+      "reward": "500 coins"
+    },
+    {
+      "id": 3,
+      "title": "Yearly Quest",
+      "description": "Ascend",
+      "valueNeeded": 1,
+      "reward": "Freedom..."
+    } 
+  ]
