@@ -7,18 +7,18 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
-import TagSelector from './deckBrowser/TagSelector';
+import { useParams } from 'react-router-dom';
 
 export default function OutlinedCard() {
   const [dynamicInputValue, setDynamicInputValue] = React.useState('');
-  const [cardIdField, setCardIdField] = React.useState('');
   const [fontSize, setFontSize] = React.useState(24);
-  const [deckIdError, setDeckIdError] = React.useState('');
   const [dynamicTextError, setDynamicTextError] = React.useState('');
   const [requestError, setRequestError] = React.useState('');
-  const [postedTags, setPostedTags] = React.useState('');
   const [postedText, setPostedText] = React.useState('');
-  const [selectedTags, setSelectedTags] = React.useState<string[]>([]);
+  const [questionText, setQuestionText] = React.useState('');
+  const [questionTextError, setQuestionTextError] = React.useState('');
+  const [postedQuestion, setPostedQuestion] = React.useState('');
+  const { deckId } = useParams<{ deckId: string }>();
 
   // Handle change for the dynamic text field with increasing height and dynamic font size
   const handleDynamicChange = (event: { target: { value: any } }) => {
@@ -36,9 +36,9 @@ export default function OutlinedCard() {
     }
   };
 
-  const handleCardIdField = (event: { target: { value: any } }) => {
+  const handleQuestionText = (event: { target: { value: any } }) => {
     const value = event.target.value;
-    setCardIdField(value);
+    setQuestionText(value);
   };
 
   const validateDynamicText = (text: string) => {
@@ -57,27 +57,26 @@ export default function OutlinedCard() {
     } else {
       setDynamicTextError('');
     }
-    if (cardIdField.length === 0) {
-      setDeckIdError('Deck Id cannot be empty');
-    } else setDeckIdError('');
-
+    if (questionText.length === 0) {
+      setQuestionTextError('Cannot be empty');
+      return;
+    } else {
+      setQuestionTextError('');
+    }
     try {
       // Create an object to send to the backend
       const cardData = {
-        deckId: cardIdField,
-        tags: selectedTags,
-        text: dynamicInputValue,
+        deckId: deckId,
+        question: questionText,
+        answer: dynamicInputValue,
       };
 
       // Send POST request to the server
       const response = await axios.post('/CardData/createCard', cardData);
-
+      console.log(response.data); // Log the data to see the backend response
       if (response.status === 200) {
-        //console.log("Card data successfully saved");
-        setPostedTags(response.data.tags);
         setPostedText(response.data.text);
-
-        // Optionally, you can clear the form here or give feedback to the user
+        setPostedQuestion(response.data.question);
       } else {
         setRequestError('Error: Failed to save card data');
       }
@@ -110,45 +109,36 @@ export default function OutlinedCard() {
       >
         <CardContent>
           {/* Existing input fields and logic */}
-          <Typography
-            gutterBottom
-            sx={{ color: 'text.secondary', fontSize: 14 }}
-          >
-            Enter the Id of an exsisting Deck
-          </Typography>
           <TextField
             fullWidth
+            multiline
             variant="outlined"
-            onChange={handleCardIdField}
-            label="Deck Id"
+            onChange={handleQuestionText}
+            label="Write a question"
+            value={questionText} // Reset field on form submission
             sx={{
+              overflowY: 'auto',
+              resize: 'none',
               marginBottom: '16px',
             }}
-            value={cardIdField} // Reset field on form submission
-            error={Boolean(deckIdError)}
-            helperText={deckIdError}
+            error={Boolean(questionTextError)}
+            helperText={questionTextError}
           />
-          <Typography
-            gutterBottom
-            sx={{ color: 'text.secondary', fontSize: 14 }}
-          >
-            Enter Tag Names (Each Subsequent Tag Must Be Divided By ';')
-          </Typography>
 
-          <TagSelector setSelectedTags={setSelectedTags} />
+          {/*Add description if necessary*/}
 
           <Typography
             gutterBottom
             sx={{ color: 'text.secondary', fontSize: 14 }}
           >
-            Enter Text For Card
+            Enter answer/explanation for the question
           </Typography>
           <TextField
             fullWidth
             multiline
             variant="outlined"
             onChange={handleDynamicChange}
-            label="Write something"
+            label="Write an answer to the question"
             InputProps={{
               style: { fontSize: fontSize, zIndex: 10000 },
             }}
@@ -167,14 +157,15 @@ export default function OutlinedCard() {
               {requestError}
             </Typography>
           )}
-
-          {/* Display the posted tags and text */}
-          {postedTags && (
+          {/* Display the posted tags and text  */}
+          {postedQuestion && (
             <Box sx={{ marginTop: '16px' }}>
               <Typography sx={{ fontWeight: 'bold', marginBottom: '8px' }}>
-                Posted Tags:
+                Posted Question:
               </Typography>
-              <Typography>{selectedTags}</Typography>
+              <Typography sx={{ whiteSpace: 'pre-line' }}>
+                {postedQuestion}
+              </Typography>
             </Box>
           )}
 
