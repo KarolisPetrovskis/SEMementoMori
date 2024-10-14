@@ -15,7 +15,9 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/decks/:deckId" element={<DeckPage />} />
+          <Route path="/decks/:deckId" element={<Deck />} />
+          <Route path="/decks/:deckId/practice" element={<DeckPage />} />
+          {/* <Route path="/decks/:deckId/edit" element={<DeckEditor />} /> */}
           <Route path="/browser" element={<Browser />} />
           <Route path="/chosenDeck" element={<SpecificDeck />} />
         </Routes>
