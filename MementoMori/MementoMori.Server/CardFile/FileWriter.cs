@@ -15,7 +15,7 @@ namespace MementoMori.Server
         }
 
         // Method to create a file using tags and text
-        public void CreateFile(string[]? tags, string text, string deckId)
+        public void CreateFile(string question, string text, string deckId)
         {
             string fileName= deckId + ".txt";
             string filePath = Path.Combine(_directoryPath, fileName);
@@ -30,7 +30,6 @@ namespace MementoMori.Server
 
 
             var fileInfo = new FileInfo(filePath);
-            string tagsLine = "";
             if (fileInfo.Length == 0)
             {
                 using (StreamWriter sw = File.AppendText(filePath))
@@ -40,9 +39,18 @@ namespace MementoMori.Server
                     sw.WriteLine("CardIds: " + cardId + "\n");
                 }
             }
+    else
+            {
+                // Add change to the nr of cards, add extra card id to the line separated by ';'
+                string[] fileLines = File.ReadAllLines(filePath);
+                fileLines[2] += $"; {cardId}";
+                string[] cardIds = fileLines[2].Substring(fileLines[2].IndexOf(':') + 1).Split(';', StringSplitOptions.RemoveEmptyEntries);
+                fileLines[1] = "Number of cards: " + cardIds.Length;
+                File.WriteAllLines(filePath, fileLines);
+            }
 
             // Create the content to write to the file
-            string fileContent = "(Start)\nCardId " + cardId + $"\nTags:{tagsLine}\n\nText:\n{text}\n" + "\n(End)\n";
+            string fileContent = "(Start)\nCardId " + cardId + $"\n(Question)\n{question}\n(Answer)\n{text}\n" + "\n(End)\n";
 
             try
             {
