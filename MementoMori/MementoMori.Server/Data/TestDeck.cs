@@ -19,6 +19,7 @@ namespace MementoMori.Server
                 Modified = DateOnly.FromDateTime(DateTime.Now.AddDays(-10)),
                 CardCount = 50,
                 Tags = new[] { DeckTag.Biology, DeckTag.Beginner },
+                Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vitae dui sit amet tortor cursus aliquam. Praesent non lorem eget nunc tempus condimentum. Mauris a justo egestas, aliquet massa et, elementum sem. Nulla vehicula massa magna, in dapibus est hendrerit nec. Aenean eu aliquet dui. Aenean a nunc et augue porta faucibus. Fusce dolor massa, tincidunt id est sed, tincidunt elementum mi. Quisque in massa et orci iaculis placerat eu et nulla. Nam arcu nulla, accumsan non rutrum at, mollis bibendum ligula.\r\n\r\nPhasellus ornare euismod quam at tempor. Vivamus ut dapibus lorem. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Etiam laoreet fermentum sodales. Mauris bibendum enim eu nisl pellentesque, rhoncus dictum purus ullamcorper. Donec volutpat, magna id mollis viverra, ligula lectus euismod sem, at placerat ex elit et nisi. Cras id interdum nunc. Praesent a condimentum mi, in mollis erat. Suspendisse mattis, massa in ornare.",
 
                 Cards = new List<Card> //public Card[] Cards = new Card[] //new list<Cards>
                 {

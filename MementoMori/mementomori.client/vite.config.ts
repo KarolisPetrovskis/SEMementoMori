@@ -51,6 +51,14 @@ export default defineConfig({
                 target,
                 secure: false,
             },
+            '^/Decks/.*?/deck': {
+                target,
+                secure: false,
+            },
+            '^/Decks/.*?/EditorView': {
+                target,
+                secure: false,
+            },
             '^/CardData/createCard': {
                 target,
                 secure: false

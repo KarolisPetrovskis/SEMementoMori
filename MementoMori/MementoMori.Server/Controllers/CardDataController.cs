@@ -20,7 +20,7 @@ namespace MementoMori.Server.Controllers
             {
                 // Usage of the extension method to initialize FileWriter class
                 var fileWriter = this.InitializeFileWriter();
-                fileWriter.CreateFile(data.Tags, data.Text, data.DeckId);
+                fileWriter.CreateFile(data.Tags, data.Text, data.DeckId.ToString());
 
                 return Ok(new { message = "Data received successfully", tags = data.Tags, text = data.Text, cardId = data.DeckId });
             }
