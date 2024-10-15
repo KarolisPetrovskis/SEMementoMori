@@ -13,7 +13,7 @@ namespace MementoMori.Server.Controllers
         {
             var Decks = TestDeck.Decks;
 
-            var filteredDecks = Decks.AsQueryable().Where(deck => deck.isPublic);
+            var filteredDecks = Decks.ToList().Where(deck => deck.isPublic);
 
             if (selectedTags.Length != 0)
             {
@@ -25,9 +25,10 @@ namespace MementoMori.Server.Controllers
                 filteredDecks = filteredDecks.Where(deck => deck.Title.Contains(searchString, StringComparison.OrdinalIgnoreCase));
             }
 
-            filteredDecks = filteredDecks.Order().Reverse();
+            var filteredDecksList = filteredDecks.ToList();
+            filteredDecksList.Sort();
 
-            var result = filteredDecks.Select(deck => new DeckBrowserDTO
+            var result = filteredDecksList.Select(deck => new DeckBrowserDTO
             {
                 Id = deck.Id,
                 Title = deck.Title,

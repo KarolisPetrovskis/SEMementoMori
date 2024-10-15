@@ -6,7 +6,7 @@
 
         public required string Question { get; set; }
 
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         public required string Answer { get; set; }
 
