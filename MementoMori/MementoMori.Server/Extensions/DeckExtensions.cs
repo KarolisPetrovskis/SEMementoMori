@@ -2,7 +2,8 @@
 {
     public static class DeckExtensions
     {
-        public static List<string> TagsToString(this Deck deck) {
+        public static List<string> TagsToString(this Deck deck)
+        {
             List<string> tagsAsStrings = new List<string>();
             if (deck.Tags == null)
                 return [];

@@ -1,5 +1,6 @@
 ﻿using MementoMori.Server.DTOS;
 using MementoMori.Server.Extensions;
+using MementoMori.Server.Service;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MementoMori.Server.Controllers
@@ -8,25 +9,16 @@ namespace MementoMori.Server.Controllers
     [Route("[controller]")]
     public class DeckBrowserController : ControllerBase
     {
+        private readonly DeckHelper _deckHelper;
+        public DeckBrowserController() 
+        {
+            _deckHelper = new DeckHelper();
+        }
 
         [HttpGet("getDecks")]
         public ActionResult<DeckBrowserDTO> getDecks([FromQuery] string[] selectedTags, string? searchString)
         {
-            var Decks = TestDeck.Decks;
-
-            var filteredDecks = Decks.ToList().Where(deck => deck.isPublic);
-
-            if (selectedTags.Length != 0)
-            {
-                filteredDecks = filteredDecks.Where(deck => deck.Tags != null && selectedTags.All(tag => deck.TagsToString().Contains(tag)));
-            }
-
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                filteredDecks = filteredDecks.Where(deck => deck.Title.Contains(searchString, StringComparison.OrdinalIgnoreCase));
-            }
-
-            var filteredDecksList = filteredDecks.ToList();
+            var filteredDecksList = _deckHelper.Filter(titleSubstring: searchString, selectedTags: selectedTags);
             filteredDecksList.Sort();
 
             var result = filteredDecksList.Select(deck => new DeckBrowserDTO

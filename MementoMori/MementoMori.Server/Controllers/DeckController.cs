@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MementoMori.Server.DTOS;
 using MementoMori.Server.Extensions;
+using MementoMori.Server.Service;
 
 namespace MementoMori.Server.Controllers
 {
@@ -10,11 +11,13 @@ namespace MementoMori.Server.Controllers
     {
         
         private readonly ICardFileReader _cardFileReader;
+        private readonly DeckHelper _deckHelper;
 
 
         public DecksController(ICardFileReader cardFileReader)
         {
    			_cardFileReader = cardFileReader;
+            _deckHelper = new DeckHelper();
 
         }
 
@@ -26,7 +29,7 @@ namespace MementoMori.Server.Controllers
                 return BadRequest(new { errorCode = ErrorCode.InvalidInput, message = "Invalid deck ID." });
             }
 
-            var Deck = TestDeck.Decks.FirstOrDefault(deck => deck.Id == deckId);
+            var Deck = _deckHelper.Filter(ids: [deckId]).First();
 
             if (Deck == null)
                 return NotFound("Deck not found.");
@@ -44,7 +47,6 @@ namespace MementoMori.Server.Controllers
                 
             };
             return Ok(DeckDTO);
-
         }
 
         [HttpGet("EditorView")]
@@ -56,7 +58,7 @@ namespace MementoMori.Server.Controllers
                 return BadRequest(new { errorCode = ErrorCode.InvalidInput, message = "Invalid deck ID." });
             }
 
-            var deck = TestDeck.Decks.FirstOrDefault(deck => deck.Id == deckId);
+            var deck = _deckHelper.Filter(ids: [deckId]).First();
 
             if (deck == null)
                 return NotFound("Deck not found.");
@@ -89,8 +91,8 @@ namespace MementoMori.Server.Controllers
             {
                 return BadRequest(new { errorCode = ErrorCode.InvalidInput, message = "Invalid deck ID." });
             }
-            
-            var deck = TestDeck.Decks.FirstOrDefault(deck => deck.Id == deckId);
+
+            var deck = _deckHelper.Filter(ids: [deckId]).First();
 
             if (deck == null)
                 return NotFound("Deck not found.");
