@@ -66,7 +66,11 @@ export default defineConfig({
             '^/CardFile/getFileContent': {
                 target,
                 secure: false
-            }
+            },
+            '^/QuestController/isComplete': {
+                target,
+                secure: false
+            },
         },
         port: 5173,
         https: {
