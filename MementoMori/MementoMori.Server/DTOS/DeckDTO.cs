@@ -1,4 +1,6 @@
-﻿namespace MementoMori.Server.DTOS
+using MementoMori.Server.Models;
+
+namespace MementoMori.Server.DTOS
 {
     public class DeckDTO
     {
@@ -16,7 +18,7 @@
 
         public required long CardCount { get; set; }
 
-        public string[]? Tags { get; set; }
+        public List<string>? Tags { get; set; }
 
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MementoMori.Server.Models;
+using System;
 using System.Collections.Generic;
 
 namespace MementoMori.Server
@@ -18,8 +19,14 @@ namespace MementoMori.Server
                 isPublic = true,
                 Modified = DateOnly.FromDateTime(DateTime.Now.AddDays(-10)),
                 CardCount = 50,
-                Tags = new[] { DeckTag.Biology, DeckTag.Beginner },
-                Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vitae dui sit amet tortor cursus aliquam. Praesent non lorem eget nunc tempus condimentum. Mauris a justo egestas, aliquet massa et, elementum sem. Nulla vehicula massa magna, in dapibus est hendrerit nec. Aenean eu aliquet dui. Aenean a nunc et augue porta faucibus. Fusce dolor massa, tincidunt id est sed, tincidunt elementum mi. Quisque in massa et orci iaculis placerat eu et nulla. Nam arcu nulla, accumsan non rutrum at, mollis bibendum ligula.\r\n\r\nPhasellus ornare euismod quam at tempor. Vivamus ut dapibus lorem. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Etiam laoreet fermentum sodales. Mauris bibendum enim eu nisl pellentesque, rhoncus dictum purus ullamcorper. Donec volutpat, magna id mollis viverra, ligula lectus euismod sem, at placerat ex elit et nisi. Cras id interdum nunc. Praesent a condimentum mi, in mollis erat. Suspendisse mattis, massa in ornare."
+                Tags = new List<TagTypes> { TagTypes.Biology, TagTypes.Beginner },
+                Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vitae dui sit amet tortor cursus aliquam. Praesent non lorem eget nunc tempus condimentum. Mauris a justo egestas, aliquet massa et, elementum sem. Nulla vehicula massa magna, in dapibus est hendrerit nec. Aenean eu aliquet dui. Aenean a nunc et augue porta faucibus. Fusce dolor massa, tincidunt id est sed, tincidunt elementum mi. Quisque in massa et orci iaculis placerat eu et nulla. Nam arcu nulla, accumsan non rutrum at, mollis bibendum ligula.\r\n\r\nPhasellus ornare euismod quam at tempor. Vivamus ut dapibus lorem. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Etiam laoreet fermentum sodales. Mauris bibendum enim eu nisl pellentesque, rhoncus dictum purus ullamcorper. Donec volutpat, magna id mollis viverra, ligula lectus euismod sem, at placerat ex elit et nisi. Cras id interdum nunc. Praesent a condimentum mi, in mollis erat. Suspendisse mattis, massa in ornare.",
+
+                Cards = new List<Card> //public Card[] Cards = new Card[] //new list<Cards>
+                {
+                    new Card { Id = Guid.NewGuid(), Question = "Which organ is the aorta a part of? ", Answer = "Heart"},
+                    new Card { Id = Guid.NewGuid(), Question = "How many bones are in the human body?", Answer = "206"}
+                }
             },
             new Deck
             {
@@ -31,7 +38,7 @@ namespace MementoMori.Server
                 isPublic = true,
                 Modified = DateOnly.FromDateTime(DateTime.Now.AddDays(-5)),
                 CardCount = 75,
-                Tags = new[] { DeckTag.Physics, DeckTag.Advanced }
+                Tags = new List<TagTypes> { TagTypes.Physics, TagTypes.Advanced }
             },
             new Deck
             {
@@ -43,7 +50,7 @@ namespace MementoMori.Server
                 isPublic = true,
                 Modified = DateOnly.FromDateTime(DateTime.Now.AddDays(-15)),
                 CardCount = 45,
-                Tags = new[] { DeckTag.Chemistry, DeckTag.Beginner }
+                Tags = new List<TagTypes> { TagTypes.Chemistry, TagTypes.Beginner }
             },
             new Deck
             {
@@ -55,7 +62,7 @@ namespace MementoMori.Server
                 isPublic = true,
                 Modified = DateOnly.FromDateTime(DateTime.Now.AddDays(-7)),
                 CardCount = 60,
-                Tags = new[] { DeckTag.History, DeckTag.Intermediate }
+                Tags = new List<TagTypes> { TagTypes.History, TagTypes.Intermediate }
             },
             new Deck
             {
@@ -67,7 +74,7 @@ namespace MementoMori.Server
                 isPublic = true,
                 Modified = DateOnly.FromDateTime(DateTime.Now.AddDays(-3)),
                 CardCount = 90,
-                Tags = new[] { DeckTag.Mathematics, DeckTag.Expert }
+                Tags = new List<TagTypes> { TagTypes.Mathematics, TagTypes.Expert }
             },
             new Deck
             {
@@ -79,7 +86,7 @@ namespace MementoMori.Server
                 isPublic = true,
                 Modified = DateOnly.FromDateTime(DateTime.Now.AddDays(-20)),
                 CardCount = 30,
-                Tags = new[] { DeckTag.Geography, DeckTag.Beginner }
+                Tags = new List<TagTypes> { TagTypes.Geography, TagTypes.Beginner }
             },
             new Deck
             {
@@ -91,7 +98,7 @@ namespace MementoMori.Server
                 isPublic = true,
                 Modified = DateOnly.FromDateTime(DateTime.Now.AddDays(-12)),
                 CardCount = 55,
-                Tags = new[] { DeckTag.Languages, DeckTag.Intermediate }
+                Tags = new List<TagTypes> { TagTypes.Languages, TagTypes.Intermediate }
             },
             new Deck
             {
@@ -103,7 +110,7 @@ namespace MementoMori.Server
                 isPublic = true,
                 Modified = DateOnly.FromDateTime(DateTime.Now.AddDays(-8)),
                 CardCount = 40,
-                Tags = new[] { DeckTag.Literature, DeckTag.Advanced }
+                Tags = new List<TagTypes> { TagTypes.Literature, TagTypes.Advanced }
             },
             new Deck
             {
@@ -115,7 +122,7 @@ namespace MementoMori.Server
                 isPublic = true,
                 Modified = DateOnly.FromDateTime(DateTime.Now.AddDays(-25)),
                 CardCount = 35,
-                Tags = new[] { DeckTag.Art, DeckTag.History, DeckTag.Beginner }
+                Tags = new List<TagTypes> { TagTypes.Art, TagTypes.History, TagTypes.Beginner }
             },
             new Deck
             {
@@ -127,7 +134,7 @@ namespace MementoMori.Server
                 isPublic = true,
                 Modified = DateOnly.FromDateTime(DateTime.Now.AddDays(-4)),
                 CardCount = 65,
-                Tags = new[] { DeckTag.Mathematics, DeckTag.Intermediate }
+                Tags = new List<TagTypes> { TagTypes.Mathematics, TagTypes.Intermediate }
             },
             new Deck
             {
@@ -139,7 +146,7 @@ namespace MementoMori.Server
                 isPublic = true,
                 Modified = DateOnly.FromDateTime(DateTime.Now.AddDays(-6)),
                 CardCount = 70,
-                Tags = new[] { DeckTag.Mathematics, DeckTag.Beginner }
+                Tags = new List<TagTypes> { TagTypes.Mathematics, TagTypes.Beginner }
             },
             new Deck
             {
@@ -151,7 +158,7 @@ namespace MementoMori.Server
                 isPublic = true,
                 Modified = DateOnly.FromDateTime(DateTime.Now.AddDays(-30)),
                 CardCount = 30,
-                Tags = new[] { DeckTag.Music }
+                Tags = new List<TagTypes> { TagTypes.Music }
             },
             new Deck
             {
@@ -163,7 +170,7 @@ namespace MementoMori.Server
                 isPublic = true,
                 Modified = DateOnly.FromDateTime(DateTime.Now.AddDays(-22)),
                 CardCount = 35,
-                Tags = new[] { DeckTag.Philosophy, DeckTag.Expert }
+                Tags = new List<TagTypes> { TagTypes.Philosophy, TagTypes.Expert }
             },
             new Deck
             {
@@ -175,7 +182,7 @@ namespace MementoMori.Server
                 isPublic = true,
                 Modified = DateOnly.FromDateTime(DateTime.Now.AddDays(-14)),
                 CardCount = 55,
-                Tags = new[] { DeckTag.ComputerScience, DeckTag.Beginner }
+                Tags = new List<TagTypes> { TagTypes.ComputerScience, TagTypes.Beginner }
             },
             new Deck
             {

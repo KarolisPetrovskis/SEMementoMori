@@ -1,4 +1,4 @@
-using MementoMori.Server;
+using MementoMori.Server.Service;
 using Microsoft.AspNetCore.Mvc;
 
 public static class FileWriterExtensions
