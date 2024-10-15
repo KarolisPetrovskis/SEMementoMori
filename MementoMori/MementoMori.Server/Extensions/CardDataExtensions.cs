@@ -1,4 +1,4 @@
-using MementoMori.Server;
+using MementoMori.Server.DTOS;
 namespace MementoMori.Server.Extensions
 {
     public static class CardDataExtensions

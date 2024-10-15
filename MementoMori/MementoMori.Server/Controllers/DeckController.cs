@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MementoMori.Server.DTOS;
+using MementoMori.Server.Extensions;
+using MementoMori.Server.Service;
 
 namespace MementoMori.Server.Controllers
 {
@@ -9,11 +11,13 @@ namespace MementoMori.Server.Controllers
     {
         
         private readonly ICardFileReader _cardFileReader;
+        private readonly DeckHelper _deckHelper;
 
 
         public DecksController(ICardFileReader cardFileReader)
         {
    			_cardFileReader = cardFileReader;
+            _deckHelper = new DeckHelper();
 
         }
 
@@ -25,7 +29,7 @@ namespace MementoMori.Server.Controllers
                 return BadRequest(new { errorCode = ErrorCode.InvalidInput, message = "Invalid deck ID." });
             }
 
-            var Deck = TestDeck.Decks.FirstOrDefault(deck => deck.Id == deckId);
+            var Deck = _deckHelper.Filter(ids: [deckId]).First();
 
             if (Deck == null)
                 return NotFound("Deck not found.");
@@ -37,13 +41,12 @@ namespace MementoMori.Server.Controllers
                 CardCount = Deck.CardCount,
                 Modified = Deck.Modified,
                 Rating = Deck.Rating,
-                Tags = Deck.Tags,
+                Tags = Deck.TagsToString(),
                 Title = Deck.Title,
                 Description = Deck.Description
                 
             };
             return Ok(DeckDTO);
-
         }
 
         [HttpGet("EditorView")]
@@ -55,7 +58,7 @@ namespace MementoMori.Server.Controllers
                 return BadRequest(new { errorCode = ErrorCode.InvalidInput, message = "Invalid deck ID." });
             }
 
-            var deck = TestDeck.Decks.FirstOrDefault(deck => deck.Id == deckId);
+            var deck = _deckHelper.Filter(ids: [deckId]).First();
 
             if (deck == null)
                 return NotFound("Deck not found.");
@@ -66,7 +69,7 @@ namespace MementoMori.Server.Controllers
                 isPublic = deck.isPublic,
                 CardCount = deck.CardCount,
                 Description = deck.Description,
-                Tags = deck.Tags,
+                Tags = deck.TagsToString(),
                 Title = deck.Title,
                 Cards = deck.Cards.Select(Card => new CardDTO
                 {
@@ -88,8 +91,8 @@ namespace MementoMori.Server.Controllers
             {
                 return BadRequest(new { errorCode = ErrorCode.InvalidInput, message = "Invalid deck ID." });
             }
-            
-            var deck = TestDeck.Decks.FirstOrDefault(deck => deck.Id == deckId);
+
+            var deck = _deckHelper.Filter(ids: [deckId]).First();
 
             if (deck == null)
                 return NotFound("Deck not found.");
