@@ -1,6 +1,4 @@
-using System;
-using System.IO;
-namespace MementoMori.Server
+namespace MementoMori.Server.Service
 {
     public class FileWriter
     {
@@ -17,11 +15,11 @@ namespace MementoMori.Server
         // Method to create a file using tags and text
         public void CreateFile(string question, string text, string deckId)
         {
-            string fileName= deckId + ".txt";
+            string fileName = deckId + ".txt";
             string filePath = Path.Combine(_directoryPath, fileName);
             Guid cardId = Guid.NewGuid();
 
-            if(!File.Exists(filePath))
+            if (!File.Exists(filePath))
             {
                 using (FileStream fs = File.Create(filePath))
                 {
@@ -39,7 +37,7 @@ namespace MementoMori.Server
                     sw.WriteLine("CardIds: " + cardId + "\n");
                 }
             }
-    else
+            else
             {
                 // Add change to the nr of cards, add extra card id to the line separated by ';'
                 string[] fileLines = File.ReadAllLines(filePath);

@@ -1,4 +1,4 @@
-namespace MementoMori.Server
+namespace MementoMori.Server.DTOS
 {
     public class CardData
     {
