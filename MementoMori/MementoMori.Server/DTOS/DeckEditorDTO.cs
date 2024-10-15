@@ -1,4 +1,4 @@
-﻿using MementoMori.Server.Models;
+using MementoMori.Server.Models;
 
 namespace MementoMori.Server.DTOS
 {
