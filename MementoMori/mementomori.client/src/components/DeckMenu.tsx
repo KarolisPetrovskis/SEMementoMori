@@ -9,6 +9,12 @@ import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 
 export default function DeckMenu() {
+  const data = [
+    { id: 1, name: 'Deck 1' },
+    { id: 2, name: 'Deck 2' },
+    { id: 3, name: 'Deck 3' },
+  ];
+
   return (
     <div style={{ position: 'relative' }}>
       <Typography
@@ -49,31 +55,39 @@ export default function DeckMenu() {
           bgcolor: 'white',
         }}
       >
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((value, index) => (
-          <React.Fragment key={value}>
-            <ListItem disableGutters>
-              <Button
-                variant="text"
-                sx={{ cursor: 'pointer' }}
-                onClick={() => {
-                  // Handle button click here
-                  console.log(`Line item ${value} clicked`);
-                }}
-              >
-                <ListItemText primary={`Line item ${value}`} />
-              </Button>
-              <IconButton
-                aria-label="settings"
-                sx={{ cursor: 'pointer' }}
-                style={{ marginLeft: 'auto' }}
-              >
-                <SettingsIcon />
-              </IconButton>
-            </ListItem>
-            {index !== 11 && <Divider />}{' '}
-            {/* Render Divider only if not the last item  TO BE CHANGED*/}
-          </React.Fragment>
-        ))}
+        {data.length > 0 ? (
+          data.map((deck, index) => (
+            <React.Fragment key={deck.id}>
+              <ListItem disableGutters>
+                <Button
+                  variant="text"
+                  sx={{ cursor: 'pointer' }}
+                  onClick={() => {
+                    // Handle button click here
+                    console.log(`Line item ${deck.name} clicked`);
+                  }}
+                >
+                  <ListItemText primary={deck.name} />
+                </Button>
+                <IconButton
+                  aria-label="settings"
+                  sx={{ cursor: 'pointer' }}
+                  style={{ marginLeft: 'auto' }}
+                >
+                  <SettingsIcon />
+                </IconButton>
+              </ListItem>
+              {index !== data.length - 1 && <Divider />}
+            </React.Fragment>
+          ))
+        ) : (
+          <ListItem>
+            <ListItemText
+              primary="No decks in collection"
+              sx={{ color: 'black', fontSize: 20 }}
+            />
+          </ListItem>
+        )}
       </List>
     </div>
   );
