@@ -64,7 +64,7 @@ export default function QuestList() {
                     <Typography
                       component="span"
                       variant="body2"
-                      sx={{ color: '#ecffff', display: 'inline' }}
+                      sx={{ display: 'inline' }}
                     >
                       {quest.description}
                     </Typography>
@@ -72,9 +72,7 @@ export default function QuestList() {
                   </React.Fragment>
                 }
               />
-              {isComplete && quest.id === 1 && (
-                <CheckCircleIcon color="success" />
-              )}
+              {isComplete && <CheckCircleIcon color="success" />}
             </ListItem>
           );
         })
@@ -85,17 +83,17 @@ export default function QuestList() {
   return (
     <List
       sx={{
+        bgcolor: 'white',
         width: '100%',
         maxWidth: 360,
-        bgcolor: '#6E6DB3',
         position: 'absolute',
         border: 1,
-        borderRadius: '16px',
+        borderRadius: '6px',
         borderColor: '#D4A017',
         borderWidth: 2,
-        right: 0,
-        top: 200,
-        overflowY: 'auto', // Enable scrolling if there are many quests
+        right: 114,
+        top: 55,
+        overflowY: 'auto',
       }}
     >
       {quests}
