@@ -10,7 +10,6 @@ import Tooltip from '@mui/material/Tooltip';
 import PersonAdd from '@mui/icons-material/PersonAdd';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
-import DeckMenu from './DeckMenu.tsx';
 import Button from '@mui/material/Button';
 
 export default function MainMenu() {
@@ -26,21 +25,22 @@ export default function MainMenu() {
     <React.Fragment>
       <Box
         sx={{
-          display: 'flex',
-          textAlign: 'center',
-          bgcolor: '#6E6DB3',
-          position: 'absolute',
-          right: 460,
+          position: 'fixed',
           top: 0,
+          display: 'flex',
+          minWidth: '85%',
           border: 1,
-          borderRadius: '16px',
+          borderRadius: '6px',
           borderColor: '#D4A017',
           borderWidth: 2,
+          textAlign: 'center',
+          justifyContent: 'center',
+          bgcolor: 'white',
+          gap: 2,
         }}
       >
-        <DeckMenu />
         <Button
-          sx={{ minWidth: 150, color: '#ecffff' }}
+          sx={{ minWidth: 150, color: 'primary', fontSize: 20 }}
           style={{ textTransform: 'capitalize' }}
           variant="text"
           onClick={() => {
@@ -50,14 +50,7 @@ export default function MainMenu() {
           Deck browser
         </Button>
         <Button
-          sx={{ minWidth: 150, color: '#ecffff' }}
-          style={{ textTransform: 'capitalize' }}
-          variant="text"
-        >
-          PLAY
-        </Button>
-        <Button
-          sx={{ minWidth: 150, color: '#ecffff' }}
+          sx={{ minWidth: 150, color: 'primary', fontSize: 20 }}
           style={{ textTransform: 'capitalize' }}
           variant="text"
         >
