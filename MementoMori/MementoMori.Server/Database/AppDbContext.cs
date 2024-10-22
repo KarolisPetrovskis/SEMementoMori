@@ -17,6 +17,7 @@ namespace MementoMori.Server.Database
             options.UseNpgsql(Configuration.GetConnectionString("WebApiDatabase"));
         }
         public DbSet<Deck> Decks { get; set; }
+        public DbSet<Employee> Employees { get; set; } // 
     }
 
 }
