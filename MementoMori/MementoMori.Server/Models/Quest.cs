@@ -1,6 +1,6 @@
 ﻿namespace MementoMori.Server.Models
 {
-    public struct Quest
+    public class Quest
     {
         public Guid Id { get; set; }
 
