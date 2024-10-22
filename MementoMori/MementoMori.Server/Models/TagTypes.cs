@@ -19,6 +19,6 @@
         Beginner = 14,
         Intermediate = 15,
         Advanced = 16,
-        Expert = 17,
+        Expert = 17
     }
 }

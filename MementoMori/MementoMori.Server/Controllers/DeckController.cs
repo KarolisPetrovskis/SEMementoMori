@@ -114,6 +114,27 @@ namespace MementoMori.Server.Controllers
             return Ok(Cards);
             
         }
+        public IActionResult UpdateCard(Guid DeckId, Guid CardId, [FromBody] int quality)
+        {
+            var Deck = _deckHelper.Filter(ids: [DeckId]).First();
+            var selectedCard = Deck.Cards.FirstOrDefault(card => card.Id == CardId);
+
+            if(selectedCard == null)
+            {
+                return NotFound();
+            }
+            selectedCard.UpdateCard(quality);
+
+            // var card = Cards.FirstOrDefault(c => c.Id == id);
+            // if (card == null)
+            // {
+            //     return NotFound();
+            // }
+
+            // card.UpdateCard(quality);
+            // return Ok(card);
+            return Ok();
+        }
 
     }
 }
