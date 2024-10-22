@@ -1,4 +1,6 @@
 using MementoMori.Server;
+using MementoMori.Server.Database;
+using MementoMori.Server.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,7 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Register CardFileReader as a service using its interface
 builder.Services.AddScoped<ICardFileReader, CardFileReader>();
-
+builder.Services.AddScoped<AppDbContext, AppDbContext>();
+builder.Services.AddScoped<DeckHelper, DeckHelper>();
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MementoMori.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241021125045_InitialMigrationDecksCards")]
-    partial class InitialMigrationDecksCards
+    [Migration("20241022114033_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,7 +56,7 @@ namespace MementoMori.Server.Migrations
 
                     b.HasIndex("DeckId");
 
-                    b.ToTable("Card");
+                    b.ToTable("Cards");
                 });
 
             modelBuilder.Entity("MementoMori.Server.Deck", b =>

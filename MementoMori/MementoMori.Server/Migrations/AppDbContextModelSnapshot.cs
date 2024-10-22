@@ -53,7 +53,7 @@ namespace MementoMori.Server.Migrations
 
                     b.HasIndex("DeckId");
 
-                    b.ToTable("Card");
+                    b.ToTable("Cards");
                 });
 
             modelBuilder.Entity("MementoMori.Server.Deck", b =>
