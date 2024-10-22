@@ -72,6 +72,9 @@ export default function DeckMenu() {
                 <IconButton
                   aria-label="settings"
                   sx={{ cursor: 'pointer' }}
+                  onClick={() => {
+                    console.log(`Settings of ${deck.name} clicked`); //Setting button onClick
+                  }}
                   style={{ marginLeft: 'auto' }}
                 >
                   <SettingsIcon />
