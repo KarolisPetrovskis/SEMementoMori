@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Register CardFileReader as a service using its interface
 builder.Services.AddScoped<ICardFileReader, CardFileReader>();
-builder.Services.AddScoped<AppDbContext, AppDbContext>();
+builder.Services.AddDbContext<AppDbContext, AppDbContext>();
 builder.Services.AddScoped<DeckHelper, DeckHelper>();
 builder.Services.AddControllers();
 
