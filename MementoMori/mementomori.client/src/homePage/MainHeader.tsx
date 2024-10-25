@@ -7,10 +7,10 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import PersonAdd from '@mui/icons-material/PersonAdd';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import Button from '@mui/material/Button';
+import HomeIcon from '@mui/icons-material/Home';
 
 export default function MainMenu() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -39,6 +39,21 @@ export default function MainMenu() {
           gap: 2,
         }}
       >
+        <Tooltip title="Return home">
+          <IconButton
+            sx={{ cursor: 'pointer' }}
+            style={{ marginRight: 'auto' }}
+            aria-label="Return to home page"
+            onClick={() => {
+              // Handle button click here
+            }}
+          >
+            <Avatar sx={{ width: 32, height: 32 }}>
+              <HomeIcon />
+            </Avatar>
+          </IconButton>
+        </Tooltip>
+
         <Button
           sx={{ minWidth: 150, color: 'primary', fontSize: 20 }}
           style={{ textTransform: 'capitalize' }}
@@ -49,15 +64,9 @@ export default function MainMenu() {
         >
           Deck browser
         </Button>
-        <Button
-          sx={{ minWidth: 150, color: 'primary', fontSize: 20 }}
-          style={{ textTransform: 'capitalize' }}
-          variant="text"
-        >
-          Profile
-        </Button>
         <Tooltip title="Account settings">
           <IconButton
+            style={{ marginLeft: 'auto' }}
             onClick={handleClick}
             size="small"
             sx={{ ml: 2 }}
@@ -82,9 +91,9 @@ export default function MainMenu() {
               border: 1,
               borderWidth: 2,
               borderColor: '#D4A017',
-              borderRadius: '16px',
-              bgcolor: '#6E6DB3',
-              color: '#ecffff',
+              borderRadius: '6px',
+              bgcolor: 'white',
+              color: 'primary',
               overflow: 'visible',
               filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
               mt: 1.5,
@@ -112,27 +121,18 @@ export default function MainMenu() {
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         <MenuItem onClick={handleClose}>
-          <Avatar /> Profile
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
           <Avatar /> My account
         </MenuItem>
         <Divider />
         <MenuItem onClick={handleClose}>
           <ListItemIcon>
-            <PersonAdd sx={{ color: '#ecffff' }} fontSize="small" />
-          </ListItemIcon>
-          Add another account
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <Settings sx={{ color: '#ecffff' }} fontSize="small" />
+            <Settings sx={{ color: 'black' }} fontSize="small" />
           </ListItemIcon>
           Settings
         </MenuItem>
         <MenuItem onClick={handleClose}>
           <ListItemIcon>
-            <Logout sx={{ color: '#ecffff' }} fontSize="small" />
+            <Logout sx={{ color: 'black' }} fontSize="small" />
           </ListItemIcon>
           Logout
         </MenuItem>

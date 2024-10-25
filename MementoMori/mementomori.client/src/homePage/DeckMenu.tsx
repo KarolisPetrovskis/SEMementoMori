@@ -12,7 +12,11 @@ export default function DeckMenu() {
   const data = [
     { id: 1, name: 'Deck 1' },
     { id: 2, name: 'Deck 2' },
-    { id: 3, name: 'Deck 3' },
+    { id: 3, name: 'Deck 4' },
+    { id: 4, name: 'Deck 5' },
+    { id: 5, name: 'Deck 6' },
+    { id: 6, name: 'Deck 7' },
+    { id: 7, name: 'Deck 8' },
   ];
 
   return (
@@ -25,7 +29,7 @@ export default function DeckMenu() {
           top: 15,
           background: 'white',
           padding: 2,
-          width: 268,
+          width: 468,
           border: 1,
           borderTopLeftRadius: '6px',
           borderTopRightRadius: '6px',
@@ -41,8 +45,8 @@ export default function DeckMenu() {
         sx={{
           position: 'absolute',
           top: 80,
-          minWidth: 300,
-          maxWidth: 300,
+          minWidth: 500,
+          maxWidth: 500,
           maxHeight: 400,
           overflowY: 'auto',
           border: 1,
