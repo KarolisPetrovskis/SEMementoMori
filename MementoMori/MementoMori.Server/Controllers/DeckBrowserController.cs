@@ -10,9 +10,9 @@ namespace MementoMori.Server.Controllers
     public class DeckBrowserController : ControllerBase
     {
         private readonly DeckHelper _deckHelper;
-        public DeckBrowserController() 
+        public DeckBrowserController(DeckHelper deckHelper) 
         {
-            _deckHelper = new DeckHelper();
+            _deckHelper = deckHelper;
         }
 
         [HttpGet("getDecks")]
