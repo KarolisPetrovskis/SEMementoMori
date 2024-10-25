@@ -94,7 +94,7 @@ export default function QuestList() {
       sx={{
         bgcolor: 'white',
         width: '100%',
-        maxWidth: 360,
+        maxWidth: 460,
         position: 'absolute',
         border: 1,
         borderRadius: '6px',

@@ -8,14 +8,16 @@ namespace MementoMori.Server.Controllers
     public class QuestController : ControllerBase
     {
         private readonly Random _random;
-        public QuestController() 
+        public QuestController()
         {
-             _random = new Random();
+            _random = new Random();
         }
 
         [HttpGet("quests")]
-        public IActionResult Quests() {
-            while (TestQuests.Quests.Count < 3) {
+        public IActionResult Quests()
+        {
+            while (TestQuests.Quests.Count < 3)
+            {
                 int index = _random.Next(QuestTemplates.Quests.Count);
                 var newQuest = QuestTemplates.Quests[index];
                 newQuest.Id = Guid.NewGuid();
@@ -26,13 +28,14 @@ namespace MementoMori.Server.Controllers
         }
 
         [HttpPost("update")]
-        public IActionResult UupdateQuest(Guid id, int newProgress) {
+        public IActionResult UpdateQuest(Guid id, int newProgress)
+        {
             var questIndex = TestQuests.Quests.FindIndex(q => q.Id == id);
 
             if (questIndex != -1)
             {
-                var quest = TestQuests.Quests[questIndex]; 
-                quest.Progress = newProgress;             
+                var quest = TestQuests.Quests[questIndex];
+                quest.Progress = newProgress;
 
                 if (quest.Progress >= quest.Required)
                 {
