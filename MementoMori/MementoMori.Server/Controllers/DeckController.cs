@@ -96,10 +96,7 @@ namespace MementoMori.Server.Controllers
             if (deck == null)
                 return NotFound("Deck not found.");
             
-			string serverDirectory = Directory.GetCurrentDirectory();
-			string _filePath = Path.Combine(serverDirectory, "CardFile", deckId.ToString() + ".txt");
-
-			var fileContent = _cardFileReader.ExtractCards(_filePath).AsQueryable();
+			var fileContent = _cardFileReader.ExtractCards(deckId).AsQueryable();
             
             var Cards = fileContent.Select(Card => new CardDTO
             {

@@ -18,14 +18,15 @@ namespace MementoMori.Server.Service
         {
             // Generate a unique identifier for the card
             Guid cardId = Guid.NewGuid();
-    
+
+            // Change this if deckId is added as a shadow property
+
             // Set the SQL command to insert a new card record
             var sql = $@"
                 INSERT INTO public.""Cards"" 
                 (""Id"", ""Question"", ""Description"", ""Answer"", ""lastInterval"", ""nextShow"", ""DeckId"") 
                 VALUES 
                 (@cardId, @question, 'NULL', @text, NULL, NULL, @deckId)";
-
             // Execute the SQL command with parameters
             _context.Database.ExecuteSqlRaw(sql,
                 new Npgsql.NpgsqlParameter("cardId", cardId),
@@ -35,59 +36,37 @@ namespace MementoMori.Server.Service
             );
         }
 
-        // Method to create a file using tags and text
-        public void oldCreateFile(string question, string text, string deckId)
+        // If you do not want to update a value pass 'null'. CardId is mandatory
+        public void UpdateCardData(Guid cardId, string? question, string? description, string? answer, int? lastInterval, DateOnly? nextShow)
         {
-            string fileName = deckId + ".txt";
-            string filePath = Path.Combine(_directoryPath, fileName);
-            Guid cardId = Guid.NewGuid();
-
-            if (!File.Exists(filePath))
+            var card = _context.Cards.SingleOrDefault(c => c.Id == cardId);
+                if (card != null) // Check if the card exists
             {
-                using (FileStream fs = File.Create(filePath))
+                // Update properties
+                if (question != null)
                 {
+                    card.Question = question;
                 }
-            }
-
-
-            var fileInfo = new FileInfo(filePath);
-            if (fileInfo.Length == 0)
-            {
-                using (StreamWriter sw = File.AppendText(filePath))
+                if (description != null)
                 {
-                    sw.WriteLine("DeckId: " + deckId);
-                    sw.WriteLine("Number of cards: " + 1);
-                    sw.WriteLine("CardIds: " + cardId + "\n");
+                    card.Description = description;
                 }
-            }
-            else
-            {
-                // Add change to the nr of cards, add extra card id to the line separated by ';'
-                string[] fileLines = File.ReadAllLines(filePath);
-                fileLines[2] += $"; {cardId}";
-                string[] cardIds = fileLines[2].Substring(fileLines[2].IndexOf(':') + 1).Split(';', StringSplitOptions.RemoveEmptyEntries);
-                fileLines[1] = "Number of cards: " + cardIds.Length;
-                File.WriteAllLines(filePath, fileLines);
-            }
-
-            // Create the content to write to the file
-            string fileContent = "(Start)\nCardId " + cardId + $"\n(Question)\n{question}\n(Answer)\n{text}\n" + "\n(End)\n";
-
-            try
-            {
-                // Write the content to the file
-                using (StreamWriter sw = File.AppendText(filePath))
+                if (answer != null)
                 {
-                    sw.WriteLine(fileContent);
+                    card.Answer = answer;
                 }
-            }
-            catch (Exception ex)
-            {
-                // Handle any exceptions that occur during file writing
-                Console.WriteLine($"Error creating file: {ex.Message}");
-                // Rethrow the exception to be caught by the controller
-                throw;
+                if (lastInterval != null)
+                {
+                    card.lastInterval = lastInterval;
+                }
+                if (nextShow != null)
+                {
+                    card.nextShow = nextShow;
+                }
+                // Save changes to the database
+                _context.SaveChanges();
             }
         }
+
     }
 }

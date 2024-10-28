@@ -2,6 +2,6 @@ namespace MementoMori.Server
 {
     public interface ICardFileReader
     {
-        Card[] ExtractCards(string filePath);
+        Card[] ExtractCards(Guid deckId);
     }
 }
