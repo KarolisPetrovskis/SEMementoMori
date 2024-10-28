@@ -2,6 +2,7 @@
 using MementoMori.Server.DTOS;
 using MementoMori.Server.Extensions;
 using MementoMori.Server.Service;
+using MementoMori.Server.Database;
 
 namespace MementoMori.Server.Controllers
 {
@@ -13,12 +14,10 @@ namespace MementoMori.Server.Controllers
         private readonly ICardFileReader _cardFileReader;
         private readonly DeckHelper _deckHelper;
 
-
-        public DecksController(ICardFileReader cardFileReader)
+        public DecksController(ICardFileReader cardFileReader, DeckHelper deckHelper)
         {
    			_cardFileReader = cardFileReader;
-            _deckHelper = new DeckHelper();
-
+            _deckHelper = deckHelper;
         }
 
         [HttpGet("deck")]
@@ -29,7 +28,7 @@ namespace MementoMori.Server.Controllers
                 return BadRequest(new { errorCode = ErrorCode.InvalidInput, message = "Invalid deck ID." });
             }
 
-            var Deck = _deckHelper.Filter(ids: [deckId]).First();
+            var Deck = _deckHelper.Filter(ids: [deckId]).FirstOrDefault();
 
             if (Deck == null)
                 return NotFound("Deck not found.");
@@ -58,7 +57,7 @@ namespace MementoMori.Server.Controllers
                 return BadRequest(new { errorCode = ErrorCode.InvalidInput, message = "Invalid deck ID." });
             }
 
-            var deck = _deckHelper.Filter(ids: [deckId]).First();
+            var deck = _deckHelper.Filter(ids: [deckId]).FirstOrDefault();
 
             if (deck == null)
                 return NotFound("Deck not found.");
