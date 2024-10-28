@@ -16,7 +16,8 @@ builder.Services.AddScoped<FileWriter>();
 
 // Register CardFileReader as a service using its interface
 builder.Services.AddScoped<ICardFileReader, CardFileReader>();
-
+builder.Services.AddDbContext<AppDbContext, AppDbContext>();
+builder.Services.AddScoped<DeckHelper, DeckHelper>();
 builder.Services.AddControllers();
 
 // Configure Swagger/OpenAPI
