@@ -1,19 +1,42 @@
+using MementoMori.Server.Database;
+using Microsoft.EntityFrameworkCore;
 namespace MementoMori.Server.Service
 {
     public class FileWriter
     {
         private readonly string _directoryPath;
-
-        public FileWriter()
+        private readonly AppDbContext _context;
+        public FileWriter(AppDbContext context)
         {
             string serverDirectory = Directory.GetCurrentDirectory();
             // Set the path to "CardFile" folder
             _directoryPath = Path.Combine(serverDirectory, "CardFile");
+            _context = context;
+        }
 
+        public void CreateFile(string question, string text, Guid deckId)
+        {
+            // Generate a unique identifier for the card
+            Guid cardId = Guid.NewGuid();
+    
+            // Set the SQL command to insert a new card record
+            var sql = $@"
+                INSERT INTO public.""Cards"" 
+                (""Id"", ""Question"", ""Description"", ""Answer"", ""lastInterval"", ""nextShow"", ""DeckId"") 
+                VALUES 
+                (@cardId, @question, 'NULL', @text, NULL, NULL, @deckId)";
+
+            // Execute the SQL command with parameters
+            _context.Database.ExecuteSqlRaw(sql,
+                new Npgsql.NpgsqlParameter("cardId", cardId),
+                new Npgsql.NpgsqlParameter("question", question),
+                new Npgsql.NpgsqlParameter("text", text),
+                new Npgsql.NpgsqlParameter("deckId", deckId)
+            );
         }
 
         // Method to create a file using tags and text
-        public void CreateFile(string question, string text, string deckId)
+        public void oldCreateFile(string question, string text, string deckId)
         {
             string fileName = deckId + ".txt";
             string filePath = Path.Combine(_directoryPath, fileName);

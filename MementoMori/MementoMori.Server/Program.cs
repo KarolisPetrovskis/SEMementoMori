@@ -1,15 +1,25 @@
 using MementoMori.Server;
+using MementoMori.Server.Service;
+using MementoMori.Server.Database;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+// Register AppDbContext with connection string from configuration
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("WebApiDatabase")));
+
+// Register FileWriter as a transient or scoped service
+builder.Services.AddScoped<FileWriter>();
 
 // Register CardFileReader as a service using its interface
 builder.Services.AddScoped<ICardFileReader, CardFileReader>();
 
 builder.Services.AddControllers();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Configure Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
