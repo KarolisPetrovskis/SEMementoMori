@@ -152,6 +152,5 @@ namespace MementoMori.Server.Controllers
 
             return Ok(new {message = "Card updated successfully"});
         }
-
     }
 }
