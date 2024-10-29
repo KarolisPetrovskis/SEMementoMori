@@ -16,24 +16,29 @@ namespace MementoMori.Server.Service
 
         public void CreateFile(string question, string text, Guid deckId)
         {
-            // Generate a unique identifier for the card
-            Guid cardId = Guid.NewGuid();
+            //Guid cardId = Guid.NewGuid();
+            Deck deck = _context.Decks.SingleOrDefault(c => c.Id == deckId);
 
-            // Change this if deckId is added as a shadow property
+            // Create a new card entity
+            var newCard = new Card
+            {
+                Id = Guid.NewGuid(),
+                Question = question,
+                Description = "NULL",
+                Answer = text,
+                lastInterval = null,
+                nextShow = null
+            };
+            if(deck != null)
+            {
+                deck.Cards.Add(newCard)  ;
 
-            // Set the SQL command to insert a new card record
-            var sql = $@"
-                INSERT INTO public.""Cards"" 
-                (""Id"", ""Question"", ""Description"", ""Answer"", ""lastInterval"", ""nextShow"", ""DeckId"") 
-                VALUES 
-                (@cardId, @question, 'NULL', @text, NULL, NULL, @deckId)";
-            // Execute the SQL command with parameters
-            _context.Database.ExecuteSqlRaw(sql,
-                new Npgsql.NpgsqlParameter("cardId", cardId),
-                new Npgsql.NpgsqlParameter("question", question),
-                new Npgsql.NpgsqlParameter("text", text),
-                new Npgsql.NpgsqlParameter("deckId", deckId)
-            );
+                // Add the new card to the context
+                _context.Decks.Add(deck);
+
+                // Save changes to insert the new card record
+                _context.SaveChanges();
+            }
         }
 
         // If you do not want to update a value pass 'null'. CardId is mandatory
