@@ -20,10 +20,7 @@ builder.Services.AddDbContext<AppDbContext, AppDbContext>();
 builder.Services.AddScoped<DeckHelper, DeckHelper>();
 builder.Services.AddControllers();
 
-// Configure Swagger/OpenAPI
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbucklebuilder.Services.AddSwaggerGen();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp",
