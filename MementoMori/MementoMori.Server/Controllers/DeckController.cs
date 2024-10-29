@@ -113,6 +113,5 @@ namespace MementoMori.Server.Controllers
             return Ok(Cards);
             
         }
-
     }
 }

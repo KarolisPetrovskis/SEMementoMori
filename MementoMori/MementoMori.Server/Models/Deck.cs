@@ -1,9 +1,11 @@
 ﻿using MementoMori.Server.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace MementoMori.Server
 {
     public class Deck : IComparable<Deck>
     {
+        [Key]
         public required Guid Id { get; set; }
 
         public required Guid creatorId { get; set; }
