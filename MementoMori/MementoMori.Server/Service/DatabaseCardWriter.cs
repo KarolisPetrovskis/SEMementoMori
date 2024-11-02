@@ -2,19 +2,15 @@ using MementoMori.Server.Database;
 using Microsoft.EntityFrameworkCore;
 namespace MementoMori.Server.Service
 {
-    public class FileWriter
+    public class DatabaseCardWriter
     {
-        private readonly string _directoryPath;
         private readonly AppDbContext _context;
-        public FileWriter(AppDbContext context)
+        public DatabaseCardWriter(AppDbContext context)
         {
-            string serverDirectory = Directory.GetCurrentDirectory();
-            // Set the path to "CardFile" folder
-            _directoryPath = Path.Combine(serverDirectory, "CardFile");
             _context = context;
         }
 
-        public void CreateFile(string question, string text, Guid deckId)
+        public void AddCard(string question, string text, Guid deckId)
         {
             //Guid cardId = Guid.NewGuid();
             Deck deck = _context.Decks.SingleOrDefault(c => c.Id == deckId);
@@ -42,10 +38,10 @@ namespace MementoMori.Server.Service
         }
 
         // If you do not want to update a value pass 'null'. CardId is mandatory
-        public void UpdateCardData(Guid cardId, string? question, string? description, string? answer, int? lastInterval, DateOnly? nextShow)
+        public void UpdateCardData(Guid cardId, string? question = null, string? description = null, string? answer = null, int? lastInterval = null, DateOnly? nextShow = null)
         {
             var card = _context.Cards.SingleOrDefault(c => c.Id == cardId);
-                if (card != null) // Check if the card exists
+            if (card != null) // Check if the card exists
             {
                 // Update properties
                 if (question != null)

@@ -12,10 +12,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("WebApiDatabase")));
 
 // Register FileWriter as a transient or scoped service
-builder.Services.AddScoped<FileWriter>();
+builder.Services.AddScoped<DatabaseCardWriter>();
 
 // Register CardFileReader as a service using its interface
-builder.Services.AddScoped<ICardFileReader, CardFileReader>();
 builder.Services.AddDbContext<AppDbContext, AppDbContext>();
 builder.Services.AddScoped<DeckHelper, DeckHelper>();
 builder.Services.AddControllers();
