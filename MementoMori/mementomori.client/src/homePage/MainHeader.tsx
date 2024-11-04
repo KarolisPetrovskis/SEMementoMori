@@ -1,4 +1,3 @@
-import * as React from 'react';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
@@ -11,8 +10,10 @@ import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import Button from '@mui/material/Button';
 import HomeIcon from '@mui/icons-material/Home';
+import Breadcrumb from './Breadcrumb';
+import React from 'react';
 
-export default function MainMenu() {
+export default function MainHeader() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -21,6 +22,7 @@ export default function MainMenu() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
   return (
     <React.Fragment>
       <Box
@@ -28,55 +30,60 @@ export default function MainMenu() {
           position: 'fixed',
           top: 0,
           display: 'flex',
+          alignItems: 'center',
           minWidth: '85%',
           border: 1,
           borderRadius: '6px',
           borderColor: '#D4A017',
           borderWidth: 2,
           textAlign: 'center',
-          justifyContent: 'center',
+          justifyContent: 'space-between', // Align items to left and right
           bgcolor: 'white',
           gap: 2,
         }}
       >
-        <Tooltip title="Return home">
-          <IconButton
-            sx={{ cursor: 'pointer' }}
-            style={{ marginRight: 'auto' }}
-            aria-label="Return to home page"
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Tooltip title="Return home">
+            <IconButton
+              sx={{ cursor: 'pointer' }}
+              aria-label="Return to home page"
+              onClick={() => {
+                window.location.href = `/`;
+              }}
+            >
+              <Avatar sx={{ width: 32, height: 32, color: 'indigo' }}>
+                <HomeIcon />
+              </Avatar>
+            </IconButton>
+          </Tooltip>
+          <Breadcrumb />
+        </Box>
+
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Button
+            sx={{ minWidth: 150, color: 'indigo', fontSize: 20 }}
+            style={{ textTransform: 'capitalize' }}
+            variant="text"
             onClick={() => {
-              // Handle button click here
+              window.location.href = `/browser`;
             }}
           >
-            <Avatar sx={{ width: 32, height: 32 }}>
-              <HomeIcon />
-            </Avatar>
-          </IconButton>
-        </Tooltip>
-
-        <Button
-          sx={{ minWidth: 150, color: 'primary', fontSize: 20 }}
-          style={{ textTransform: 'capitalize' }}
-          variant="text"
-          onClick={() => {
-            window.location.href = `/browser`;
-          }}
-        >
-          Deck browser
-        </Button>
-        <Tooltip title="Account settings">
-          <IconButton
-            style={{ marginLeft: 'auto' }}
-            onClick={handleClick}
-            size="small"
-            sx={{ ml: 2 }}
-            aria-controls={open ? 'account-menu' : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? 'true' : undefined}
-          >
-            <Avatar sx={{ width: 32, height: 32 }}>D</Avatar>
-          </IconButton>
-        </Tooltip>
+            Deck browser
+          </Button>
+          <Tooltip title="Account settings">
+            <IconButton
+              style={{ marginLeft: 'auto' }}
+              onClick={handleClick}
+              size="small"
+              sx={{ ml: 2 }}
+              aria-controls={open ? 'account-menu' : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? 'true' : undefined}
+            >
+              <Avatar sx={{ width: 32, height: 32 }}>D</Avatar>
+            </IconButton>
+          </Tooltip>
+        </Box>
       </Box>
       <Menu
         anchorEl={anchorEl}
