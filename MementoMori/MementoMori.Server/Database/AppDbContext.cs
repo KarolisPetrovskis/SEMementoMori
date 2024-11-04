@@ -1,4 +1,4 @@
-﻿using MementoMori.Server.Models;
+using MementoMori.Server.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 

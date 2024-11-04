@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using MementoMori.Server.Extensions;
 using MementoMori.Server.DTOS;
+using MementoMori.Server.Service;
+using MementoMori.Server.Extensions;
 
 namespace MementoMori.Server.Controllers
 {
@@ -8,21 +9,26 @@ namespace MementoMori.Server.Controllers
     [Route("[controller]")]
     public class CardDataController : ControllerBase
     {
+        private readonly FileWriter _fileWriter;
+
+        public CardDataController(FileWriter fileWriter)
+        {
+            _fileWriter = fileWriter;
+        }
+
         [HttpPost("createCard")]
         public IActionResult PostInputData([FromBody] CardData data)
         {
-            // Usage of extension method
+            // Validate input data
             if (!data.IsValid())
             {
                 return BadRequest("Invalid input data");
             }
-            
-            
+
             try
             {
-                // Usage of the extension method to initialize FileWriter class
-                var fileWriter = this.InitializeFileWriter();
-                fileWriter.CreateFile(data.Question, data.Answer, data.DeckId.ToString());
+                // Use FileWriter to create the file
+                _fileWriter.CreateFile(data.Question, data.Answer, data.DeckId);
                 return Ok(new { message = "Data received successfully", question = data.Question, text = data.Answer, cardId = data.DeckId });
             }
             catch (InvalidOperationException ex)
