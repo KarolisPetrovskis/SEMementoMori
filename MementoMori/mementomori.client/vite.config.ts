@@ -71,6 +71,14 @@ export default defineConfig({
                 target,
                 secure: false
             },
+            '^/auth/login': {
+                target,
+                secure: false
+            },
+            '^/auth/register': {
+                target,
+                secure: false
+            },
         },
         port: 5173,
         https: {
