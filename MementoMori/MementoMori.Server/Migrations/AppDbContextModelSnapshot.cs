@@ -43,12 +43,6 @@ namespace MementoMori.Server.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("lastInterval")
-                        .HasColumnType("integer");
-
-                    b.Property<DateOnly?>("nextShow")
-                        .HasColumnType("date");
-
                     b.HasKey("Id");
 
                     b.HasIndex("DeckId");
@@ -93,6 +87,34 @@ namespace MementoMori.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Decks");
+                });
+
+            modelBuilder.Entity("MementoMori.Server.Models.UserCardData", b =>
+                {
+                    b.Property<Guid>("CardId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("DeckId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<double>("EaseFactor")
+                        .HasColumnType("double precision");
+
+                    b.Property<int>("Interval")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("LastReviewed")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Repetitions")
+                        .HasColumnType("integer");
+
+                    b.HasKey("CardId", "DeckId", "UserId");
+
+                    b.ToTable("UserCards");
                 });
 
             modelBuilder.Entity("MementoMori.Server.Card", b =>
