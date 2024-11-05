@@ -13,7 +13,7 @@ namespace MementoMori.Server.Controllers
         private readonly DeckHelper _deckHelper;
         private readonly ISpacedRepetition _spacedRepetition;
 
-        public DecksController(ICardFileReader cardFileReader, DeckHelper deckHelper, ISpacedRepetition spacedRepetition)
+        public DecksController(DeckHelper deckHelper, ISpacedRepetition spacedRepetition)
         {
             _deckHelper = deckHelper;
             _spacedRepetition = spacedRepetition;
