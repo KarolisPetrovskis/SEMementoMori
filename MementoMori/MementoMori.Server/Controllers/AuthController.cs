@@ -12,7 +12,7 @@ namespace MementoMori.Server.Controllers
         public IActionResult Login(string userName, string password) {
             UserLoginData userData = new UserLoginData
             {
-                UserName = userName,
+                UserName = userName, 
                 Password = password
             };
             var user = TestUsers.Users.FirstOrDefault(user => user.UserLoginData == userData);
