@@ -81,6 +81,7 @@ namespace MementoMori.Server.Controllers
             return Ok(DTO);
         }
         //change to work with database and use IsDueForReview()
+        //change to work with database and use IsDueForReview()
         [HttpGet("cards")]
         public IActionResult GetCards(Guid deckId)
         {
