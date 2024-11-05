@@ -20,6 +20,9 @@ namespace MementoMori.Server.Database
         public DbSet<Deck> Decks { get; set; }
 
         public DbSet<Card> Cards { get; set; }
+
+        public DbSet<UserCardData> UserCards { get; set; }
+
     }
 
 }

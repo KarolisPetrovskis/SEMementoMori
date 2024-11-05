@@ -13,11 +13,13 @@ namespace MementoMori.Server.Controllers
         
         private readonly ICardFileReader _cardFileReader;
         private readonly DeckHelper _deckHelper;
+        private readonly ISpacedRepetition _spacedRepetition;
 
-        public DecksController(ICardFileReader cardFileReader, DeckHelper deckHelper)
+        public DecksController(ICardFileReader cardFileReader, DeckHelper deckHelper, ISpacedRepetition spacedRepetition)
         {
    			_cardFileReader = cardFileReader;
             _deckHelper = deckHelper;
+            _spacedRepetition = spacedRepetition;
         }
 
         [HttpGet("deck")]
@@ -81,7 +83,7 @@ namespace MementoMori.Server.Controllers
             };
             return Ok(DTO);
         }
-
+        //change to work with database and use IsDueForReview()
         [HttpGet("cards")]
         public IActionResult GetCards(Guid deckId)
         {
@@ -113,17 +115,12 @@ namespace MementoMori.Server.Controllers
             return Ok(Cards);
             
         }
+
+        // POST: /Deck/{deckId}/cards/update/{cardId}
+        // [HttpPost("cards/update/{cardId}")]
         // public IActionResult UpdateCard(Guid DeckId, Guid CardId, [FromBody] int quality)
         // {
-        //     var Deck = _deckHelper.Filter(ids: [DeckId]).First();
-        //     var selectedCard = Deck.Cards.FirstOrDefault(card => card.Id == CardId);
 
-        //     if(selectedCard == null)
-        //     {
-        //         return NotFound();
-        //     }
-        //     selectedCard.UpdateCard(quality);
-        //     return Ok();
         // }
 
     }
