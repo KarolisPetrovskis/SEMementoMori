@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -19,7 +20,7 @@ export default function OutlinedCard() {
   const [questionTextError, setQuestionTextError] = React.useState('');
   const [postedQuestion, setPostedQuestion] = React.useState('');
   const { deckId } = useParams<{ deckId: string }>();
-
+    console.log(deckId);
   // Handle change for the dynamic text field with increasing height and dynamic font size
   const handleDynamicChange = (event: { target: { value: any } }) => {
     const value = event.target.value;

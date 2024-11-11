@@ -91,7 +91,7 @@ function Buttons(props: ButtonProps) {
   };
 
   const onEditClick = () => {
-    window.location.href = `/decks/${deckId}/create`;
+    window.location.href = `/decks/${deckId}/edit`;
   };
 
   const onUseAsTemplateClick = () => {

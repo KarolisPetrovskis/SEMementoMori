@@ -3,22 +3,25 @@ using MementoMori.Server.DTOS;
 using MementoMori.Server.Service;
 using MementoMori.Server.Extensions;
 
+using System.Diagnostics;
+
 namespace MementoMori.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
     public class CardDataController : ControllerBase
     {
-        private readonly FileWriter _fileWriter;
+        private readonly DatabaseCardWriter _databaseCardWriter;
 
-        public CardDataController(FileWriter fileWriter)
+        public CardDataController(DatabaseCardWriter databaseCardWriter)
         {
-            _fileWriter = fileWriter;
+            _databaseCardWriter = databaseCardWriter;
         }
 
         [HttpPost("createCard")]
         public IActionResult PostInputData([FromBody] CardData data)
         {
+
             // Validate input data
             if (!data.IsValid())
             {
@@ -28,7 +31,7 @@ namespace MementoMori.Server.Controllers
             try
             {
                 // Use FileWriter to create the file
-                _fileWriter.CreateFile(data.Question, data.Answer, data.DeckId);
+                _databaseCardWriter.AddCard(data.Question, data.Answer, data.DeckId);
                 return Ok(new { message = "Data received successfully", question = data.Question, text = data.Answer, cardId = data.DeckId });
             }
             catch (InvalidOperationException ex)
@@ -40,6 +43,13 @@ namespace MementoMori.Server.Controllers
             {
                 return StatusCode(500, new { error = "An unexpected error occurred: " + ex.Message });
             }
+        }
+        [HttpPost("editDeck")]
+        public IActionResult UpdateDeck([FromBody] DeckEditRequestDTO request)
+        {
+            /// The original deck from request should be used for testing (it is possibly unnecessary)
+            _databaseCardWriter.UpdateDeck(request);
+            return Ok(request);
         }
     }
 }
