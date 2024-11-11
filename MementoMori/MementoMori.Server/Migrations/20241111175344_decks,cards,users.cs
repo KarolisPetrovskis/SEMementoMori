@@ -6,17 +6,30 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MementoMori.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class deckscardsusers : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Username = table.Column<string>(type: "text", nullable: false),
+                    Password = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Decks",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    creatorId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatorId = table.Column<Guid>(type: "uuid", nullable: false),
                     isPublic = table.Column<bool>(type: "boolean", nullable: false),
                     Title = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
@@ -29,6 +42,12 @@ namespace MementoMori.Server.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Decks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Decks_Users_CreatorId",
+                        column: x => x.CreatorId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -57,6 +76,11 @@ namespace MementoMori.Server.Migrations
                 name: "IX_Cards_DeckId",
                 table: "Cards",
                 column: "DeckId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Decks_CreatorId",
+                table: "Decks",
+                column: "CreatorId");
         }
 
         /// <inheritdoc />
@@ -67,6 +91,9 @@ namespace MementoMori.Server.Migrations
 
             migrationBuilder.DropTable(
                 name: "Decks");
+
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }

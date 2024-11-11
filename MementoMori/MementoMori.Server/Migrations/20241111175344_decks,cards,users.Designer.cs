@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MementoMori.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241029092649_Users")]
-    partial class Users
+    [Migration("20241111175344_decks,cards,users")]
+    partial class deckscardsusers
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -68,6 +68,9 @@ namespace MementoMori.Server.Migrations
                     b.Property<long>("CardCount")
                         .HasColumnType("bigint");
 
+                    b.Property<Guid>("CreatorId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
@@ -87,13 +90,12 @@ namespace MementoMori.Server.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("creatorId")
-                        .HasColumnType("uuid");
-
                     b.Property<bool>("isPublic")
                         .HasColumnType("boolean");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
 
                     b.ToTable("Decks");
                 });
@@ -122,6 +124,17 @@ namespace MementoMori.Server.Migrations
                     b.HasOne("MementoMori.Server.Deck", null)
                         .WithMany("Cards")
                         .HasForeignKey("DeckId");
+                });
+
+            modelBuilder.Entity("MementoMori.Server.Deck", b =>
+                {
+                    b.HasOne("MementoMori.Server.Models.User", "Creator")
+                        .WithMany()
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Creator");
                 });
 
             modelBuilder.Entity("MementoMori.Server.Deck", b =>
