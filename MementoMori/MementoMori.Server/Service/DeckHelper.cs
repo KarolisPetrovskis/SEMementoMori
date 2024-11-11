@@ -16,7 +16,7 @@ namespace MementoMori.Server.Service
         }
         public List<Deck> Filter(Guid[]? ids = null, string? titleSubstring  = null, string[]? selectedTags = null)
         {
-            var Decks = _context.Decks.Include(deck => deck.Cards).Where(deck => deck.isPublic);
+            var Decks = _context.Decks.Include(deck => deck.Cards).Include(deck => deck.Creator).Where(deck => deck.isPublic);
 
             if (ids != null && ids.Length > 0)
             {

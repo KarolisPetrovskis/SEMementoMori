@@ -16,13 +16,14 @@ import MenuList from '@mui/material/MenuList';
 
 type DeckQueryData = {
   id: string;
-  creatorId: string;
+  creatorName: string;
   cardCount: number;
-  Modified: Date;
+  modified: Date;
   rating: number;
   tags?: string[];
   title: string;
   description: string;
+  isOwner: boolean;
 };
 
 type TagsProps = {
@@ -226,7 +227,7 @@ export function Deck() {
           }}
         >
           <Typography level="h1">{data.title}</Typography>
-          <Buttons isOwner={true} inCollection={false} />{' '}
+          <Buttons isOwner={data.isOwner} inCollection={false} />{' '}
           {/*Provide actual values when users are implemented*/}
         </Box>
         <h2>Tags:</h2>
