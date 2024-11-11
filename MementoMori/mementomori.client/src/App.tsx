@@ -7,8 +7,6 @@ import Cards from './CardCreator.tsx';
 import SpecificDeck from './SpecificDeck.tsx';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Deck } from './decks/Deck.tsx';
-import { Login } from './Login.tsx';
-import { Register } from './Register.tsx';
 
 const client = new QueryClient();
 
@@ -22,8 +20,6 @@ function App() {
           <Route path="/decks/:deckId" element={<Deck />} />
           <Route path="/decks/:deckId/practice" element={<DeckPage />} />
           <Route path="/browser" element={<Browser />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
           <Route path="/chosenDeck" element={<SpecificDeck />} />
         </Routes>
       </BrowserRouter>

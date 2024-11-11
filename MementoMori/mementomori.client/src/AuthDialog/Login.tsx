@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   TextField,
   Button,
-  Typography,
   Container,
   Alert,
   FormControl,
@@ -12,8 +11,9 @@ import {
 } from '@mui/material';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
+import { AuthDialogProps } from './AuthDialog';
 
-export function Login() {
+export function Login(props: AuthDialogProps) {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string>('');
@@ -28,7 +28,10 @@ export function Login() {
       });
     },
     onSuccess: () => {
-      window.location.href = `/`;
+      if (props.isAuthenticatedCallback) {
+        props.isAuthenticatedCallback();
+      }
+      props.closeCallback();
     },
     onError: () => {
       setError('Login failed. Please check your username and password.');
@@ -43,9 +46,6 @@ export function Login() {
 
   return (
     <Container maxWidth="xs">
-      <Typography variant="h4" component="h1" gutterBottom>
-        Login
-      </Typography>
       <form onSubmit={handleSubmit}>
         <FormControl fullWidth>
           <TextField
