@@ -9,11 +9,11 @@ namespace MementoMori.Server.Controllers
     [Route("[controller]")]
     public class CardDataController : ControllerBase
     {
-        private readonly FileWriter _fileWriter;
+        private readonly DatabaseCardWriter _databaseCardWriter;
 
-        public CardDataController(FileWriter fileWriter)
+        public CardDataController(DatabaseCardWriter databaseCardWriter)
         {
-            _fileWriter = fileWriter;
+            _databaseCardWriter = databaseCardWriter;
         }
 
         [HttpPost("createCard")]
@@ -28,13 +28,8 @@ namespace MementoMori.Server.Controllers
             try
             {
                 // Use FileWriter to create the file
-                _fileWriter.CreateFile(data.Question, data.Answer, data.DeckId);
+                _databaseCardWriter.AddCard(data.Question, data.Answer, data.DeckId);
                 return Ok(new { message = "Data received successfully", question = data.Question, text = data.Answer, cardId = data.DeckId });
-            }
-            catch (InvalidOperationException ex)
-            {
-                // If the file already exists, return a 409 Conflict status code
-                return Conflict(new { error = ex.Message });
             }
             catch (Exception ex)
             {
