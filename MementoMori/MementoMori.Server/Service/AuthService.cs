@@ -4,11 +4,19 @@ using MementoMori.Server.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
+using MementoMori.Server.Database;
 
 namespace MementoMori.Server.Service
 {
     public class AuthService
     {
+        public readonly AppDbContext _context;
+
+        public AuthService(AppDbContext context) 
+        {
+            _context = context;
+        }
+
         public string HashPassword(string password)
         {
             using (var sha256 = SHA256.Create())
@@ -36,6 +44,26 @@ namespace MementoMori.Server.Service
                 IsPersistent = isPersistent,
                 ExpiresUtc = DateTime.UtcNow.AddDays(10)
             });
+        }
+        
+        public User GetUserById(Guid id)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Id == id);
+            if (user == null) 
+            {
+                throw new Exception();
+            }
+            return user;
+        }
+
+        public Guid? GetRequesterId(HttpContext httpContext)
+        {
+            var claim = httpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (Guid.TryParse(claim, out Guid requesterId))
+            {
+                return requesterId;
+            }
+            return null;
         }
     }
 }

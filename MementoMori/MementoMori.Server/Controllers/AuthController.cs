@@ -4,6 +4,7 @@ using MementoMori.Server.Models;
 using MementoMori.Server.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace MementoMori.Server.Controllers
 {
@@ -60,7 +61,7 @@ namespace MementoMori.Server.Controllers
             }
 
             bool isValidPassword = _authService.VerifyPassword(loginDetails.Password, user.Password);
-            if (!isValidPassword) 
+            if (!isValidPassword)
             {
                 return Unauthorized();
             }
