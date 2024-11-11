@@ -11,13 +11,11 @@ namespace MementoMori.Server.Controllers
     public class DecksController : ControllerBase
     {
         
-        private readonly ICardFileReader _cardFileReader;
         private readonly DeckHelper _deckHelper;
         private readonly AuthService _authService;
 
-        public DecksController(ICardFileReader cardFileReader, DeckHelper deckHelper, AuthService authService)
+        public DecksController(DeckHelper deckHelper, AuthService authService)
         {
-   			_cardFileReader = cardFileReader;
             _deckHelper = deckHelper;
             _authService = authService;
         }
@@ -100,12 +98,7 @@ namespace MementoMori.Server.Controllers
             if (deck == null)
                 return NotFound("Deck not found.");
             
-			string serverDirectory = Directory.GetCurrentDirectory();
-			string _filePath = Path.Combine(serverDirectory, "CardFile", deckId.ToString() + ".txt");
-
-			var fileContent = _cardFileReader.ExtractCards(_filePath).AsQueryable();
-            
-            var Cards = fileContent.Select(Card => new CardDTO
+            var Cards = deck.Cards.Select(Card => new CardDTO
             {
                 Id = Card.Id,
                 Question = Card.Question,

@@ -16,7 +16,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<DatabaseCardWriter>();
 
 // Register CardFileReader as a service using its interface
-builder.Services.AddScoped<ICardFileReader, CardFileReader>();
 builder.Services.AddDbContext<AppDbContext, AppDbContext>();
 builder.Services.AddScoped<DeckHelper, DeckHelper>();
 builder.Services.AddScoped<AuthService, AuthService>();
