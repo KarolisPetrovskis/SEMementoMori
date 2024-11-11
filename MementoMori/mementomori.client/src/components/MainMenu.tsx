@@ -12,10 +12,15 @@ import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import DeckMenu from './DeckMenu.tsx';
 import Button from '@mui/material/Button';
+import { AuthDialog } from '../AuthDialog/AuthDialog.tsx';
 
 export default function MainMenu() {
+  const [isAuthDialogVisible, setIsAuthDialogVisible] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const handleAuthDialogClose = () => {
+    setIsAuthDialogVisible(false);
+  };
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -24,6 +29,9 @@ export default function MainMenu() {
   };
   return (
     <React.Fragment>
+      {isAuthDialogVisible ? (
+        <AuthDialog closeCallback={handleAuthDialogClose} />
+      ) : null}
       <Box
         sx={{
           display: 'flex',
@@ -53,8 +61,9 @@ export default function MainMenu() {
           sx={{ minWidth: 150, color: '#ecffff' }}
           style={{ textTransform: 'capitalize' }}
           variant="text"
+          onClick={() => setIsAuthDialogVisible(true)}
         >
-          PLAY
+          Login
         </Button>
         <Button
           sx={{ minWidth: 150, color: '#ecffff' }}

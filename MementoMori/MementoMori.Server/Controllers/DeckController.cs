@@ -10,11 +10,14 @@ namespace MementoMori.Server.Controllers
     [Route("[controller]/{deckId}")]
     public class DecksController : ControllerBase
     {
+        
         private readonly DeckHelper _deckHelper;
+        private readonly AuthService _authService;
 
-        public DecksController(DeckHelper deckHelper)
+        public DecksController(DeckHelper deckHelper, AuthService authService)
         {
             _deckHelper = deckHelper;
+            _authService = authService;
         }
 
         [HttpGet("deck")]
@@ -25,22 +28,24 @@ namespace MementoMori.Server.Controllers
                 return BadRequest(new { errorCode = ErrorCode.InvalidInput, message = "Invalid deck ID." });
             }
 
-            var Deck = _deckHelper.Filter(ids: [deckId]).FirstOrDefault();
+            var deck = _deckHelper.Filter(ids: [deckId]).FirstOrDefault();
 
-            if (Deck == null)
+            if (deck == null)
                 return NotFound("Deck not found.");
+
+            var requesterId = _authService.GetRequesterId(HttpContext); 
 
             var DeckDTO = new DeckDTO
             {
-                Id = Deck.Id,
-                creatorId = Deck.creatorId,
-                CardCount = Deck.CardCount,
-                Modified = Deck.Modified,
-                Rating = Deck.Rating,
-                Tags = Deck.TagsToString(),
-                Title = Deck.Title,
-                Description = Deck.Description
-                
+                Id = deck.Id,
+                CreatorName = deck.Creator?.Username ?? "deleted",
+                CardCount = deck.CardCount,
+                Modified = deck.Modified,
+                Rating = deck.Rating,
+                Tags = deck.TagsToString(),
+                Title = deck.Title,
+                Description = deck.Description,
+                IsOwner = requesterId != null && requesterId == deck.Creator?.Id,
             };
             return Ok(DeckDTO);
         }
@@ -93,9 +98,17 @@ namespace MementoMori.Server.Controllers
             if (deck == null)
                 return NotFound("Deck not found.");
             
-            return Ok(deck.Cards);
+            var Cards = deck.Cards.Select(Card => new CardDTO
+            {
+                Id = Card.Id,
+                Question = Card.Question,
+                Description = Card.Description,
+                Answer = Card.Answer,
+
+            }).ToList();
+
+            return Ok(Cards);
             
         }
-
     }
 }

@@ -2,6 +2,7 @@ using MementoMori.Server;
 using MementoMori.Server.Service;
 using MementoMori.Server.Database;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +18,12 @@ builder.Services.AddScoped<DatabaseCardWriter>();
 // Register CardFileReader as a service using its interface
 builder.Services.AddDbContext<AppDbContext, AppDbContext>();
 builder.Services.AddScoped<DeckHelper, DeckHelper>();
+builder.Services.AddScoped<AuthService, AuthService>();
 builder.Services.AddControllers();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie();
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
