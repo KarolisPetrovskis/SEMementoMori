@@ -69,10 +69,6 @@ export default defineConfig({
         target,
         secure: false,
       },
-      '^/CardData/createCard': {
-        target,
-        secure: false,
-      },
       '^/CardData/editDeck': {
         target,
         secure: false,

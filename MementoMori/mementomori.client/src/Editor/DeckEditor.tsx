@@ -40,9 +40,11 @@ export default function EditDeck() {
   const [activeEditCardId, setActiveEditCardId] = useState<string | null>(null);
   const [editQuestion, setEditQuestion] = useState<string>('');
   const [editAnswer, setEditAnswer] = useState<string>('');
+  const [editDescription, setEditDescription] = useState<string>(''); // Edit card description
   const [showAddCardDialog, setShowAddCardDialog] = useState(false); // State for Add Card dialog
   const [newCardQuestion, setNewCardQuestion] = useState<string>(''); // New card question
   const [newCardAnswer, setNewCardAnswer] = useState<string>(''); // New card answer
+  const [newCardDescription, setNewCardDescription] = useState<string>(''); // New card description
   const [questionError, setQuestionError] = useState<string | null>(null);
   const [answerError, setAnswerError] = useState<string | null>(null);
   const [titleError, setTitleError] = useState<string | null>(null);
@@ -58,8 +60,6 @@ export default function EditDeck() {
 
         // Set selectedTags directly after fetching deck
         setSelectedTags(fetchedDeck.tags || []);
-        console.log(selectedTags);
-        console.log(response.data);
       } catch (error) {
         console.error('Error fetching deck:', error);
       }
@@ -128,15 +128,15 @@ export default function EditDeck() {
         id: numberForId.toString(),
         question: trimmedQuestion,
         answer: trimmedAnswer,
-        description: '',
+        description: newCardDescription.trim(),
       };
       setNumberForId(numberForId + 1);
-      console.log(newCard.id);
       setDeck({ ...deck, cards: [...deck.cards, newCard] });
     }
 
     setNewCardQuestion('');
     setNewCardAnswer('');
+    setNewCardDescription('');
     setShowAddCardDialog(false);
   };
 
@@ -145,12 +145,13 @@ export default function EditDeck() {
     setShowAddCardDialog(true); // Open Add Card dialog
     setNewCardQuestion('');
     setNewCardAnswer('');
+    setNewCardDescription('');
   };
 
   const modifyCard = (index: number) => {
     const trimmedQuestion = editQuestion.trim();
     const trimmedAnswer = editAnswer.trim();
-
+    const trimmedDescription = editDescription.trim();
     if (!trimmedQuestion) {
       setQuestionError('Question cannot be empty.');
       return;
@@ -171,12 +172,14 @@ export default function EditDeck() {
         ...updatedCards[index],
         question: trimmedQuestion,
         answer: trimmedAnswer,
+        description: trimmedDescription,
       };
       setDeck({ ...deck, cards: updatedCards });
     }
     setActiveEditCardId(null);
     setEditQuestion('');
     setEditAnswer('');
+    setEditDescription('');
   };
 
   const toggleEditField = (cardId: string) => {
@@ -189,6 +192,7 @@ export default function EditDeck() {
       const card = deck?.cards.find((c) => c.id === cardId);
       setEditQuestion(card?.question || '');
       setEditAnswer(card?.answer || '');
+      setEditDescription(card?.description || '');
     }
   };
 
@@ -204,12 +208,8 @@ export default function EditDeck() {
         editedDeck: deck,
         originalDeck: originalDeck,
       });
-      console.log(response.data); // Log the data to see the backend response
       if (response.status === 200) {
         setOriginalDeck(deck);
-        console.log('Success');
-      } else {
-        console.log('The post request has failed');
       }
     }
   };
@@ -296,6 +296,12 @@ export default function EditDeck() {
                 helperText={questionError || ' '}
               />
               <TextField
+                label="Edit Description"
+                fullWidth
+                value={editDescription}
+                onChange={(e) => setEditDescription(e.target.value)}
+              />
+              <TextField
                 label="Edit Answer"
                 fullWidth
                 variant="outlined"
@@ -344,6 +350,12 @@ export default function EditDeck() {
             helperText={questionError || ' '} // Show error message if validation fails
           />
           <TextField
+            label="Description"
+            fullWidth
+            value={newCardDescription}
+            onChange={(e) => setNewCardDescription(e.target.value)}
+          />
+          <TextField
             label="Answer"
             fullWidth
             variant="outlined"
@@ -376,11 +388,7 @@ export default function EditDeck() {
             color="primary"
             fullWidth
             sx={{ flex: 1 }}
-            onClick={() => {
-              saveAllChanges();
-              console.log('Click Works');
-              console.log(deck.cards);
-            }}
+            onClick={() => saveAllChanges()}
           >
             Save all changes
           </Button>
@@ -389,10 +397,7 @@ export default function EditDeck() {
             color="primary"
             fullWidth
             sx={{ flex: 1 }}
-            onClick={() => {
-              revertChanges();
-              console.log(deck);
-            }}
+            onClick={() => revertChanges()}
           >
             Revert Changes
           </Button>
