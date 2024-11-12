@@ -25,17 +25,33 @@ const DynamicBreadcrumb = () => {
 
   return (
     <Breadcrumbs separator="›" aria-label="breadcrumb" sx={styles.breadcrumb}>
-      {pathname.map((pathSegment, index) => (
-        <Link
-          key={index}
-          underline="hover"
-          color="inherit"
-          href="#"
-          onClick={() => handleNavigate(pathname.slice(0, index + 1))}
-        >
-          {capitalize(pathSegment)}
-        </Link>
-      ))}
+      {pathname.map((pathSegment, index) => {
+        if (pathSegment === 'decks' && index === 0) {
+          // Check for "/decks" at index 0
+          return (
+            <Link
+              key={index}
+              underline="hover"
+              color="inherit"
+              onClick={() => navigate('/browser')} // Navigate to "/browser"
+            >
+              Deck browser
+            </Link>
+          );
+        } else {
+          return (
+            <Link
+              key={index}
+              underline="hover"
+              color="inherit"
+              href="#" // Keep "#" for default behavior
+              onClick={() => handleNavigate(pathname.slice(0, index + 1))} // Navigate to other paths
+            >
+              {capitalize(pathSegment)}
+            </Link>
+          );
+        }
+      })}
     </Breadcrumbs>
   );
 };
