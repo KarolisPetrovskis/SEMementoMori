@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using MementoMori.Server.Database;
 using MementoMori.Server.Interfaces;
+using MementoMori.Server.DTOS;
+using Microsoft.EntityFrameworkCore;
 
 namespace MementoMori.Server.Service
 {
@@ -33,6 +35,33 @@ namespace MementoMori.Server.Service
             return hashedPassword == storedHash;
         }
 
+        public async Task<User> CreateUserAsync(RegisterDetails registerDetails) 
+        {
+            var existingUser = await _context.Users.AnyAsync(u => u.Username == registerDetails.Username);
+            if (existingUser)
+            {
+                throw new Exception();
+            }
+
+            if (string.IsNullOrEmpty(registerDetails.Password))
+            {
+                throw new Exception();
+            }
+
+            var hashedPassword = HashPassword(registerDetails.Password);
+
+            var user = new User
+            {
+                Username = registerDetails.Username,
+                Password = hashedPassword
+            };
+
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            return user;
+        } 
+
         public async void AddCookie(HttpContext httpContext, Guid userId, bool isPersistent)
         {
             var claims = new List<Claim>
@@ -47,13 +76,19 @@ namespace MementoMori.Server.Service
             });
         }
 
-        public User GetUserById(Guid id)
+        public async Task<User> GetUserById(Guid id)
         {
-            var user = _context.Users.FirstOrDefault(u => u.Id == id);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
             if (user == null)
             {
                 throw new Exception();
             }
+            return user;
+        }
+
+        public async Task<User?> GetUserByUsername(string username) 
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
             return user;
         }
 
