@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { Box, Chip, CircularProgress } from "@mui/material";
@@ -37,6 +37,10 @@ function Tags(props: TagsProps) {
         display: "flex",
         alignItems: "flex-start",
         justifyContent: "flex-start",
+        flexDirection: "row",
+        display: "flex",
+        alignItems: "flex-start",
+        justifyContent: "flex-start",
         gap: 1,
       }}
     >
@@ -61,16 +65,15 @@ function Buttons(props: ButtonProps) {
   const { deckId } = useParams<{ deckId: string }>();
 
   const { mutate: AddToCollection, isPending } = useMutation({
-    mutationFn: async () => {
-      return axios.post(`/Decks/addToCollection`, null, { params: { deckId } });
+    mutationFn: () => {
+      return axios.post<string>("/deck/addToCollection", {
+        deckId,
+      });
     },
     onSuccess: (response) => {
-      console.log(response.data.message); // Show success message
-      setInCollection(true);
+      setTableRows(response.data);
     },
-    onError: (error) => {
-      console.error("Failed to add cards to collection", error);
-    },
+    onError: () => {},
   });
 
   const handleToggle = () => {
@@ -93,7 +96,9 @@ function Buttons(props: ButtonProps) {
   };
   const onAddToMyCollectionClick = () => {
     // send request to backend, verify that can add and then add
+    // send request to backend, verify that can add and then add
     // show spinner until response
+    AddToCollection();
     AddToCollection();
     setInCollection(true);
   };
@@ -120,6 +125,10 @@ function Buttons(props: ButtonProps) {
   return (
     <Box
       sx={{
+        flexDirection: "row",
+        display: "flex",
+        alignItems: "flex-start",
+        justifyContent: "flex-end",
         flexDirection: "row",
         display: "flex",
         alignItems: "flex-start",
@@ -181,6 +190,7 @@ function Buttons(props: ButtonProps) {
                 style={{
                   transformOrigin:
                     placement === "bottom" ? "center top" : "center bottom",
+                    placement === "bottom" ? "center top" : "center bottom",
                 }}
               >
                 <Paper>
@@ -188,13 +198,16 @@ function Buttons(props: ButtonProps) {
                     <MenuList id="split-button-menu" autoFocusItem>
                       <MenuItem
                         key={"Use as a template"}
+                        key={"Use as a template"}
                         onClick={onUseAsTemplateClick}
                       >
                         Use as a template
                       </MenuItem>
                       <MenuItem
                         sx={{ color: "red" }}
+                        sx={{ color: "red" }}
                         onClick={onDeleteClick}
+                        key={"Delete"}
                         key={"Delete"}
                       >
                         Delete
@@ -219,6 +232,7 @@ export function Deck() {
   const { deckId } = useParams<{ deckId: string }>();
   const { data, isFetched, isError } = useQuery({
     queryKey: ["main", "deck", "deckId"] as const,
+    queryKey: ["main", "deck", "deckId"] as const,
     queryFn: async () => {
       const response = await axios.get<DeckQueryData>(`/Decks/${deckId}/deck`);
       return response.data;
@@ -229,6 +243,11 @@ export function Deck() {
     !isError && data ? (
       <Box
         sx={{
+          flexDirection: "column",
+          display: "flex",
+          alignItems: "flex-start",
+          justifyContent: "space-between",
+          minWidth: "100%",
           flexDirection: "column",
           display: "flex",
           alignItems: "flex-start",
@@ -246,9 +265,16 @@ export function Deck() {
             alignItems: "center",
             justifyContent: "space-between",
             minWidth: "100%",
+            bgcolor: "lightgray",
+            flexDirection: "row",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            minWidth: "100%",
           }}
         >
           <Typography level="h1">{data.title}</Typography>
+          <Buttons isOwner={true} inCollection={false} />{" "}
           <Buttons isOwner={true} inCollection={false} />{" "}
           {/*Provide actual values when users are implemented*/}
         </Box>
