@@ -29,6 +29,7 @@ export default function MainHeader() {
         sx={{
           position: 'fixed',
           top: 0,
+          left: 106,
           display: 'flex',
           alignItems: 'center',
           minWidth: '85%',
@@ -40,6 +41,8 @@ export default function MainHeader() {
           justifyContent: 'space-between', // Align items to left and right
           bgcolor: 'white',
           gap: 2,
+          margin: '0 auto',
+          zIndex: 99,
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center' }}>

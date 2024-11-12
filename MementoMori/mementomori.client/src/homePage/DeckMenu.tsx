@@ -20,13 +20,14 @@ export default function DeckMenu() {
   ];
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div>
       <Typography
         variant="h6"
         sx={{
           color: 'black',
           position: 'absolute',
-          top: 15,
+          top: 55,
+          left: 106,
           background: 'white',
           padding: 2,
           width: 468,
@@ -44,7 +45,8 @@ export default function DeckMenu() {
       <List
         sx={{
           position: 'absolute',
-          top: 80,
+          left: 106,
+          top: 121,
           minWidth: 500,
           maxWidth: 500,
           maxHeight: 400,
