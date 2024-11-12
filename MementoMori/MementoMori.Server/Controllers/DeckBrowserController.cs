@@ -1,5 +1,6 @@
 ﻿using MementoMori.Server.DTOS;
 using MementoMori.Server.Extensions;
+using MementoMori.Server.Interfaces;
 using MementoMori.Server.Service;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,13 +8,9 @@ namespace MementoMori.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class DeckBrowserController : ControllerBase
+    public class DeckBrowserController(IDeckHelper deckHelper) : ControllerBase
     {
-        private readonly DeckHelper _deckHelper;
-        public DeckBrowserController(DeckHelper deckHelper) 
-        {
-            _deckHelper = deckHelper;
-        }
+        private readonly IDeckHelper _deckHelper = deckHelper;
 
         [HttpGet("getDecks")]
         public ActionResult<DeckBrowserDTO> getDecks([FromQuery] string[] selectedTags, string? searchString)

@@ -1,5 +1,6 @@
 ﻿using MementoMori.Server.Database;
 using MementoMori.Server.DTOS;
+using MementoMori.Server.Interfaces;
 using MementoMori.Server.Models;
 using MementoMori.Server.Service;
 using Microsoft.AspNetCore.Mvc;
@@ -10,16 +11,10 @@ namespace MementoMori.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class AuthController : ControllerBase
+    public class AuthController(AppDbContext context, IAuthService authService) : ControllerBase
     {
-        private readonly AppDbContext _context;
-        private readonly AuthService _authService;
-
-        public AuthController(AppDbContext context, AuthService authService)
-        {
-            _context = context;
-            _authService = authService;
-        }
+        private readonly AppDbContext _context = context;
+        private readonly IAuthService _authService = authService;
 
         [HttpPost("register")]
         public async Task<ActionResult<User>> Register([FromBody] RegisterDetails registerDetails)
