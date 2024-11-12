@@ -1,6 +1,4 @@
 using MementoMori.Server.DTOS.DeckEditorDTOS;
-using MementoMori.Server.Models;
-
 namespace MementoMori.Server.DTOS
 {
     public class DeckUpdateDTO

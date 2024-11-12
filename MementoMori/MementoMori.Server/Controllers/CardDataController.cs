@@ -1,10 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using MementoMori.Server.DTOS;
 using MementoMori.Server.Service;
 using MementoMori.Server.Extensions;
-
-using System.Diagnostics;
-
 namespace MementoMori.Server.Controllers
 {
     [ApiController]
