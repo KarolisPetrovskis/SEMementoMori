@@ -22,8 +22,6 @@ namespace MementoMori.Server.Service
                 Question = question,
                 Description = "NULL",
                 Answer = text,
-                lastInterval = null,
-                nextShow = null
             };
             if(deck != null)
             {
@@ -55,14 +53,6 @@ namespace MementoMori.Server.Service
                 if (answer != null)
                 {
                     card.Answer = answer;
-                }
-                if (lastInterval != null)
-                {
-                    card.lastInterval = lastInterval;
-                }
-                if (nextShow != null)
-                {
-                    card.nextShow = nextShow;
                 }
                 // Save changes to the database
                 _context.SaveChanges();

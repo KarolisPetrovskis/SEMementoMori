@@ -37,5 +37,13 @@ namespace MementoMori.Server.Service
                 ExpiresUtc = DateTime.UtcNow.AddDays(10)
             });
         }
+
+        public Guid getUserId(HttpContext httpContext){
+            var userId = httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if(userId == null){
+                throw new Exception();
+            }
+            return new Guid(userId);
+        }
     }
 }

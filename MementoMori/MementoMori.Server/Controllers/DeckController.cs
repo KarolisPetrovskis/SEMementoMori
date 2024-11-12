@@ -3,18 +3,24 @@ using MementoMori.Server.DTOS;
 using MementoMori.Server.Extensions;
 using MementoMori.Server.Service;
 using MementoMori.Server.Database;
+using MementoMori.Server.Models;
 
 namespace MementoMori.Server.Controllers
 {
     [ApiController]
+    //[Route("[controller]")]
     [Route("[controller]/{deckId}")]
     public class DecksController : ControllerBase
     {
         private readonly DeckHelper _deckHelper;
+        private readonly AuthService _authService;
+        private readonly AppDbContext _context;
         private readonly ISpacedRepetition _spacedRepetition;
 
-        public DecksController(DeckHelper deckHelper, ISpacedRepetition spacedRepetition)
+        public DecksController(DeckHelper deckHelper, AppDbContext context, ISpacedRepetition spacedRepetition, AuthService authService)
         {
+            _authService = authService;
+            _context = context;
             _deckHelper = deckHelper;
             _spacedRepetition = spacedRepetition;
         }
@@ -82,29 +88,95 @@ namespace MementoMori.Server.Controllers
         }
         //change to work with database and use IsDueForReview()
         [HttpGet("cards")]
-        public IActionResult GetCards(Guid deckId)
+        public async Task<IActionResult> GetDueCards(Guid deckId)
         {
 
-            if (deckId == Guid.Empty)
+            Guid userId = _authService.getUserId(HttpContext);
+
+            if (deckId == Guid.Empty || userId == Guid.Empty)
             {
-                return BadRequest(new { errorCode = ErrorCode.InvalidInput, message = "Invalid deck ID." });
+                return BadRequest(new { errorCode = "InvalidInput", message = "Invalid deck or user ID." });
             }
 
-            var deck = _deckHelper.Filter(ids: [deckId]).First();
+            // Fetch UserCardData entries for the specified deckId and userId
+            var userCards = _context.UserCards.Where(card => card.DeckId == deckId && card.UserId == userId).ToList();
+
+            // Filter cards due for review
+            var dueForReviewCards = userCards
+                .Where(card => _spacedRepetition.IsDueForReview(card))
+                .ToList();
+
+            if (!dueForReviewCards.Any())
+            {
+                return NotFound("No cards due for review.");
+            }
+
+            return Ok(dueForReviewCards);
+        }
+        // POST: /Deck/{deckId}/cards/update/{cardId}
+
+        [HttpPost("deck/addToCollection/{deckId}")]
+        public async Task<IActionResult> AddToCollection(Guid deckId)
+        {
+            Guid userId = _authService.getUserId(HttpContext);
+
+            if(deckId == Guid.Empty || userId == Guid.Empty)
+            {
+                return BadRequest(new { errorCode = "InvalidInput", message = "Invalid deck or user ID." });
+            }
+
+            var deck = _deckHelper.Filter(ids: [deckId]).FirstOrDefault();
 
             if (deck == null)
                 return NotFound("Deck not found.");
             
-            return Ok(deck.Cards);
-            
+            foreach(var card in deck.Cards)
+            {
+                var existingUserCard = _context.UserCards
+                .FirstOrDefault(uc => uc.DeckId == deckId && uc.CardId == card.Id && uc.UserId == userId);
+                var userCardData = new UserCardData
+                    {
+                        CardId = card.Id,
+                        DeckId = deckId,
+                        UserId = userId,
+                        Interval = 1,
+                        Repetitions = 0,
+                        EaseFactor = 2.5,
+                        LastReviewed = DateTime.Now
+                    };
+
+                await _context.UserCards.AddAsync(userCardData);            
+            }
+             await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Deck successfully added to user's collection." });
         }
+        [HttpPost("cards/update/{cardId}")]
+        public async Task<IActionResult> UpdateCard(Guid deckId, Guid cardId, [FromBody] int quality)
+        {
+            Guid userId = _authService.getUserId(HttpContext);
 
-        // POST: /Deck/{deckId}/cards/update/{cardId}
-        // [HttpPost("cards/update/{cardId}")]
-        // public IActionResult UpdateCard(Guid DeckId, Guid CardId, [FromBody] int quality)
-        // {
+            if (deckId == Guid.Empty || userId == Guid.Empty || cardId == Guid.Empty)
+            {
+                return BadRequest(new { errorCode = "InvalidInput", message = "Invalid deck, card or user ID." });
+            }
 
-        // }
+            var userCardData = _context.UserCards
+            .FirstOrDefault(uc => userId == uc.UserId && deckId == uc.DeckId && cardId == uc.CardId);
+
+            if (userCardData == null)
+            {
+                return NotFound(new { errorCode = "CardNotFound", message = "Card data not found for the specified user, deck, and card ID." });
+            }
+
+            _spacedRepetition.UpdateCard(userCardData, quality);
+
+            userCardData.LastReviewed = DateTime.Now;
+            _context.UserCards.Update(userCardData);
+            await _context.SaveChangesAsync();
+
+            return Ok(new {message = "Card updated successfully"});
+        }
 
     }
 }
