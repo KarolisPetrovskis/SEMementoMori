@@ -15,6 +15,8 @@ import {
   DialogActions,
 } from '@mui/material';
 import TagSelector from '../deckBrowser/TagSelector';
+import { List, ListItem, ListItemText } from '@mui/material';
+import Divider from '@mui/material/Divider';
 
 interface Deck {
   id: string;
@@ -256,74 +258,98 @@ export default function EditDeck() {
         />
       </Box>
       <Typography variant="h5" gutterBottom>
-        Cards
-      </Typography>
-      {deck.cards.map((card, index) => (
-        <Box
-          key={card.id}
-          sx={{ mb: 2, display: 'flex', alignItems: 'center' }}
+        <Divider
+          variant="fullWidth"
+          sx={{
+            '&::before, &::after': {
+              borderColor: '#4657b9',
+              borderWidth: 2.5,
+            },
+          }}
         >
-          <TextField
-            label={`Question ${index + 1}`}
-            fullWidth
-            variant="outlined"
-            margin="normal"
-            value={card.question}
-            InputProps={{ readOnly: true }}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            sx={{ ml: 2, height: '56px' }}
-            onClick={() => toggleEditField(card.id)}
+          Cards
+        </Divider>
+      </Typography>
+      <List disablePadding>
+        {deck.cards.map((card, index) => (
+          <ListItem
+            key={card.id}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              transition: 'background-color 0.3s, box-shadow 0.3s',
+              borderRadius: '8px', // Rounded corners for the ListItem
+              '&:hover': {
+                backgroundColor: 'rgba(0, 0, 0, 0.075)', // Light gray background on hover
+                boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.2)', // Shadow effect on hover
+              },
+            }}
           >
-            Edit Card
-          </Button>
-          <Dialog
-            open={activeEditCardId === card.id}
-            onClose={() => setActiveEditCardId(null)}
-          >
-            <DialogTitle>Edit Card Details</DialogTitle>
-            <DialogContent>
-              <TextField
-                label="Edit Question"
-                fullWidth
-                variant="outlined"
-                margin="normal"
-                value={editQuestion}
-                onChange={(e) => setEditQuestion(e.target.value)}
-                error={!!questionError}
-                helperText={questionError || ' '}
-              />
-              <TextField
-                label="Edit Description"
-                fullWidth
-                value={editDescription}
-                onChange={(e) => setEditDescription(e.target.value)}
-              />
-              <TextField
-                label="Edit Answer"
-                fullWidth
-                variant="outlined"
-                margin="normal"
-                value={editAnswer}
-                onChange={(e) => setEditAnswer(e.target.value)}
-                error={!!answerError}
-                helperText={answerError || ' '}
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button color="primary" onClick={() => modifyCard(index)}>
-                Save
-              </Button>
-              <Button color="primary" onClick={() => deleteCard(index)}>
-                Delete
-              </Button>
-              <Button onClick={() => setActiveEditCardId(null)}>Close</Button>
-            </DialogActions>
-          </Dialog>
-        </Box>
-      ))}
+            <ListItemText
+              primary={
+                <>
+                  <Typography component="span" fontStyle="italic">
+                    Question {index + 1}:<br></br>
+                  </Typography>
+                  {card.question}
+                </>
+              }
+              secondary={`Answer: ${card.answer}`}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{ ml: 2 }}
+              onClick={() => toggleEditField(card.id)}
+            >
+              Edit Card
+            </Button>
+            <Dialog
+              open={activeEditCardId === card.id}
+              onClose={() => setActiveEditCardId(null)}
+            >
+              <DialogTitle>Edit Card Details</DialogTitle>
+              <DialogContent>
+                <TextField
+                  label="Edit Question"
+                  fullWidth
+                  variant="outlined"
+                  margin="normal"
+                  value={editQuestion}
+                  onChange={(e) => setEditQuestion(e.target.value)}
+                  error={!!questionError}
+                  helperText={questionError || ' '}
+                />
+                <TextField
+                  label="Edit Description"
+                  fullWidth
+                  value={editDescription}
+                  onChange={(e) => setEditDescription(e.target.value)}
+                />
+                <TextField
+                  label="Edit Answer"
+                  fullWidth
+                  variant="outlined"
+                  margin="normal"
+                  value={editAnswer}
+                  onChange={(e) => setEditAnswer(e.target.value)}
+                  error={!!answerError}
+                  helperText={answerError || ' '}
+                />
+              </DialogContent>
+              <DialogActions>
+                <Button color="primary" onClick={() => modifyCard(index)}>
+                  Save
+                </Button>
+                <Button color="primary" onClick={() => deleteCard(index)}>
+                  Delete
+                </Button>
+                <Button onClick={() => setActiveEditCardId(null)}>Close</Button>
+              </DialogActions>
+            </Dialog>
+          </ListItem>
+        ))}
+      </List>
       <Button
         variant="contained"
         color="primary"
