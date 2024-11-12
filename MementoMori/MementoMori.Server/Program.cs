@@ -3,6 +3,7 @@ using MementoMori.Server.Service;
 using MementoMori.Server.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using MementoMori.Server.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,13 +13,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("WebApiDatabase")));
 
-// Register FileWriter as a transient or scoped service
-builder.Services.AddScoped<DatabaseCardWriter>();
+builder.Services.AddScoped<IDatabaseCardWriter, DatabaseCardWriter>();
 
-// Register CardFileReader as a service using its interface
 builder.Services.AddDbContext<AppDbContext, AppDbContext>();
-builder.Services.AddScoped<DeckHelper, DeckHelper>();
-builder.Services.AddScoped<AuthService, AuthService>();
+builder.Services.AddScoped<IDeckHelper, DeckHelper>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddControllers();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

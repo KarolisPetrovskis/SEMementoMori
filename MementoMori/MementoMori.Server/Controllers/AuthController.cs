@@ -1,60 +1,29 @@
-﻿using MementoMori.Server.Database;
-using MementoMori.Server.DTOS;
-using MementoMori.Server.Models;
-using MementoMori.Server.Service;
+﻿using MementoMori.Server.DTOS;
+using MementoMori.Server.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace MementoMori.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class AuthController : ControllerBase
+    public class AuthController(IAuthService authService) : ControllerBase
     {
-        private readonly AppDbContext _context;
-        private readonly AuthService _authService;
-
-        public AuthController(AppDbContext context, AuthService authService)
-        {
-            _context = context;
-            _authService = authService;
-        }
+        private readonly IAuthService _authService = authService;
 
         [HttpPost("register")]
-        public async Task<ActionResult<User>> Register([FromBody] RegisterDetails registerDetails)
+        public async Task<ActionResult> Register([FromBody] RegisterDetails registerDetails)
         {
-            var existingUser = await _context.Users.AnyAsync(u => u.Username == registerDetails.Username);
-            if (existingUser)
-            {
-                return BadRequest(error: "Username is already taken.");
-            }
-
-            if (string.IsNullOrEmpty(registerDetails.Password))
-            {
-                return BadRequest(error: "Password cannot be empty.");
-            }
-
-            var hashedPassword = _authService.HashPassword(registerDetails.Password);
-
-            var user = new User
-            {
-                Username = registerDetails.Username,
-                Password = hashedPassword
-            };
-
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+           var user = await _authService.CreateUserAsync(registerDetails);
 
             _authService.AddCookie(HttpContext, user.Id, registerDetails.RememberMe);
 
-            return Ok(user);
+            return Ok();
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult> Login([FromBody] LoginDetails loginDetails) {
-
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == loginDetails.Username);
+        public async Task<ActionResult> Login([FromBody] LoginDetails loginDetails) 
+        {
+            var user = await _authService.GetUserByUsername(loginDetails.Username);
             if (user == null)
             {
                 return Unauthorized();

@@ -1,24 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MementoMori.Server.DTOS;
 using MementoMori.Server.Extensions;
-using MementoMori.Server.Service;
-using MementoMori.Server.Database;
+using MementoMori.Server.Interfaces;
 
 namespace MementoMori.Server.Controllers
 {
     [ApiController]
     [Route("[controller]/{deckId}")]
-    public class DecksController : ControllerBase
+    public class DecksController(IDeckHelper deckHelper, IAuthService authService) : ControllerBase
     {
-        
-        private readonly DeckHelper _deckHelper;
-        private readonly AuthService _authService;
-
-        public DecksController(DeckHelper deckHelper, AuthService authService)
-        {
-            _deckHelper = deckHelper;
-            _authService = authService;
-        }
+        private readonly IDeckHelper _deckHelper = deckHelper;
+        private readonly IAuthService _authService = authService;
 
         [HttpGet("deck")]
         public IActionResult View(Guid deckId) {
