@@ -5,7 +5,7 @@ const DynamicBreadcrumb = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const pathname = location.pathname.split('/');
-  pathname.shift(); // Remove the initial empty string
+  pathname.shift();
 
   const handleNavigate = (path: string[]) => {
     navigate(`/${path.join('/')}`);
@@ -14,7 +14,7 @@ const DynamicBreadcrumb = () => {
   const styles = {
     breadcrumb: {
       color: 'indigo',
-      fontSize: '1.5rem', // Adjust font size as needed
+      fontSize: '1.5rem',
     },
   };
 
