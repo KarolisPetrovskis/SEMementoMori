@@ -41,11 +41,11 @@ export default function EditDeck() {
   const [activeEditCardId, setActiveEditCardId] = useState<string | null>(null);
   const [editQuestion, setEditQuestion] = useState<string>('');
   const [editAnswer, setEditAnswer] = useState<string>('');
-  const [editDescription, setEditDescription] = useState<string>(''); // Edit card description
-  const [showAddCardDialog, setShowAddCardDialog] = useState(false); // State for Add Card dialog
-  const [newCardQuestion, setNewCardQuestion] = useState<string>(''); // New card question
-  const [newCardAnswer, setNewCardAnswer] = useState<string>(''); // New card answer
-  const [newCardDescription, setNewCardDescription] = useState<string>(''); // New card description
+  const [editDescription, setEditDescription] = useState<string>('');
+  const [showAddCardDialog, setShowAddCardDialog] = useState(false);
+  const [newCardQuestion, setNewCardQuestion] = useState<string>('');
+  const [newCardAnswer, setNewCardAnswer] = useState<string>('');
+  const [newCardDescription, setNewCardDescription] = useState<string>('');
   const [questionError, setQuestionError] = useState<string | null>(null);
   const [answerError, setAnswerError] = useState<string | null>(null);
   const [titleError, setTitleError] = useState<string | null>(null);
@@ -58,8 +58,6 @@ export default function EditDeck() {
         const fetchedDeck = response.data;
         setDeck(fetchedDeck);
         setOriginalDeck(fetchedDeck);
-
-        // Set selectedTags directly after fetching deck
         setSelectedTags(fetchedDeck.tags || []);
       } catch (error) {
         console.error('Error fetching deck:', error);
@@ -406,7 +404,7 @@ export default function EditDeck() {
             justifyContent: 'space-between',
             alignItems: 'center',
             mt: 2,
-            gap: 2, // Adds spacing between the buttons
+            gap: 2,
           }}
         >
           <Button
