@@ -12,14 +12,10 @@ import Button from '@mui/material/Button';
 import HomeIcon from '@mui/icons-material/Home';
 import Breadcrumb from './Breadcrumb';
 import React from 'react';
-
-export default function MainHeader() {
-=======
 import { AuthDialog } from '../AuthDialog/AuthDialog.tsx';
 
-export default function MainMenu() {
+export default function MainHeader() {
   const [isAuthDialogVisible, setIsAuthDialogVisible] = React.useState(false);
->>>>>>> main:MementoMori/mementomori.client/src/components/MainMenu.tsx
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleAuthDialogClose = () => {
@@ -57,7 +53,6 @@ export default function MainMenu() {
           zIndex: 99,
         }}
       >
-<<<<<<< HEAD:MementoMori/mementomori.client/src/homePage/MainHeader.tsx
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Tooltip title="Return home">
             <IconButton
@@ -83,42 +78,6 @@ export default function MainMenu() {
             onClick={() => {
               window.location.href = `/browser`;
             }}
-=======
-        <DeckMenu />
-        <Button
-          sx={{ minWidth: 150, color: '#ecffff' }}
-          style={{ textTransform: 'capitalize' }}
-          variant="text"
-          onClick={() => {
-            window.location.href = `/browser`;
-          }}
-        >
-          Deck browser
-        </Button>
-        <Button
-          sx={{ minWidth: 150, color: '#ecffff' }}
-          style={{ textTransform: 'capitalize' }}
-          variant="text"
-          onClick={() => setIsAuthDialogVisible(true)}
-        >
-          Login
-        </Button>
-        <Button
-          sx={{ minWidth: 150, color: '#ecffff' }}
-          style={{ textTransform: 'capitalize' }}
-          variant="text"
-        >
-          Profile
-        </Button>
-        <Tooltip title="Account settings">
-          <IconButton
-            onClick={handleClick}
-            size="small"
-            sx={{ ml: 2 }}
-            aria-controls={open ? 'account-menu' : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? 'true' : undefined}
->>>>>>> main:MementoMori/mementomori.client/src/components/MainMenu.tsx
           >
             Deck browser
           </Button>
