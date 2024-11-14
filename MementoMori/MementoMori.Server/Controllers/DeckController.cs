@@ -1,21 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MementoMori.Server.DTOS;
 using MementoMori.Server.Extensions;
-using MementoMori.Server.Service;
-using MementoMori.Server.Database;
+using MementoMori.Server.Interfaces;
 
 namespace MementoMori.Server.Controllers
 {
     [ApiController]
     [Route("[controller]/{deckId}")]
-    public class DecksController : ControllerBase
+    public class DecksController(IDeckHelper deckHelper, IAuthService authService) : ControllerBase
     {
-        private readonly DeckHelper _deckHelper;
-
-        public DecksController(DeckHelper deckHelper)
-        {
-            _deckHelper = deckHelper;
-        }
+        private readonly IDeckHelper _deckHelper = deckHelper;
+        private readonly IAuthService _authService = authService;
 
         [HttpGet("deck")]
         public IActionResult View(Guid deckId)
@@ -26,10 +21,12 @@ namespace MementoMori.Server.Controllers
                 return BadRequest(new { errorCode = ErrorCode.InvalidInput, message = "Invalid deck ID." });
             }
 
-            var Deck = _deckHelper.Filter(ids: [deckId]).FirstOrDefault();
+            var deck = _deckHelper.Filter(ids: [deckId]).FirstOrDefault();
 
-            if (Deck == null)
+            if (deck == null)
                 return NotFound("Deck not found.");
+
+            var requesterId = _authService.GetRequesterId(HttpContext);
 
             var DeckDTO = new DeckDTO
             {
@@ -97,6 +94,5 @@ namespace MementoMori.Server.Controllers
             return Ok(deck.Cards);
 
         }
-
     }
 }

@@ -6,7 +6,7 @@ namespace MementoMori.Server.DTOS
     {
         public required Guid Id { get; set; }
 
-        public required Guid creatorId { get; set; }
+        public required string CreatorName { get; set; }
 
         public required string Title { get; set; }
 
@@ -20,5 +20,6 @@ namespace MementoMori.Server.DTOS
 
         public List<string>? Tags { get; set; }
 
+        public bool IsOwner { get; set; }
     }
 }

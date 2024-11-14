@@ -1,13 +1,13 @@
 ﻿using MementoMori.Server.DTOS;
 using MementoMori.Server.Extensions;
-using MementoMori.Server.Service;
+using MementoMori.Server.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MementoMori.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class DeckBrowserController : ControllerBase
+    public class DeckBrowserController(IDeckHelper deckHelper) : ControllerBase
     {
         private readonly DeckHelper _deckHelper;
         public DeckBrowserController(DeckHelper deckHelper)
