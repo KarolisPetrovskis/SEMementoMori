@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using MementoMori.Server.Service;
 using MementoMori.Server.Extensions;
 using MementoMori.Server.Interfaces;
 namespace MementoMori.Server.Controllers
