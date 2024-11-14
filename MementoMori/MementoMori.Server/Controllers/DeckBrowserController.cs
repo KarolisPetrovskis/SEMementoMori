@@ -9,11 +9,7 @@ namespace MementoMori.Server.Controllers
     [Route("[controller]")]
     public class DeckBrowserController(IDeckHelper deckHelper) : ControllerBase
     {
-        private readonly DeckHelper _deckHelper;
-        public DeckBrowserController(DeckHelper deckHelper)
-        {
-            _deckHelper = deckHelper;
-        }
+        private readonly IDeckHelper _deckHelper = deckHelper;
 
         [HttpGet("getDecks")]
         public ActionResult<DeckBrowserDTO> getDecks([FromQuery] string[] selectedTags, string? searchString)

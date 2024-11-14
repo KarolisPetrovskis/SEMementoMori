@@ -30,15 +30,15 @@ namespace MementoMori.Server.Controllers
 
             var DeckDTO = new DeckDTO
             {
-                Id = Deck.Id,
-                creatorId = Deck.creatorId,
-                CardCount = Deck.CardCount,
-                Modified = Deck.Modified,
-                Rating = Deck.Rating,
-                Tags = Deck.TagsToString(),
-                Title = Deck.Title,
-                Description = Deck.Description
-
+                Id = deck.Id,
+                CreatorName = deck.Creator?.Username ?? "deleted",
+                CardCount = deck.CardCount,
+                Modified = deck.Modified,
+                Rating = deck.Rating,
+                Tags = deck.TagsToString(),
+                Title = deck.Title,
+                Description = deck.Description,
+                IsOwner = requesterId != null && requesterId == deck.Creator?.Id,
             };
             return Ok(DeckDTO);
         }
@@ -91,7 +91,16 @@ namespace MementoMori.Server.Controllers
             if (deck == null)
                 return NotFound("Deck not found.");
 
-            return Ok(deck.Cards);
+            var Cards = deck.Cards.Select(Card => new CardDTO
+            {
+                Id = Card.Id,
+                Question = Card.Question,
+                Description = Card.Description,
+                Answer = Card.Answer,
+
+            }).ToList();
+
+            return Ok(Cards);
 
         }
     }
