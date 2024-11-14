@@ -392,6 +392,7 @@ export default function EditDeck() {
         </DialogContent>
         <DialogActions>
           <Button color="primary" onClick={createCard}>
+            {/*Can implement in this onclick the adding of a new card for quests, advisably have a new card array that you can create a new post for once user clicks on save all changes*/}
             Create
           </Button>
           <Button onClick={() => setShowAddCardDialog(false)}>Cancel</Button>

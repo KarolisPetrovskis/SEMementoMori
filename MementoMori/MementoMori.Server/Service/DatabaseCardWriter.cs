@@ -105,7 +105,7 @@ namespace MementoMori.Server.Service
                 _context.Cards.Remove(card);
                 _context.SaveChanges();
             }
-                        catch (DbUpdateException ex)
+            catch (DbUpdateException ex)
             {
                 Console.WriteLine("An error occurred while trying to remove the card from the database: " + ex.Message);
             }
@@ -121,10 +121,6 @@ namespace MementoMori.Server.Service
                 newDeck.OriginalDeck = FillEmptyGuids(newDeck.OriginalDeck);
                 newDeck.EditedDeck = FillEmptyGuids(newDeck.EditedDeck);
                 
-                var originalCards = newDeck.OriginalDeck.Cards.ToDictionary(c => c.realId);
-                var editedCards = newDeck.EditedDeck.Cards.ToDictionary(c => c.realId);
-
-                _context.Entry(deck).Reload();
                 if (deck.isPublic != newDeck.EditedDeck.isPublic)
                 {
                     deck.isPublic = newDeck.EditedDeck.isPublic; 
@@ -182,7 +178,7 @@ namespace MementoMori.Server.Service
                                             _context.Decks.Update(deck);
                                             break;
                                         }
-                                        ++x;
+                                        x++;
                                     }
                             }
                         }

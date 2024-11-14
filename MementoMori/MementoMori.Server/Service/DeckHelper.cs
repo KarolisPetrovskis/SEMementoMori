@@ -13,7 +13,7 @@ namespace MementoMori.Server.Service
 
         public DeckHelper(AppDbContext context)
         {
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));;
         }
         public List<Deck> Filter(Guid[]? ids = null, string? titleSubstring = null, string[]? selectedTags = null)
         {

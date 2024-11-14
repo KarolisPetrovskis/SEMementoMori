@@ -26,7 +26,7 @@ namespace MementoMori.Server.Controllers
         }
 
         [HttpPost("update")]
-        public IActionResult UupdateQuest(Guid id, int newProgress) {
+        public IActionResult UpdateQuest(Guid id, int newProgress) {
             var questIndex = TestQuests.Quests.FindIndex(q => q.Id == id);
 
             if (questIndex != -1)
