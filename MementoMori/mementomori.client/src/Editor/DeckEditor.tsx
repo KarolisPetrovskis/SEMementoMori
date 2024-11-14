@@ -17,7 +17,6 @@ import {
 import TagSelector from '../deckBrowser/TagSelector';
 import { List, ListItem, ListItemText } from '@mui/material';
 import Divider from '@mui/material/Divider';
-
 interface Deck {
   id: string;
   isPublic: boolean;
@@ -78,6 +77,7 @@ export default function EditDeck() {
   const revertChanges = () => {
     setDeck(originalDeck);
     setNumberForId(0);
+    setTitleError('');
   };
 
   const handleTitleChange = (event: { target: { value: any } }) => {

@@ -1,17 +1,17 @@
 using Microsoft.AspNetCore.Mvc;
 using MementoMori.Server.Service;
 using MementoMori.Server.Extensions;
+using MementoMori.Server.Interfaces;
 namespace MementoMori.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
     public class CardDataController : ControllerBase
     {
-        private readonly DatabaseCardWriter _databaseCardWriter;
-
-        public CardDataController(DatabaseCardWriter databaseCardWriter)
+        private readonly IDatabaseCardWriter _databaseCardWriter;
+        public CardDataController(IDatabaseCardWriter databaseCardWriter)
         {
-            _databaseCardWriter = databaseCardWriter;
+            _databaseCardWriter = databaseCardWriter ?? throw new ArgumentNullException(nameof(databaseCardWriter));
         }
 
         [HttpPost("editDeck")]

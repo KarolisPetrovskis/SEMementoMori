@@ -1,18 +1,19 @@
 using MementoMori.Server.Database;
 using MementoMori.Server.DTOS;
 using MementoMori.Server.DTOS.DeckEditorDTOS;
+using MementoMori.Server.Interfaces;
 using MementoMori.Server.Models;
 using Microsoft.EntityFrameworkCore;
 namespace MementoMori.Server.Service
 {
-    public class DatabaseCardWriter
+    public class DatabaseCardWriter : IDatabaseCardWriter
     {
         private readonly AppDbContext _context;
-        private readonly DeckHelper _deckHelper;
-        public DatabaseCardWriter(AppDbContext context, DeckHelper deckHelper)
+        private readonly IDeckHelper _deckHelper;
+        public DatabaseCardWriter(AppDbContext context, IDeckHelper deckHelper)
         {
-            _context = context;
-            _deckHelper = deckHelper;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _deckHelper = deckHelper ?? throw new ArgumentNullException(nameof(deckHelper));
         }
 
         public void AddCard(string question, string text, string? description, Guid cardId, Guid deckId)

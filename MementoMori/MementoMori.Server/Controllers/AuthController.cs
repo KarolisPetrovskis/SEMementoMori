@@ -1,26 +1,43 @@
-﻿using MementoMori.Server.Data;
-using MementoMori.Server.Models;
+﻿using MementoMori.Server.DTOS;
+using MementoMori.Server.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MementoMori.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class AuthController : ControllerBase
+    public class AuthController(IAuthService authService) : ControllerBase
     {
-        [HttpPost("auth/login")]
-        public IActionResult Login(string userName, string password) {
-            UserLoginData userData = new UserLoginData
-            {
-                UserName = userName,
-                Password = password
-            };
-            var user = TestUsers.Users.FirstOrDefault(user => user.UserLoginData == userData);
-            if (user == null) {
-                return BadRequest("Incorrect password.");
-            }
-            return Ok(user.Id);
+        private readonly IAuthService _authService = authService;
 
+        [HttpPost("register")]
+        public async Task<ActionResult> Register([FromBody] RegisterDetails registerDetails)
+        {
+           var user = await _authService.CreateUserAsync(registerDetails);
+
+            _authService.AddCookie(HttpContext, user.Id, registerDetails.RememberMe);
+
+            return Ok();
+        }
+
+        [HttpPost("login")]
+        public async Task<ActionResult> Login([FromBody] LoginDetails loginDetails) 
+        {
+            var user = await _authService.GetUserByUsername(loginDetails.Username);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            bool isValidPassword = _authService.VerifyPassword(loginDetails.Password, user.Password);
+            if (!isValidPassword)
+            {
+                return Unauthorized();
+            }
+
+            _authService.AddCookie(HttpContext, user.Id, loginDetails.RememberMe);
+
+            return Ok();
         }
     }
 }
