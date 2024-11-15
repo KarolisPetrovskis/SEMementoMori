@@ -229,3 +229,7 @@ const options = [
 ] as const;
 
 export type Tag = (typeof options)[number];
+
+export function getTagId(option: (typeof options)[number]): number {
+  return options.indexOf(option);
+}
