@@ -78,6 +78,7 @@ export default function EditDeck() {
     if (deck) {
       setDeck({ ...deck, tags: selectedTags });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTags]);
 
   const revertChanges = () => {
