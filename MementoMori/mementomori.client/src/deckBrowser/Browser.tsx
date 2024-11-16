@@ -78,7 +78,7 @@ export default function Browser() {
             gap: 1,
           }}
         >
-          <TagSelector setSelectedTags={setSelectedTags} />
+          <TagSelector setSelectedTags={setSelectedTags} selectedTags={[]} />
           <SearchBar setSearchString={setSearchString} />
         </Box>
       </Box>

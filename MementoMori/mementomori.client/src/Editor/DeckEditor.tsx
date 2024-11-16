@@ -26,9 +26,13 @@ interface Deck {
   tags: string[];
   cards: Card[];
 }
-
 interface Card {
   id: string;
+  question: string;
+  description: string;
+  answer: string;
+}
+interface NewCard {
   question: string;
   description: string;
   answer: string;
@@ -51,6 +55,10 @@ export default function EditDeck() {
   const [titleError, setTitleError] = useState<string | null>(null);
   const [numberForId, setNumberForId] = useState<number>(0);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [alteredCards, setAlteredCards] = useState<Card[] | null>(null);
+  const [newCards, setNewCards] = useState<NewCard[] | null>(null);
+  const [removeCards, setRemoveCards] = useState<string[] | null>(null);
+
   useEffect(() => {
     async function fetchDeck() {
       try {
@@ -99,8 +107,57 @@ export default function EditDeck() {
 
   const deleteCard = (index: number) => {
     if (deck) {
+      const cardToDelete = deck.cards[index];
+
       const updatedCards = deck.cards.filter((_, i) => i !== index);
       setDeck({ ...deck, cards: updatedCards });
+
+      setAlteredCards((prevAlteredCards) => {
+        if (!prevAlteredCards) return null;
+
+        return prevAlteredCards.filter((card) => card.id !== cardToDelete.id);
+      });
+
+      setNewCards((prevNewCards) => {
+        if (!prevNewCards) return null;
+
+        const isCardInNewCards = prevNewCards.some(
+          (newCard) =>
+            newCard.question === cardToDelete.question &&
+            newCard.description === cardToDelete.description &&
+            newCard.answer === cardToDelete.answer
+        );
+
+        if (isCardInNewCards) {
+          return prevNewCards.filter(
+            (newCard) =>
+              newCard.question !== cardToDelete.question ||
+              newCard.description !== cardToDelete.description ||
+              newCard.answer !== cardToDelete.answer
+          );
+        }
+
+        return prevNewCards;
+      });
+
+      if (newCards?.length === 0) setNewCards(null);
+
+      setRemoveCards((prevRemoveCards) => {
+        const isCardInNewCards = newCards?.some(
+          (newCard) =>
+            newCard.question === cardToDelete.question &&
+            newCard.description === cardToDelete.description &&
+            newCard.answer === cardToDelete.answer
+        );
+
+        if (!isCardInNewCards) {
+          if (!prevRemoveCards) return [cardToDelete.id];
+          return [...prevRemoveCards, cardToDelete.id];
+        }
+
+        return prevRemoveCards;
+      });
+
       setActiveEditCardId(null);
     }
   };
@@ -130,7 +187,13 @@ export default function EditDeck() {
         answer: trimmedAnswer,
         description: newCardDescription.trim(),
       };
+      const addCard: NewCard = {
+        question: trimmedQuestion,
+        answer: trimmedAnswer,
+        description: newCardDescription.trim(),
+      };
       setNumberForId(numberForId + 1);
+      setNewCards((prevNewCards) => [...(prevNewCards || []), addCard]);
       setDeck({ ...deck, cards: [...deck.cards, newCard] });
     }
 
@@ -168,14 +231,34 @@ export default function EditDeck() {
 
     if (deck) {
       const updatedCards = [...deck.cards];
-      updatedCards[index] = {
+      const updatedCard = {
         ...updatedCards[index],
         question: trimmedQuestion,
         answer: trimmedAnswer,
         description: trimmedDescription,
       };
+
+      updatedCards[index] = updatedCard;
       setDeck({ ...deck, cards: updatedCards });
+
+      setAlteredCards((prevAlteredCards) => {
+        if (!prevAlteredCards) return [updatedCard];
+
+        const existingIndex = prevAlteredCards.findIndex(
+          (card) => card.id === updatedCard.id
+        );
+
+        if (existingIndex !== -1) {
+          // Update the existing card
+          const updatedAlteredCards = [...prevAlteredCards];
+          updatedAlteredCards[existingIndex] = updatedCard;
+          return updatedAlteredCards;
+        }
+        // Add new card to alteredCards
+        return [...prevAlteredCards, updatedCard];
+      });
     }
+
     setActiveEditCardId(null);
     setEditQuestion('');
     setEditAnswer('');
@@ -201,16 +284,35 @@ export default function EditDeck() {
   };
 
   if (!deck) return <Typography>Loading...</Typography>;
-
   const saveAllChanges = async () => {
     if (deck && originalDeck) {
+      const postDeck = {
+        id: deck.id,
+        isPublic: deck.isPublic,
+        title: deck.title,
+        description: deck.description,
+        cardCount: deck.cardCount,
+        tags: deck.tags,
+      };
+      //setPostDeck(postDeck);
+      // Modify the post endpoint according to your needs
       const response = await axios.post('/CardData/editDeck', {
-        editedDeck: deck,
-        originalDeck: originalDeck,
+        Deck: postDeck,
+        NewCards: newCards,
+        RemoveCards: removeCards,
+        Cards: alteredCards,
       });
       if (response.status === 200) {
         setOriginalDeck(deck);
       }
+      /*       console.log(postDeck);
+      console.log(newCards);
+      console.log(removeCards);
+      console.log(alteredCards); */
+      setNewCards(null);
+      setRemoveCards(null);
+      setAlteredCards(null);
+      setOriginalDeck(deck);
     }
   };
 
@@ -304,7 +406,11 @@ export default function EditDeck() {
             </Button>
             <Dialog
               open={activeEditCardId === card.id}
-              onClose={() => setActiveEditCardId(null)}
+              onClose={() => {
+                setActiveEditCardId(null);
+                //setAnswerError('');
+                //setQuestionError('');
+              }}
             >
               <DialogTitle>Edit Card Details</DialogTitle>
               <DialogContent>
@@ -342,7 +448,15 @@ export default function EditDeck() {
                 <Button color="primary" onClick={() => deleteCard(index)}>
                   Delete
                 </Button>
-                <Button onClick={() => setActiveEditCardId(null)}>Close</Button>
+                <Button
+                  onClick={() => {
+                    setActiveEditCardId(null);
+                    setAnswerError('');
+                    setQuestionError('');
+                  }}
+                >
+                  Close
+                </Button>
               </DialogActions>
             </Dialog>
           </ListItem>
@@ -395,7 +509,15 @@ export default function EditDeck() {
             {/*Can implement in this onclick the adding of a new card for quests, advisably have a new card array that you can create a new post for once user clicks on save all changes*/}
             Create
           </Button>
-          <Button onClick={() => setShowAddCardDialog(false)}>Cancel</Button>
+          <Button
+            onClick={() => {
+              setShowAddCardDialog(false);
+              setAnswerError('');
+              setQuestionError('');
+            }}
+          >
+            Cancel
+          </Button>
         </DialogActions>
       </Dialog>
       {hasChanges() && (
@@ -422,7 +544,12 @@ export default function EditDeck() {
             color="primary"
             fullWidth
             sx={{ flex: 1 }}
-            onClick={() => revertChanges()}
+            onClick={() => {
+              revertChanges();
+              console.log(removeCards);
+              console.log(newCards);
+              console.log(alteredCards);
+            }}
           >
             Revert Changes
           </Button>
