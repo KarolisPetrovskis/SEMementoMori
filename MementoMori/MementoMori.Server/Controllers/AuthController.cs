@@ -13,7 +13,7 @@ namespace MementoMori.Server.Controllers
         [HttpPost("register")]
         public async Task<ActionResult> Register([FromBody] RegisterDetails registerDetails)
         {
-           var user = await _authService.CreateUserAsync(registerDetails);
+            var user = await _authService.CreateUserAsync(registerDetails);
 
             _authService.AddCookie(HttpContext, user.Id, registerDetails.RememberMe);
 
@@ -21,7 +21,7 @@ namespace MementoMori.Server.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult> Login([FromBody] LoginDetails loginDetails) 
+        public async Task<ActionResult> Login([FromBody] LoginDetails loginDetails)
         {
             var user = await _authService.GetUserByUsername(loginDetails.Username);
             if (user == null)
@@ -37,7 +37,21 @@ namespace MementoMori.Server.Controllers
 
             _authService.AddCookie(HttpContext, user.Id, loginDetails.RememberMe);
 
+
             return Ok();
+        }
+
+        [HttpGet("loginResponse")]
+        public IActionResult GetLoginResponse()
+        {
+            bool isLoggedIn = _authService.GetRequesterId(HttpContext).HasValue;
+
+            var loginResponse = new LoginResponse
+            {
+                IsLoggedIn = isLoggedIn
+            };
+
+            return Ok(loginResponse);
         }
     }
 }

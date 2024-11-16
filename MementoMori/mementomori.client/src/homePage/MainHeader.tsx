@@ -13,26 +13,42 @@ import HomeIcon from '@mui/icons-material/Home';
 import Breadcrumb from './Breadcrumb';
 import React from 'react';
 import { AuthDialog } from '../AuthDialog/AuthDialog.tsx';
+import { useState, useEffect } from 'react';
 
 export default function MainHeader() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAuthDialogVisible, setIsAuthDialogVisible] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
   const handleAuthDialogClose = () => {
     setIsAuthDialogVisible(false);
   };
+
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  useEffect(() => {
+    const fetchLoginStatus = async () => {
+      const response = await fetch('/loginResponse');
+      const data = await response.json();
+      setIsLoggedIn(data.isLoggedIn);
+    };
+
+    fetchLoginStatus();
+  }, []);
 
   return (
     <React.Fragment>
       {isAuthDialogVisible ? (
         <AuthDialog closeCallback={handleAuthDialogClose} />
       ) : null}
+
       <Box
         sx={{
           position: 'fixed',
@@ -46,10 +62,9 @@ export default function MainHeader() {
           borderColor: '#D4A017',
           borderWidth: 2,
           textAlign: 'center',
-          justifyContent: 'space-between', // Align items to left and right
+          justifyContent: 'space-between',
           bgcolor: 'white',
           gap: 2,
-          margin: '0 auto',
           zIndex: 99,
         }}
       >
@@ -81,21 +96,34 @@ export default function MainHeader() {
           >
             Deck browser
           </Button>
-          <Tooltip title="Account settings">
-            <IconButton
-              style={{ marginLeft: 'auto' }}
-              onClick={handleClick}
-              size="small"
-              sx={{ ml: 2 }}
-              aria-controls={open ? 'account-menu' : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? 'true' : undefined}
+
+          {isLoggedIn ? (
+            <Tooltip title="Account settings">
+              <IconButton
+                style={{ marginLeft: 'auto' }}
+                onClick={handleClick}
+                size="small"
+                sx={{ ml: 2 }}
+                aria-controls={open ? 'account-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}
+              >
+                <Avatar sx={{ width: 32, height: 32 }}>D</Avatar>
+              </IconButton>
+            </Tooltip>
+          ) : (
+            <Button
+              sx={{ minWidth: 150, color: 'indigo', fontSize: 20 }}
+              style={{ textTransform: 'capitalize' }}
+              variant="text"
+              onClick={() => setIsAuthDialogVisible(true)}
             >
-              <Avatar sx={{ width: 32, height: 32 }}>D</Avatar>
-            </IconButton>
-          </Tooltip>
+              Log In
+            </Button>
+          )}
         </Box>
       </Box>
+
       <Menu
         anchorEl={anchorEl}
         id="account-menu"
