@@ -86,9 +86,11 @@ namespace MementoMori.Server.Controllers
             };
             return Ok(DTO);
         }
-        //change to work with database and use IsDueForReview()
-        [HttpGet("cards")]
-        public async Task<IActionResult> GetDueCards(Guid deckId)
+
+    [HttpGet("cards")]
+    public async Task<IActionResult> GetDueCards(Guid deckId)
+    {
+        try
         {
             try
             {
