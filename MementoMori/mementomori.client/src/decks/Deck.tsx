@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { Box, Chip, CircularProgress } from "@mui/material";
@@ -61,15 +61,16 @@ function Buttons(props: ButtonProps) {
   const { deckId } = useParams<{ deckId: string }>();
 
   const { mutate: AddToCollection, isPending } = useMutation({
-    mutationFn: () => {
-      return axios.post<string>("/deck/addToCollection", {
-        deckId,
-      });
+    mutationFn: async () => {
+      return axios.post(`/Decks/addToCollection`, null, { params: { deckId } });
     },
     onSuccess: (response) => {
-      setTableRows(response.data);
+      console.log(response.data.message); // Show success message
+      setInCollection(true);
     },
-    onError: () => {},
+    onError: (error) => {
+      console.error("Failed to add cards to collection", error);
+    },
   });
 
   const handleToggle = () => {
@@ -129,6 +130,15 @@ function Buttons(props: ButtonProps) {
       {inCollection ? (
         <Button color="success" onClick={onPracticeClick} variant="contained">
           Practice
+        </Button>
+      ) : isPending ? (
+        <Button
+          color="success"
+          onClick={onAddToMyCollectionClick}
+          variant="contained"
+          disabled
+        >
+          Add to my collection
         </Button>
       ) : (
         <Button
