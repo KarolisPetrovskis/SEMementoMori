@@ -4,8 +4,6 @@ namespace MementoMori.Server.DTOS.DeckEditorDTOS
     {
         public required string Id { get; set; }
         public Guid realId { get; set; }
-        private Guid _realId;
-
         public void ConvertRealId(string id)
         {
            if (Guid.TryParse(id, out Guid result))

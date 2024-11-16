@@ -185,7 +185,6 @@ namespace MementoMori.Server.Service
                         i++;
                     }
 
-                    int xx = 0;
                     foreach(var card in newDeck.EditedDeck.Cards)
                     {
                         int y = 0; 
@@ -198,15 +197,13 @@ namespace MementoMori.Server.Service
                         {
                             AddCard(card.Question, card.Answer, card.Description, card.realId, deckId);
                         }
-                        xx++;
                     }
 
-                    TagTypes[] selectedTagEnums;
                     if (newDeck.OriginalDeck.Tags != newDeck.EditedDeck.Tags)
                     {
-                        selectedTagEnums = newDeck.EditedDeck.Tags.Select(tag => Enum.Parse<TagTypes>(tag)).ToArray();
-                        deck.Tags = selectedTagEnums.ToList();
-
+                        List<TagTypes> selectedTagEnums;
+                        selectedTagEnums = newDeck.EditedDeck.Tags.Select(tag => Enum.Parse<TagTypes>(tag)).ToList();
+                        deck.Tags = selectedTagEnums;
                     }
                     try
                     {
