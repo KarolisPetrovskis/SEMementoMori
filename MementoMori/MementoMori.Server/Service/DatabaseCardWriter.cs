@@ -74,7 +74,7 @@ namespace MementoMori.Server.Service
             int i = 0;
             foreach(var card in deck.Cards)
             {
-                if (card.realId == Guid.Empty)
+                if (card.RealId == Guid.Empty)
                 {
                     string stringGuid = Guid.NewGuid().ToString();
                     DeckUpdateCards newCard = new DeckUpdateCards
@@ -144,7 +144,7 @@ namespace MementoMori.Server.Service
                         {
                             foreach(DeckUpdateCards originalCard in newDeck.EditedDeck.Cards)
                             {
-                                if (newDeck.OriginalDeck.Cards[i].realId == newDeck.EditedDeck.Cards[y].realId)
+                                if (newDeck.OriginalDeck.Cards[i].RealId == newDeck.EditedDeck.Cards[y].RealId)
                                 {
                                     count++;
                                     if (newDeck.OriginalDeck.Cards[i].Question != newDeck.EditedDeck.Cards[y].Question)
@@ -190,12 +190,12 @@ namespace MementoMori.Server.Service
                         int y = 0; 
                         foreach(var oldCards in deck.Cards)
                         {
-                            if (card.realId == oldCards.Id)
+                            if (card.RealId == oldCards.Id)
                             y++;
                         }
                         if (y == 0)
                         {
-                            AddCard(card.Question, card.Answer, card.Description, card.realId, deckId);
+                            AddCard(card.Question, card.Answer, card.Description, card.RealId, deckId);
                         }
                     }
 

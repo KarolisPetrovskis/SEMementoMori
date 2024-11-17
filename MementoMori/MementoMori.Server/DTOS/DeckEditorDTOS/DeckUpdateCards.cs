@@ -3,7 +3,7 @@ namespace MementoMori.Server.DTOS.DeckEditorDTOS
     public class DeckUpdateCards
     {
         public required string Id { get; set; }
-        public Guid realId { get; set; }
+        public Guid RealId { get; set; }
         public void ConvertRealId(string id)
         {
            if (Guid.TryParse(id, out Guid result))
