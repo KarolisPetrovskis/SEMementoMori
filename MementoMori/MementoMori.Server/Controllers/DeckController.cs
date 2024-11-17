@@ -87,10 +87,8 @@ namespace MementoMori.Server.Controllers
             return Ok(DTO);
         }
 
-    [HttpGet("cards")]
-    public async Task<IActionResult> GetDueCards(Guid deckId)
-    {
-        try
+        [HttpGet("cards")]
+        public async Task<IActionResult> GetDueCards(Guid deckId)
         {
             try
             {
