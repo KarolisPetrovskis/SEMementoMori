@@ -87,42 +87,42 @@ namespace MementoMori.Server.Controllers
             return Ok(DTO);
         }
 
-    [HttpGet("cards")]
-    public async Task<IActionResult> GetDueCards(Guid deckId)
-    {
-        try
+        [HttpGet("cards")]
+        public async Task<IActionResult> GetDueCards(Guid deckId)
         {
-            Guid userId = _authService.getUserId(HttpContext);
-
-            if (deckId == Guid.Empty || userId == Guid.Empty)
+            try
             {
-                return BadRequest(new { errorCode = "InvalidInput", message = "Invalid deck or user ID." });
+                Guid userId = _authService.getUserId(HttpContext);
+
+                if (deckId == Guid.Empty || userId == Guid.Empty)
+                {
+                    return BadRequest(new { errorCode = "InvalidInput", message = "Invalid deck or user ID." });
+                }
+
+                List<Card> dueForReviewCards = _cardService.GetCardsForReview(deckId);
+
+                if (!dueForReviewCards.Any())
+                {
+                    return NotFound("No cards due for review.");
+                }
+
+                var dueCardDtos = dueForReviewCards.Select(c => new CardDTO
+                {
+                    Id = c.Id,
+                    Question = c.Question,
+                    Description = c.Description,
+                    Answer = c.Answer
+                }).ToList();
+                
+                return Ok(dueCardDtos);
             }
-
-            List<Card> dueForReviewCards = _cardService.GetCardsForReview(deckId);
-
-            if (!dueForReviewCards.Any())
+            catch (Exception ex)
             {
-                return NotFound("No cards due for review.");
+                // Log the exception
+                Console.Error.WriteLine($"Error in GetDueCards: {ex.Message} - {ex.StackTrace}");
+                return StatusCode(500, new { errorCode = "ServerError", message = "An unexpected error occurred." });
             }
-
-            var dueCardDtos = dueForReviewCards.Select(c => new CardDTO
-            {
-                Id = c.Id,
-                Question = c.Question,
-                Description = c.Description,
-                Answer = c.Answer
-            }).ToList();
-            
-            return Ok(dueCardDtos);
         }
-        catch (Exception ex)
-        {
-            // Log the exception
-            Console.Error.WriteLine($"Error in GetDueCards: {ex.Message} - {ex.StackTrace}");
-            return StatusCode(500, new { errorCode = "ServerError", message = "An unexpected error occurred." });
-        }
-    }
 
         [HttpPost("addToCollection")]
         public async Task<IActionResult> AddCardsToCollection(Guid deckId)
