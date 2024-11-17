@@ -8,6 +8,7 @@ using MementoMori.Server.Database;
 using MementoMori.Server.Interfaces;
 using MementoMori.Server.DTOS;
 using Microsoft.EntityFrameworkCore;
+using MementoMori.Server.Exceptions;
 
 namespace MementoMori.Server.Service
 {
@@ -81,7 +82,7 @@ namespace MementoMori.Server.Service
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
             if (user == null)
             {
-                throw new Exception();
+                throw new UserNotFoundException(id);
             }
             return user;
         }

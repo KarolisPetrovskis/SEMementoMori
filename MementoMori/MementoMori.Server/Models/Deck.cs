@@ -15,6 +15,8 @@ namespace MementoMori.Server
 
         public required long CardCount { get; set; }
 
+        public List<Card>? Cards { get; set; }
+
         public int CompareTo(Deck? other)
         {
             if (other == null) return 1;

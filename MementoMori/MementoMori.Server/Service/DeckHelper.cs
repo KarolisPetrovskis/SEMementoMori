@@ -1,4 +1,5 @@
 ﻿using MementoMori.Server.Database;
+using MementoMori.Server.DTOS;
 using MementoMori.Server.Extensions;
 using MementoMori.Server.Interfaces;
 using MementoMori.Server.Models;
@@ -46,6 +47,34 @@ namespace MementoMori.Server.Service
             }
 
             return Decks.ToList();
+        }
+
+        public void UpdateDeck(EditedDeckDTO editedDeckDTO)
+        {
+            _context.Update<Deck, DeckEditableProperties>(editedDeckDTO.Deck);
+            if (editedDeckDTO.Cards != null)
+            {
+                foreach (CardEditableProperties card in editedDeckDTO.Cards)
+                {
+                    _context.Update<Card, CardEditableProperties>(card);
+                }
+            }
+            if (editedDeckDTO.NewCards != null)
+            {
+                foreach (Card card in editedDeckDTO.NewCards)
+                {
+                    card.DeckId = editedDeckDTO.Deck.Id;
+                    _context.Add(card);
+                }
+            }
+            if (editedDeckDTO.RemovedCards != null)
+            {
+                foreach (Guid cardId in editedDeckDTO.RemovedCards)
+                {
+                    _context.Remove<Card>(cardId);
+                }
+            }
+            _context.SaveChanges();
         }
     }
 }

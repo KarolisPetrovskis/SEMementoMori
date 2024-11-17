@@ -231,5 +231,5 @@ const options = [
 export type Tag = (typeof options)[number];
 
 export function getTagId(option: (typeof options)[number]): number {
-  return options.indexOf(option);
+  return options.indexOf(option) + 1;
 }

@@ -2,10 +2,8 @@
 
 namespace MementoMori.Server.Models
 {
-    public class User
+    public class User : DatabaseObject
     {
-        [Key]
-        public Guid Id { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
     }

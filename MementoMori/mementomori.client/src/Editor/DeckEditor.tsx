@@ -14,7 +14,7 @@ import {
   DialogContent,
   DialogActions,
 } from '@mui/material';
-import TagSelector from '../deckBrowser/TagSelector';
+import TagSelector, { getTagId } from '../deckBrowser/TagSelector';
 import { List, ListItem, ListItemText } from '@mui/material';
 import Divider from '@mui/material/Divider';
 interface Deck {
@@ -23,7 +23,7 @@ interface Deck {
   title: string;
   description?: string;
   cardCount: number;
-  tags: string[];
+  tags: number[];
   cards: Card[];
 }
 interface Card {
@@ -76,7 +76,7 @@ export default function EditDeck() {
 
   useEffect(() => {
     if (deck) {
-      setDeck({ ...deck, tags: selectedTags });
+      setDeck({ ...deck, tags: selectedTags.map((tag) => getTagId(tag)) });
     }
   }, [selectedTags]);
 
@@ -296,10 +296,10 @@ export default function EditDeck() {
       };
       //setPostDeck(postDeck);
       // Modify the post endpoint according to your needs
-      const response = await axios.post('/CardData/editDeck', {
+      const response = await axios.post(`/Decks/${deckId}/editDeck`, {
         Deck: postDeck,
         NewCards: newCards,
-        RemoveCards: removeCards,
+        RemovedCards: removeCards,
         Cards: alteredCards,
       });
       if (response.status === 200) {

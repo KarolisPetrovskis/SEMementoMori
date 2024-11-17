@@ -9,7 +9,5 @@
         public string? Description { get; set; }
 
         public List<TagTypes>? Tags { get; set; }
-
-        public List<Card>? Cards { get; set; }
     }
 }

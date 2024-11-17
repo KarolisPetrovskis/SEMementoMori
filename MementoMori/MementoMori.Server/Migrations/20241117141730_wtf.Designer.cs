@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MementoMori.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241111180313_nullable user")]
-    partial class nullableuser
+    [Migration("20241117141730_wtf")]
+    partial class wtf
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,11 +35,10 @@ namespace MementoMori.Server.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("DeckId")
+                    b.Property<Guid>("DeckId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Question")
@@ -123,7 +122,9 @@ namespace MementoMori.Server.Migrations
                 {
                     b.HasOne("MementoMori.Server.Deck", null)
                         .WithMany("Cards")
-                        .HasForeignKey("DeckId");
+                        .HasForeignKey("DeckId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("MementoMori.Server.Deck", b =>

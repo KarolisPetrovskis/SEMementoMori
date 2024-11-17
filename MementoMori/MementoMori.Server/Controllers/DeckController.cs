@@ -2,6 +2,7 @@
 using MementoMori.Server.DTOS;
 using MementoMori.Server.Extensions;
 using MementoMori.Server.Interfaces;
+using MementoMori.Server.Service;
 
 namespace MementoMori.Server.Controllers
 {
@@ -89,7 +90,7 @@ namespace MementoMori.Server.Controllers
 
             if (deck == null)
                 return NotFound("Deck not found.");
-            
+
             var Cards = deck.Cards.Select(Card => new CardDTO
             {
                 Id = Card.Id,
@@ -101,6 +102,13 @@ namespace MementoMori.Server.Controllers
 
             return Ok(Cards);
             
+        }
+
+        [HttpPost("editDeck")]
+        public IActionResult EditDeck(EditedDeckDTO editedDeckDTO) 
+        {
+            _deckHelper.UpdateDeck(editedDeckDTO);
+            return Ok();
         }
     }
 }
