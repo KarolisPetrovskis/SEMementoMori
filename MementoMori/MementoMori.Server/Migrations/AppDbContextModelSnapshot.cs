@@ -117,6 +117,25 @@ namespace MementoMori.Server.Migrations
                     b.ToTable("UserCards");
                 });
 
+            modelBuilder.Entity("MementoMori.Server.Models.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+                });
+
             modelBuilder.Entity("MementoMori.Server.Card", b =>
                 {
                     b.HasOne("MementoMori.Server.Deck", null)
