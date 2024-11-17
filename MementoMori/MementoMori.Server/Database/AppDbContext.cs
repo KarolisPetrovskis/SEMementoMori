@@ -9,6 +9,16 @@ namespace MementoMori.Server.Database
     public class AppDbContext : DbContext 
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options ?? throw new ArgumentNullException(nameof(options))) { }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Card>()
+                .HasOne<Deck>()
+                .WithMany(d => d.Cards)
+                .HasForeignKey(c => c.DeckId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            base.OnModelCreating(modelBuilder);
+        }
         public void SecureUpdate<T, P>(P item, Guid changedBy) where T : P where P : DatabaseObject
         {
             var entity = Set<T>().FirstOrDefault(e => e.Id == item.Id);
@@ -35,7 +45,7 @@ namespace MementoMori.Server.Database
             }
             Remove(entity);
         }
-
+    
         public DbSet<Deck> Decks { get; set; }
         public DbSet<Card> Cards { get; set; }
         public DbSet<User> Users { get; set; }

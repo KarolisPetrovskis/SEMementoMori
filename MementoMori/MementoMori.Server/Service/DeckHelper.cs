@@ -86,6 +86,31 @@ namespace MementoMori.Server.Service
                 throw;
             }
         }
+        public void CreateDeck (DeckEditableProperties deck, Guid requesterId)
+        {
+            Deck newDeck = new()
+            {
+                Id = deck.Id,
+                CreatorId = requesterId,
+                isPublic = deck.isPublic,
+                Title = deck.Title,
+                Description = deck.Title,
+                Tags = deck.Tags,
+                Rating = 0,
+                RatingCount = 0,
+                Modified = DateOnly.FromDateTime(DateTime.Now),
+                Cards = null,
+                CardCount = 0,
+            };
+            _context.Decks.Add(newDeck);
+            _context.SaveChanges();
+        }
+        public void DeleteDeck(Guid deckId)
+        {
+            var deck = _context.Decks.Include(d => d.Cards).FirstOrDefault(d => d.Id == deckId);
+            _context.Decks.Remove(deck);
+            _context.SaveChanges();
+        }
         private void LogError(Guid deckId, Guid requesterId, Exception exception)
         {
             string logFilePath = "error_log.txt";

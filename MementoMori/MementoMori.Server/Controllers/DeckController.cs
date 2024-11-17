@@ -4,6 +4,7 @@ using MementoMori.Server.Extensions;
 using MementoMori.Server.Interfaces;
 using MementoMori.Server.Service;
 using MementoMori.Server.Exceptions;
+using MementoMori.Server.Models;
 
 namespace MementoMori.Server.Controllers
 {
@@ -122,5 +123,31 @@ namespace MementoMori.Server.Controllers
             }
             return Ok();
         }
+        [HttpPost("createDeck")]
+        public IActionResult CreateDeck(EditedDeckDTO createDeckDTO)
+        {
+            Guid deckGuid = Guid.NewGuid();
+            var requesterId = _authService.GetRequesterId(HttpContext);
+            if (requesterId == null)
+                return Unauthorized();
+            try
+            {
+                createDeckDTO.Deck.Id = deckGuid;
+                _deckHelper.CreateDeck(createDeckDTO.Deck, (Guid)requesterId);
+                _deckHelper.UpdateDeck(createDeckDTO, (Guid)requesterId);
+            }
+            catch (UnauthorizedEditingException ex)
+            {
+                return Unauthorized();
+            }
+            return Ok(deckGuid);
+        }
+        [HttpPost("deleteDeck")]
+        public IActionResult DeleteDeck(Guid deckId)
+        {
+            _deckHelper.DeleteDeck(deckId);
+            return Ok(deckId);
+        }
+
     }
 }

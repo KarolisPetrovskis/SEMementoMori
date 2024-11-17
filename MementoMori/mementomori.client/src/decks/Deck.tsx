@@ -85,10 +85,19 @@ function Buttons(props: ButtonProps) {
     setInCollection(true);
   };
 
-  const onRemoveClick = () => {
-    // send req to backend
-    // show spinner til response
-    setInCollection(false);
+  const onRemoveClick = async () => {
+    try {
+      const response = await axios.post(`/Decks/${deckId}/deleteDeck`, {
+        Id: deckId,
+      });
+      if (response.status === 200) {
+        window.location.href = `https://localhost:5173/browser`;
+      } else {
+        console.error('Failed to delete the deck');
+      }
+    } catch (error) {
+      console.error('Error while deleting the deck:', error);
+    }
   };
 
   const onEditClick = () => {
