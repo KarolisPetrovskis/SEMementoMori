@@ -49,14 +49,14 @@ namespace MementoMori.Server.Service
             return Decks.ToList();
         }
 
-        public void UpdateDeck(EditedDeckDTO editedDeckDTO)
+        public void UpdateDeck(EditedDeckDTO editedDeckDTO, Guid requesterId)
         {
-            _context.Update<Deck, DeckEditableProperties>(editedDeckDTO.Deck);
+            _context.SecureUpdate<Deck, DeckEditableProperties>(editedDeckDTO.Deck, requesterId);
             if (editedDeckDTO.Cards != null)
             {
                 foreach (CardEditableProperties card in editedDeckDTO.Cards)
                 {
-                    _context.Update<Card, CardEditableProperties>(card);
+                    _context.SecureUpdate<Card, CardEditableProperties>(card, editedDeckDTO.Deck.Id);
                 }
             }
             if (editedDeckDTO.NewCards != null)

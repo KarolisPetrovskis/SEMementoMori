@@ -110,7 +110,7 @@ namespace MementoMori.Server.Controllers
             var requesterId = _authService.GetRequesterId(HttpContext);
             if (requesterId == null)
                 return Unauthorized();
-            _deckHelper.UpdateDeck(editedDeckDTO);
+            _deckHelper.UpdateDeck(editedDeckDTO, (Guid)requesterId);
             return Ok();
         }
     }

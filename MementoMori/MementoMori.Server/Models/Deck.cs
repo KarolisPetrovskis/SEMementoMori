@@ -5,7 +5,9 @@ namespace MementoMori.Server
 {
     public class Deck : DeckEditableProperties, IComparable<Deck>
     {
-        public User? Creator { get; set; }
+        public required User Creator { get; set; }
+
+        public Guid CreatorId { get; set; }
 
         public double Rating { get; set; }
 
@@ -21,6 +23,11 @@ namespace MementoMori.Server
         {
             if (other == null) return 1;
             return (Rating * RatingCount).CompareTo(other.Rating * other.RatingCount) * -1;
+        }
+
+        public override bool CanEdit(Guid editorId)
+        {
+            return editorId == CreatorId;
         }
     }
 }
