@@ -12,7 +12,7 @@ namespace MementoMori.Server.Controllers
         private readonly IDeckHelper _deckHelper = deckHelper;
 
         [HttpGet("getDecks")]
-        public ActionResult<DeckBrowserDTO> getDecks([FromQuery] string[] selectedTags, string? searchString)
+        public ActionResult<DeckBrowserDTO> GetDecks([FromQuery] string[] selectedTags, string? searchString)
         {
             var filteredDecksList = _deckHelper.Filter(titleSubstring: searchString, selectedTags: selectedTags);
             filteredDecksList.Sort();

@@ -216,7 +216,6 @@ const options = [
   'Chemistry',
   'Geography',
   'Literature',
-  'Computer Science',
   'Art',
   'Music',
   'Philosophy',

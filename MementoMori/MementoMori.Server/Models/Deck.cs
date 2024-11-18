@@ -20,7 +20,7 @@ namespace MementoMori.Server
         public int CompareTo(Deck? other)
         {
             if (other == null) return 1;
-            return (Rating * RatingCount).CompareTo(other.Rating * other.RatingCount);
+            return (Rating * RatingCount).CompareTo(other.Rating * other.RatingCount) * -1;
         }
     }
 }

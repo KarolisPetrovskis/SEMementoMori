@@ -107,6 +107,9 @@ namespace MementoMori.Server.Controllers
         [HttpPost("editDeck")]
         public IActionResult EditDeck(EditedDeckDTO editedDeckDTO) 
         {
+            var requesterId = _authService.GetRequesterId(HttpContext);
+            if (requesterId == null)
+                return Unauthorized();
             _deckHelper.UpdateDeck(editedDeckDTO);
             return Ok();
         }

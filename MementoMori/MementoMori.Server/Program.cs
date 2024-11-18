@@ -9,11 +9,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+
 // Register AppDbContext with connection string from configuration
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("WebApiDatabase")));
-
-builder.Services.AddScoped<IDatabaseCardWriter, DatabaseCardWriter>();
 
 builder.Services.AddDbContext<AppDbContext, AppDbContext>();
 builder.Services.AddScoped<IDeckHelper, DeckHelper>();

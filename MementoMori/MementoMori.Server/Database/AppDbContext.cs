@@ -7,6 +7,7 @@ namespace MementoMori.Server.Database
 {
     public class AppDbContext : DbContext 
     {
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options ?? throw new ArgumentNullException(nameof(options))) { }
         public void Update<T, P>(P item) where T : P where P : DatabaseObject
         {
             var entity = Set<T>().FirstOrDefault(e => e.Id == item.Id);
@@ -28,27 +29,6 @@ namespace MementoMori.Server.Database
             }
             Remove(entity);
         }
-
-        protected readonly IConfiguration Configuration;
-        
-        public AppDbContext(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-        {
-            options.UseNpgsql(Configuration.GetConnectionString("WebApiDatabase"));
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            //modelBuilder.Entity<Card>().HasBaseType<CardEditableProperties>();
-            //modelBuilder.Entity<Card>()
-            //.Property(e => e.DeckId)
-            //.Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
-        }
-
 
         public DbSet<Deck> Decks { get; set; }
         public DbSet<Card> Cards { get; set; }
