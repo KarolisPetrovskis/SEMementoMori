@@ -37,7 +37,6 @@ namespace MementoMori.Server.Controllers
 
             _authService.AddCookie(HttpContext, user.Id, loginDetails.RememberMe);
 
-
             return Ok();
         }
 
@@ -52,6 +51,12 @@ namespace MementoMori.Server.Controllers
             };
 
             return Ok(loginResponse);
+        }
+        [HttpPost("logout")] // Add a new route for logout
+        public async Task<IActionResult> Logout()
+        {
+            _authService.RemoveCookie(HttpContext);
+            return Ok();
         }
     }
 }

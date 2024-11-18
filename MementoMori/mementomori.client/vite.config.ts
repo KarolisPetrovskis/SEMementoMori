@@ -83,6 +83,10 @@ export default defineConfig({
                 target,
                 secure: false
             },
+            '^/auth/logout': {
+                target,
+                secure: false
+            },
             '^/QuestController/quests': {
                 target,
                 secure: false

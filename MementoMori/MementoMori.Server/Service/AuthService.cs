@@ -76,6 +76,12 @@ namespace MementoMori.Server.Service
             });
         }
 
+        public void RemoveCookie(HttpContext httpContext)
+        {
+            httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+        }
+
         public async Task<User> GetUserById(Guid id)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);

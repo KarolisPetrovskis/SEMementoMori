@@ -14,6 +14,7 @@ import Breadcrumb from './Breadcrumb';
 import React from 'react';
 import { AuthDialog } from '../AuthDialog/AuthDialog.tsx';
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 export default function MainHeader() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -21,8 +22,11 @@ export default function MainHeader() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  const handleAuthDialogClose = () => {
+  const handleAuthDialogClose = async () => {
     setIsAuthDialogVisible(false);
+
+    const response = await axios.get('/auth/loginResponse');
+    setIsLoggedIn(response.data.isLoggedIn);
   };
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -33,11 +37,27 @@ export default function MainHeader() {
     setAnchorEl(null);
   };
 
+  const handleLogout = async () => {
+    try {
+      const response = await axios.post('/auth/logout');
+      if (response.status === 200) {
+        setIsLoggedIn(false);
+      } else {
+        console.error('Error logging out:', response.data);
+      }
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
   useEffect(() => {
     const fetchLoginStatus = async () => {
-      const response = await fetch('/loginResponse');
-      const data = await response.json();
-      setIsLoggedIn(data.isLoggedIn);
+      try {
+        const response = await axios.get('/auth/loginResponse');
+        setIsLoggedIn(response.data.isLoggedIn);
+      } catch (error) {
+        console.error('Error fetching login status:', error);
+      }
     };
 
     fetchLoginStatus();
@@ -176,7 +196,7 @@ export default function MainHeader() {
           </ListItemIcon>
           Settings
         </MenuItem>
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={handleLogout}>
           <ListItemIcon>
             <Logout sx={{ color: 'black' }} fontSize="small" />
           </ListItemIcon>
