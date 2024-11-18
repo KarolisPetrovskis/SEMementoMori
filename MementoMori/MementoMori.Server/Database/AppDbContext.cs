@@ -1,3 +1,4 @@
+using MementoMori.Server.Exceptions;
 using MementoMori.Server.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -18,7 +19,7 @@ namespace MementoMori.Server.Database
 
             if (!entity.CanEdit(changedBy)) 
             {
-                throw new InvalidOperationException();
+                throw new UnauthorizedEditingException();
             }
 
             Entry(entity).CurrentValues.SetValues(item);

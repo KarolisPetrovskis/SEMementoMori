@@ -3,6 +3,7 @@ using MementoMori.Server.DTOS;
 using MementoMori.Server.Extensions;
 using MementoMori.Server.Interfaces;
 using MementoMori.Server.Service;
+using MementoMori.Server.Exceptions;
 
 namespace MementoMori.Server.Controllers
 {
@@ -110,7 +111,14 @@ namespace MementoMori.Server.Controllers
             var requesterId = _authService.GetRequesterId(HttpContext);
             if (requesterId == null)
                 return Unauthorized();
-            _deckHelper.UpdateDeck(editedDeckDTO, (Guid)requesterId);
+            try
+            {
+                _deckHelper.UpdateDeck(editedDeckDTO, (Guid)requesterId);
+            }
+            catch (UnauthorizedEditingException ex)
+            {
+                return Unauthorized();
+            }
             return Ok();
         }
     }
