@@ -1,8 +1,9 @@
 using MementoMori.Server.Database;
+using MementoMori.Server.Interfaces;
 using Microsoft.EntityFrameworkCore;
 namespace MementoMori.Server.Service
 {
-    public class DatabaseCardWriter
+    public class DatabaseCardWriter : IDatabaseCardWriter
     {
         private readonly AppDbContext _context;
         public DatabaseCardWriter(AppDbContext context)
@@ -23,9 +24,9 @@ namespace MementoMori.Server.Service
                 Description = "NULL",
                 Answer = text,
             };
-            if(deck != null)
+            if (deck != null)
             {
-                deck.Cards.Add(newCard)  ;
+                deck.Cards.Add(newCard);
 
                 // Add the new card to the context
                 _context.Decks.Add(deck);

@@ -1,22 +1,23 @@
 ﻿using MementoMori.Server.Database;
 using MementoMori.Server.Extensions;
+using MementoMori.Server.Interfaces;
 using MementoMori.Server.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 namespace MementoMori.Server.Service
 {
-    public class DeckHelper
+    public class DeckHelper : IDeckHelper
     {
         private readonly AppDbContext _context;
 
-        public DeckHelper(AppDbContext context) 
+        public DeckHelper(AppDbContext context)
         {
             _context = context;
         }
-        public List<Deck> Filter(Guid[]? ids = null, string? titleSubstring  = null, string[]? selectedTags = null)
+        public List<Deck> Filter(Guid[]? ids = null, string? titleSubstring = null, string[]? selectedTags = null)
         {
-            var Decks = _context.Decks.Include(deck => deck.Cards).Where(deck => deck.isPublic);
+            var Decks = _context.Decks.Include(deck => deck.Cards).Include(deck => deck.Creator).Where(deck => deck.isPublic);
 
             if (ids != null && ids.Length > 0)
             {

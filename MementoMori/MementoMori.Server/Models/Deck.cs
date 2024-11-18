@@ -8,7 +8,7 @@ namespace MementoMori.Server
         [Key]
         public required Guid Id { get; set; }
 
-        public required Guid creatorId { get; set; }
+        public User? Creator { get; set; }
 
         public required bool isPublic { get; set; }
 
