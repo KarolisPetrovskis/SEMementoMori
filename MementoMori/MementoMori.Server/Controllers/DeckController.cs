@@ -5,6 +5,7 @@ using MementoMori.Server.Service;
 using MementoMori.Server.Database;
 using MementoMori.Server.Models;
 using Microsoft.VisualBasic;
+using System.Collections.Concurrent;
 
 namespace MementoMori.Server.Controllers
 {
@@ -17,6 +18,7 @@ namespace MementoMori.Server.Controllers
         private readonly AuthService _authService;
         private readonly CardService _cardService;
         private readonly ISpacedRepetition _spacedRepetition;
+        private readonly ConcurrentDictionary<Guid, DeckDTO> _deckCache = new();
 
         public DecksController(DeckHelper deckHelper, ISpacedRepetition spacedRepetition, AuthService authService)
         {

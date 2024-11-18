@@ -37,10 +37,6 @@ function Tags(props: TagsProps) {
         display: "flex",
         alignItems: "flex-start",
         justifyContent: "flex-start",
-        flexDirection: "row",
-        display: "flex",
-        alignItems: "flex-start",
-        justifyContent: "flex-start",
         gap: 1,
       }}
     >
@@ -130,10 +126,6 @@ function Buttons(props: ButtonProps) {
         display: "flex",
         alignItems: "flex-start",
         justifyContent: "flex-end",
-        flexDirection: "row",
-        display: "flex",
-        alignItems: "flex-start",
-        justifyContent: "flex-end",
         gap: 1,
       }}
     >
@@ -191,7 +183,6 @@ function Buttons(props: ButtonProps) {
                 style={{
                   transformOrigin:
                     placement === "bottom" ? "center top" : "center bottom",
-                    placement === "bottom" ? "center top" : "center bottom",
                 }}
               >
                 <Paper>
@@ -199,16 +190,13 @@ function Buttons(props: ButtonProps) {
                     <MenuList id="split-button-menu" autoFocusItem>
                       <MenuItem
                         key={"Use as a template"}
-                        key={"Use as a template"}
                         onClick={onUseAsTemplateClick}
                       >
                         Use as a template
                       </MenuItem>
                       <MenuItem
                         sx={{ color: "red" }}
-                        sx={{ color: "red" }}
                         onClick={onDeleteClick}
-                        key={"Delete"}
                         key={"Delete"}
                       >
                         Delete
@@ -233,7 +221,6 @@ export function Deck() {
   const { deckId } = useParams<{ deckId: string }>();
   const { data, isFetched, isError } = useQuery({
     queryKey: ["main", "deck", "deckId"] as const,
-    queryKey: ["main", "deck", "deckId"] as const,
     queryFn: async () => {
       const response = await axios.get<DeckQueryData>(`/Decks/${deckId}/deck`);
       return response.data;
@@ -249,23 +236,12 @@ export function Deck() {
           alignItems: "flex-start",
           justifyContent: "space-between",
           minWidth: "100%",
-          flexDirection: "column",
-          display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "space-between",
-          minWidth: "100%",
         }}
       >
         <Box
           sx={{
             paddingLeft: 4,
             paddingRight: 4,
-            bgcolor: "lightgray",
-            flexDirection: "row",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            minWidth: "100%",
             bgcolor: "lightgray",
             flexDirection: "row",
             display: "flex",
