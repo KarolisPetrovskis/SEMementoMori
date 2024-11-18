@@ -1,5 +1,4 @@
 
-using MementoMori.Server.Migrations;
 
 namespace MementoMori.Server 
 {

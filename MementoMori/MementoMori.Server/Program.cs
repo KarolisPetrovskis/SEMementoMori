@@ -18,6 +18,8 @@ builder.Services.AddScoped<IDatabaseCardWriter, DatabaseCardWriter>();
 builder.Services.AddDbContext<AppDbContext, AppDbContext>();
 builder.Services.AddScoped<IDeckHelper, DeckHelper>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ICardService, CardService>();
+builder.Services.AddScoped<ISpacedRepetition, SpacedRepetition>();
 builder.Services.AddControllers();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

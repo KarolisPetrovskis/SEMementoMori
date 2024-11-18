@@ -6,26 +6,19 @@ using MementoMori.Server.Database;
 using MementoMori.Server.Models;
 using Microsoft.VisualBasic;
 using System.Collections.Concurrent;
+using MementoMori.Server.Interfaces;
 
 namespace MementoMori.Server.Controllers
 {
     [ApiController]
     //[Route("[controller]")]
     [Route("[controller]/{deckId}")]
-    public class DecksController(IDeckHelper deckHelper, IAuthService authService) : ControllerBase
+    public class DecksController(IDeckHelper deckHelper, IAuthService authService, ICardService cardService) : ControllerBase
     {
-        private readonly DeckHelper _deckHelper;
-        private readonly AuthService _authService;
-        private readonly CardService _cardService;
-        private readonly ISpacedRepetition _spacedRepetition;
-        private readonly ConcurrentDictionary<Guid, DeckDTO> _deckCache = new();
+        private readonly IDeckHelper _deckHelper = deckHelper;
+        private readonly IAuthService _authService = authService;
+        private readonly ICardService _cardService = cardService;
 
-        public DecksController(DeckHelper deckHelper, ISpacedRepetition spacedRepetition, AuthService authService)
-        {
-            _authService = authService;
-            _deckHelper = deckHelper;
-            _spacedRepetition = spacedRepetition;
-        }
 
         [HttpGet("deck")]
         public IActionResult View(Guid deckId) {
@@ -94,9 +87,10 @@ namespace MementoMori.Server.Controllers
         [HttpGet("cards")]
         public async Task<IActionResult> GetDueCards(Guid deckId)
         {
+            //maybe problem not selecting based on userID
             try
             {
-                Guid userId = _authService.getUserId(HttpContext);
+                Guid? userId = _authService.GetRequesterId(HttpContext);
 
                 if (deckId == Guid.Empty || userId == Guid.Empty)
                 {
@@ -131,28 +125,28 @@ namespace MementoMori.Server.Controllers
         [HttpPost("addToCollection")]
         public async Task<IActionResult> AddCardsToCollection(Guid deckId)
         {
-            Guid userId = _authService.getUserId(HttpContext);
+            Guid? userId = _authService.GetRequesterId(HttpContext);
 
-            if(deckId == Guid.Empty || userId == Guid.Empty)
+            if(deckId == Guid.Empty || userId == Guid.Empty || userId == null )
             {
                 return BadRequest(new { errorCode = "InvalidInput", message = "Invalid deck or user ID." });
             }
-
-            _cardService.AddCardsToCollection(userId, deckId);
+            if(userId != null)
+                _cardService.AddCardsToCollection(userId.Value, deckId); 
 
             return Ok(new { message = "Deck successfully added to user's collection." });
         }
         [HttpPost("cards/update/{cardId}")]
         public async Task<IActionResult> UpdateCard(Guid deckId, Guid cardId, [FromBody] int quality)
         {
-            Guid userId = _authService.getUserId(HttpContext);
+            Guid? userId = _authService.GetRequesterId(HttpContext);
 
             if (deckId == Guid.Empty || userId == Guid.Empty || cardId == Guid.Empty)
             {
                 return BadRequest(new { errorCode = "InvalidInput", message = "Invalid deck, card or user ID." });
             }
-
-            _cardService.UpdateSpacedRepetition(userId, deckId, cardId, quality);
+            if(userId != null)
+                _cardService.UpdateSpacedRepetition(userId.Value, deckId, cardId, quality);
 
             return Ok(new {message = "Card updated successfully"});
         }

@@ -63,7 +63,7 @@ function Buttons(props: ButtonProps) {
 
   const { mutate: AddToCollection, isPending } = useMutation({
     mutationFn: async () => {
-      return axios.post(`/Decks/addToCollection`, null, { params: { deckId } });
+      return axios.post(`/Decks/${deckId}/addToCollection`);
     },
     onSuccess: (response) => {
       console.log(response.data.message); // Show success message

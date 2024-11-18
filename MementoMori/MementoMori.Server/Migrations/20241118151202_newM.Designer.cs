@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MementoMori.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241029131854_UserCards")]
-    partial class UserCards
+    [Migration("20241118151202_newM")]
+    partial class newM
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -62,6 +62,9 @@ namespace MementoMori.Server.Migrations
                     b.Property<long>("CardCount")
                         .HasColumnType("bigint");
 
+                    b.Property<Guid?>("CreatorId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
@@ -81,15 +84,33 @@ namespace MementoMori.Server.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("creatorId")
-                        .HasColumnType("uuid");
-
                     b.Property<bool>("isPublic")
                         .HasColumnType("boolean");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CreatorId");
+
                     b.ToTable("Decks");
+                });
+
+            modelBuilder.Entity("MementoMori.Server.Models.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("MementoMori.Server.Models.UserCardData", b =>
@@ -125,6 +146,15 @@ namespace MementoMori.Server.Migrations
                     b.HasOne("MementoMori.Server.Deck", null)
                         .WithMany("Cards")
                         .HasForeignKey("DeckId");
+                });
+
+            modelBuilder.Entity("MementoMori.Server.Deck", b =>
+                {
+                    b.HasOne("MementoMori.Server.Models.User", "Creator")
+                        .WithMany()
+                        .HasForeignKey("CreatorId");
+
+                    b.Navigation("Creator");
                 });
 
             modelBuilder.Entity("MementoMori.Server.Deck", b =>

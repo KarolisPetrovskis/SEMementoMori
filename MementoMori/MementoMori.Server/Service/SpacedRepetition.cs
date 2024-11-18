@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using MementoMori.Server;
 using MementoMori.Server.Models;
-namespace MementoMori.Server
+namespace MementoMori.Server.Service
 {
         public class SpacedRepetition : ISpacedRepetition
         {
