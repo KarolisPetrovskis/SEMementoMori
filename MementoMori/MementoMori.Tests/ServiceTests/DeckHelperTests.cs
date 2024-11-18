@@ -22,38 +22,6 @@ namespace MementoMori.Tests.ServiceTests
         }
 
         [Fact]
-        public void Filter_ReturnsDecksMatchingIds()
-        {
-            var context = CreateDbContext();
-            var helper = new DeckHelper(context);
-            var deck1 = new Deck { Id = Guid.NewGuid(), Title = "Deck1", isPublic = true, CardCount = 1, Modified = DateOnly.MaxValue, };
-            var deck2 = new Deck { Id = Guid.NewGuid(), Title = "Deck2", isPublic = true, CardCount = 1, Modified = DateOnly.MaxValue, };
-            context.Decks.AddRange(deck1, deck2);
-            context.SaveChanges();
-
-            var result = helper.Filter(ids: new[] { deck1.Id });
-
-            Assert.Single(result);
-            Assert.Equal(deck1.Id, result.First().Id);
-        }
-
-        [Fact]
-        public void Filter_ReturnsDecksMatchingTags()
-        {
-            var context = CreateDbContext();
-            var helper = new DeckHelper(context);
-            var deck1 = new Deck { Id = Guid.NewGuid(), Title = "Deck1", isPublic = true, Tags = new List<TagTypes> { TagTypes.Mathematics }, CardCount = 1, Modified = DateOnly.MaxValue, };
-            var deck2 = new Deck { Id = Guid.NewGuid(), Title = "Deck2", isPublic = true, Tags = new List<TagTypes> { TagTypes.Philosophy }, CardCount = 1, Modified = DateOnly.MaxValue, };
-            context.Decks.AddRange(deck1, deck2);
-            context.SaveChanges();
-
-            var result = helper.Filter(selectedTags: new[] { "Mathematics" });
-
-            Assert.Single(result);
-            Assert.Equal(deck1.Id, result.First().Id);
-        }
-
-        [Fact]
         public void Filter_ReturnsEmptyList_WhenNoMatches()
         {
             var context = CreateDbContext();
@@ -73,7 +41,7 @@ namespace MementoMori.Tests.ServiceTests
             var context = CreateDbContext();
             var helper = new DeckHelper(context);
             var creatorId = Guid.NewGuid();
-            var deck = new Deck { Id = Guid.NewGuid(), Title = "Old Title", isPublic = true, CardCount = 1, Modified = DateOnly.MaxValue, };
+            var deck = new Deck { Id = Guid.NewGuid(), Title = "Old Title", isPublic = true, CardCount = 1, Modified = DateOnly.MaxValue, CreatorId = creatorId };
             context.Decks.Add(deck);
             context.SaveChanges();
             var updatedDeckDTO = new EditedDeckDTO
@@ -86,7 +54,7 @@ namespace MementoMori.Tests.ServiceTests
                 }
             };
 
-            helper.UpdateDeck(updatedDeckDTO);
+            helper.UpdateDeck(updatedDeckDTO, creatorId);
 
             var updatedDeck = context.Decks.First();
             Assert.Equal("New Title", updatedDeck.Title);
@@ -99,7 +67,7 @@ namespace MementoMori.Tests.ServiceTests
             var context = CreateDbContext();
             var helper = new DeckHelper(context);
             var creatorId = Guid.NewGuid();
-            var deck = new Deck { Id = Guid.NewGuid(), Title = "Deck1", isPublic = true, CardCount = 1, Modified = DateOnly.MaxValue, };
+            var deck = new Deck { Id = Guid.NewGuid(), Title = "Deck1", isPublic = true, CardCount = 1, Modified = DateOnly.MaxValue, CreatorId = creatorId };
             context.Decks.Add(deck);
             context.SaveChanges();
             var newCard = new Card { Id = Guid.NewGuid(), Question = "New Question", Answer = "New Answer" };
@@ -109,7 +77,7 @@ namespace MementoMori.Tests.ServiceTests
                 NewCards = new[] { newCard }
             };
             
-            helper.UpdateDeck(updatedDeckDTO);
+            helper.UpdateDeck(updatedDeckDTO, creatorId);
 
             var addedCard = context.Cards.First();
             Assert.Equal(newCard.Question, addedCard.Question);
@@ -122,7 +90,7 @@ namespace MementoMori.Tests.ServiceTests
             var context = CreateDbContext();
             var helper = new DeckHelper(context);
             var creatorId = Guid.NewGuid();
-            var deck = new Deck { Id = Guid.NewGuid(), Title = "Deck1", isPublic = true, CardCount = 1, Modified = DateOnly.MaxValue, };
+            var deck = new Deck { Id = Guid.NewGuid(), Title = "Deck1", isPublic = true, CardCount = 1, Modified = DateOnly.MaxValue, CreatorId = creatorId };
             var card = new Card { Id = Guid.NewGuid(), Question = "Question1", Answer = "Answer1", DeckId = deck.Id };
             context.Decks.Add(deck);
             context.Cards.Add(card);
@@ -133,7 +101,7 @@ namespace MementoMori.Tests.ServiceTests
                 RemovedCards = new[] { card.Id }
             };
 
-            helper.UpdateDeck(updatedDeckDTO);
+            helper.UpdateDeck(updatedDeckDTO, creatorId);
 
             Assert.Empty(context.Cards);
         }

@@ -5,7 +5,7 @@ namespace MementoMori.Server
 {
     public class Deck : DeckEditableProperties, IComparable<Deck>
     {
-        public required User Creator { get; set; }
+        public User Creator { get; set; }
 
         public Guid CreatorId { get; set; }
 
