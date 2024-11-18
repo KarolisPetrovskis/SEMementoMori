@@ -2,6 +2,8 @@
 using MementoMori.Server.DTOS;
 using MementoMori.Server.Extensions;
 using MementoMori.Server.Interfaces;
+using MementoMori.Server.Service;
+using MementoMori.Server.Exceptions;
 
 namespace MementoMori.Server.Controllers
 {
@@ -102,6 +104,23 @@ namespace MementoMori.Server.Controllers
 
             return Ok(Cards);
 
+        }
+
+        [HttpPost("editDeck")]
+        public IActionResult EditDeck(EditedDeckDTO editedDeckDTO) 
+        {
+            var requesterId = _authService.GetRequesterId(HttpContext);
+            if (requesterId == null)
+                return Unauthorized();
+            try
+            {
+                _deckHelper.UpdateDeck(editedDeckDTO, (Guid)requesterId);
+            }
+            catch (UnauthorizedEditingException ex)
+            {
+                return Unauthorized();
+            }
+            return Ok();
         }
     }
 }

@@ -55,6 +55,10 @@ export default defineConfig({
                 target,
                 secure: false,
             },
+            '^/Decks/.*?/editDeck': {
+                target,
+                secure: false,
+            },
             '^/Decks/.*?/EditorView': {
                 target,
                 secure: false,

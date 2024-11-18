@@ -1,20 +1,16 @@
-﻿namespace MementoMori.Server
+﻿using MementoMori.Server.Models;
+
+namespace MementoMori.Server
 {
 
-    public class Card
+    public class Card : CardEditableProperties
     {
-        public required Guid Id { get; set; }
+        public Guid DeckId { get; set;  }
 
-        public required string Question { get; set; }
-
-        public string Description { get; set; }
-
-        public required string Answer { get; set; }
-
-        public int? lastInterval { get; set; }
-
-        public DateOnly? nextShow { get; set; }
-
+        public override bool CanEdit(Guid editorId)
+        {
+            return DeckId == editorId;
+        }
     }
 }
 
