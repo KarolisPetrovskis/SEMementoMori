@@ -18,7 +18,6 @@ const DynamicBreadcrumb = () => {
     },
   };
 
-  // Capitalize function for consistent capitalization
   const capitalize = (str: string) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
@@ -27,13 +26,12 @@ const DynamicBreadcrumb = () => {
     <Breadcrumbs separator="›" aria-label="breadcrumb" sx={styles.breadcrumb}>
       {pathname.map((pathSegment, index) => {
         if (pathSegment === 'decks' && index === 0) {
-          // Check for "/decks" at index 0
           return (
             <Link
               key={index}
               underline="hover"
               color="inherit"
-              onClick={() => navigate('/browser')} // Navigate to "/browser"
+              onClick={() => navigate('/browser')}
             >
               Deck browser
             </Link>
@@ -44,8 +42,8 @@ const DynamicBreadcrumb = () => {
               key={index}
               underline="hover"
               color="inherit"
-              href="#" // Keep "#" for default behavior
-              onClick={() => handleNavigate(pathname.slice(0, index + 1))} // Navigate to other paths
+              href="#"
+              onClick={() => handleNavigate(pathname.slice(0, index + 1))}
             >
               {capitalize(pathSegment)}
             </Link>

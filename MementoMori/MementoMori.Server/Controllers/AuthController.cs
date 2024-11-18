@@ -52,7 +52,7 @@ namespace MementoMori.Server.Controllers
 
             return Ok(loginResponse);
         }
-        [HttpPost("logout")] // Add a new route for logout
+        [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
             _authService.RemoveCookie(HttpContext);
