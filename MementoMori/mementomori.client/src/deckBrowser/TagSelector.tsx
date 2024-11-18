@@ -155,6 +155,7 @@ const Listbox = styled('ul')(
 
 export default function TagSelector(props: {
   setSelectedTags: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedTags?: string[];
 }) {
   const {
     getRootProps,
@@ -171,6 +172,7 @@ export default function TagSelector(props: {
     multiple: true,
     options: options,
     getOptionLabel: (option) => option,
+    defaultValue: props.selectedTags ?? [],
   });
 
   React.useEffect(() => {
@@ -216,7 +218,6 @@ const options = [
   'Chemistry',
   'Geography',
   'Literature',
-  'Computer Science',
   'Art',
   'Music',
   'Philosophy',
@@ -229,3 +230,7 @@ const options = [
 ] as const;
 
 export type Tag = (typeof options)[number];
+
+export function getTagId(option: (typeof options)[number]): number {
+  return options.indexOf(option) + 1;
+}

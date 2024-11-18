@@ -10,7 +10,6 @@
         Chemistry = 6,
         Geography = 7,
         Literature = 8,
-        ComputerScience = 8,
         Art = 9,
         Music = 10,
         Philosophy = 11,
