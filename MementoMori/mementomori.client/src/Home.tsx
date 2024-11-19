@@ -1,12 +1,12 @@
 import './App.css';
-import QuestList from './components/QuestList.tsx';
-import MainMenu from './components/MainMenu.tsx';
+import QuestList from './homePage/QuestList.tsx';
+import DeckMenu from './homePage/DeckMenu.tsx';
 
 function Home() {
   return (
     <>
+      <DeckMenu />
       <QuestList />
-      <MainMenu />
     </>
   );
 }

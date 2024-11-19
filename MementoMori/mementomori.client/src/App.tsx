@@ -7,6 +7,7 @@ import Cards from './CardCreator.tsx';
 import SpecificDeck from './SpecificDeck.tsx';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Deck } from './decks/Deck.tsx';
+import MainHeader from './homePage/MainHeader';
 import EditDeck from './Editor/DeckEditor.tsx';
 
 const client = new QueryClient();
@@ -15,6 +16,7 @@ function App() {
   return (
     <QueryClientProvider client={client}>
       <BrowserRouter>
+        <MainHeader />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/decks/:deckId/edit" element={<EditDeck />} />

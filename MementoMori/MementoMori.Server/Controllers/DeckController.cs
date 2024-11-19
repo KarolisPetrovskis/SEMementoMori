@@ -15,7 +15,8 @@ namespace MementoMori.Server.Controllers
         private readonly IAuthService _authService = authService;
 
         [HttpGet("deck")]
-        public IActionResult View(Guid deckId) {
+        public IActionResult View(Guid deckId)
+        {
 
             if (deckId == Guid.Empty)
             {
@@ -27,7 +28,7 @@ namespace MementoMori.Server.Controllers
             if (deck == null)
                 return NotFound("Deck not found.");
 
-            var requesterId = _authService.GetRequesterId(HttpContext); 
+            var requesterId = _authService.GetRequesterId(HttpContext);
 
             var DeckDTO = new DeckDTO
             {
@@ -45,7 +46,7 @@ namespace MementoMori.Server.Controllers
         }
 
         [HttpGet("EditorView")]
-        public IActionResult EditorView(Guid deckId) 
+        public IActionResult EditorView(Guid deckId)
         {
 
             if (deckId == Guid.Empty)
@@ -102,7 +103,7 @@ namespace MementoMori.Server.Controllers
             }).ToList();
 
             return Ok(Cards);
-            
+
         }
 
         [HttpPost("editDeck")]

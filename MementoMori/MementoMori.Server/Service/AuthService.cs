@@ -36,7 +36,7 @@ namespace MementoMori.Server.Service
             return hashedPassword == storedHash;
         }
 
-        public async Task<User> CreateUserAsync(RegisterDetails registerDetails) 
+        public async Task<User> CreateUserAsync(RegisterDetails registerDetails)
         {
             var existingUser = await _context.Users.AnyAsync(u => u.Username == registerDetails.Username);
             if (existingUser)
@@ -61,7 +61,7 @@ namespace MementoMori.Server.Service
             await _context.SaveChangesAsync();
 
             return user;
-        } 
+        }
 
         public async void AddCookie(HttpContext httpContext, Guid userId, bool isPersistent)
         {
@@ -77,6 +77,12 @@ namespace MementoMori.Server.Service
             });
         }
 
+        public void RemoveCookie(HttpContext httpContext)
+        {
+            httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+        }
+
         public async Task<User> GetUserById(Guid id)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
@@ -87,7 +93,7 @@ namespace MementoMori.Server.Service
             return user;
         }
 
-        public async Task<User?> GetUserByUsername(string username) 
+        public async Task<User?> GetUserByUsername(string username)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
             return user;

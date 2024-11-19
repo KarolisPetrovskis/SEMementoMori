@@ -223,7 +223,9 @@ export function Deck() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            minWidth: '100%',
+            minWidth: '94.3%',
+            //marginTop: '20px',
+            borderRadius: '6px',
           }}
         >
           <Typography level="h1">{data.title}</Typography>

@@ -6,6 +6,7 @@ namespace MementoMori.Server.Interfaces
     public interface IAuthService
     {
         void AddCookie(HttpContext httpContext, Guid userId, bool isPersistent);
+        void RemoveCookie(HttpContext httpContext);
         Task<User> CreateUserAsync(RegisterDetails registerDetails);
         Guid? GetRequesterId(HttpContext httpContext);
         Task<User> GetUserById(Guid id);
