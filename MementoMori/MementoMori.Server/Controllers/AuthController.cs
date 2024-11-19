@@ -1,19 +1,55 @@
 ﻿using MementoMori.Server.DTOS;
 using MementoMori.Server.Interfaces;
+using MementoMori.Server.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Concurrent;
 
 namespace MementoMori.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class AuthController(IAuthService authService) : ControllerBase
+    public class AuthController: ControllerBase
     {
-        private readonly IAuthService _authService = authService;
+        private readonly IAuthService _authService;
+        private static readonly ConcurrentDictionary<string, User> _registeredUsers = new();
+        private static bool initialized = false;
+        
+        public AuthController(IAuthService authService)
+        {
+            _authService = authService;
+
+            if (!initialized)
+            {
+
+                var users = _authService.GetAllUsers();
+                foreach (var user in users)
+                {
+                    _registeredUsers.TryAdd(user.Username, user);
+                }
+                initialized = true;
+            }
+        }
+
 
         [HttpPost("register")]
         public async Task<ActionResult> Register([FromBody] RegisterDetails registerDetails)
         {
+            if (_registeredUsers.ContainsKey(registerDetails.Username))
+            {
+                return Conflict(new { Message = "Username is already taken." });
+            }
+
+            var placeholderUser = new User
+            {
+                Username = registerDetails.Username,
+                Password = string.Empty,
+                Id = Guid.Empty
+            };
+            _registeredUsers.TryAdd(registerDetails.Username, placeholderUser);
+
             var user = await _authService.CreateUserAsync(registerDetails);
+
+            _registeredUsers[registerDetails.Username] = user;
 
             _authService.AddCookie(HttpContext, user.Id, registerDetails.RememberMe);
 

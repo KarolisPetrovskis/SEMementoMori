@@ -23,7 +23,7 @@ interface Deck {
   title: string;
   description?: string;
   cardCount: number;
-  tags: number[];
+  tags: string[];
   cards: Card[];
 }
 interface Card {
@@ -58,6 +58,7 @@ export default function EditDeck() {
   const [alteredCards, setAlteredCards] = useState<Card[] | null>(null);
   const [newCards, setNewCards] = useState<NewCard[] | null>(null);
   const [removeCards, setRemoveCards] = useState<string[] | null>(null);
+  const [showTags, setShowTags] = useState(true);
 
   useEffect(() => {
     async function fetchDeck() {
@@ -76,14 +77,22 @@ export default function EditDeck() {
 
   useEffect(() => {
     if (deck) {
-      setDeck({ ...deck, tags: selectedTags.map((tag) => getTagId(tag)) });
+      setDeck({ ...deck, tags: selectedTags });
     }
   }, [selectedTags]);
 
+  useEffect(() => {
+    if (!showTags) {
+      setShowTags(true);
+    }
+  }, [showTags]);
+
   const revertChanges = () => {
     setDeck(originalDeck);
+    setSelectedTags(originalDeck.tags);
     setNumberForId(0);
     setTitleError('');
+    setShowTags(false);
   };
 
   const handleTitleChange = (event: { target: { value: any } }) => {
@@ -292,7 +301,7 @@ export default function EditDeck() {
         title: deck.title,
         description: deck.description,
         cardCount: deck.cardCount,
-        tags: deck.tags,
+        tags: deck.tags.map((tag) => getTagId(tag)),
       };
       //setPostDeck(postDeck);
       // Modify the post endpoint according to your needs
@@ -341,10 +350,12 @@ export default function EditDeck() {
         value={deck.description || ''}
         onChange={handleDescriptionChange}
       />
-      <TagSelector
-        selectedTags={selectedTags}
-        setSelectedTags={setSelectedTags}
-      />
+      {showTags ? (
+        <TagSelector
+          selectedTags={selectedTags}
+          setSelectedTags={setSelectedTags}
+        />
+      ) : null}
       <Box sx={{ display: 'flex', justifyContent: 'left', mb: 2 }}>
         <FormControlLabel
           control={
