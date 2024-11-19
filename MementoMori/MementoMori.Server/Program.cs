@@ -4,6 +4,8 @@ using MementoMori.Server.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using MementoMori.Server.Interfaces;
+using System.Collections.Concurrent;
+using MementoMori.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +23,9 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICardService, CardService>();
 builder.Services.AddScoped<ISpacedRepetition, SpacedRepetition>();
 builder.Services.AddControllers();
+
+builder.Services.AddSingleton(new ConcurrentQueue<(Guid UserId, Guid DeckId, Guid CardId, int Quality)>());
+builder.Services.AddSingleton<CardUpdateProcessor>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie();

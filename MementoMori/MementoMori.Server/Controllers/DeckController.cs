@@ -2,8 +2,6 @@
 using MementoMori.Server.DTOS;
 using MementoMori.Server.Extensions;
 using MementoMori.Server.Service;
-using MementoMori.Server.Database;
-using MementoMori.Server.Models;
 using Microsoft.VisualBasic;
 using System.Collections.Concurrent;
 using MementoMori.Server.Interfaces;
@@ -11,14 +9,14 @@ using MementoMori.Server.Interfaces;
 namespace MementoMori.Server.Controllers
 {
     [ApiController]
-    //[Route("[controller]")]
     [Route("[controller]/{deckId}")]
-    public class DecksController(IDeckHelper deckHelper, IAuthService authService, ICardService cardService) : ControllerBase
+    public class DecksController(IDeckHelper deckHelper, IAuthService authService, ICardService cardService, 
+    ConcurrentQueue<(Guid UserId, Guid DeckId, Guid CardId, int Quality)> updateQueue) : ControllerBase
     {
         private readonly IDeckHelper _deckHelper = deckHelper;
         private readonly IAuthService _authService = authService;
         private readonly ICardService _cardService = cardService;
-
+        private readonly ConcurrentQueue<(Guid UserId, Guid DeckId, Guid CardId, int Quality)> _updateQueue = updateQueue;
 
         [HttpGet("deck")]
         public IActionResult View(Guid deckId) {
@@ -85,9 +83,8 @@ namespace MementoMori.Server.Controllers
         }
 
         [HttpGet("cards")]
-        public async Task<IActionResult> GetDueCards(Guid deckId)
+        public IActionResult GetDueCards(Guid deckId)
         {
-            //maybe problem not selecting based on userID
             try
             {
                 Guid? userId = _authService.GetRequesterId(HttpContext);
@@ -97,7 +94,7 @@ namespace MementoMori.Server.Controllers
                     return BadRequest(new { errorCode = "InvalidInput", message = "Invalid deck or user ID." });
                 }
 
-                List<Card> dueForReviewCards = _cardService.GetCardsForReview(deckId);
+                List<Card> dueForReviewCards = _cardService.GetCardsForReview(deckId, userId.Value);
 
                 if (!dueForReviewCards.Any())
                 {
@@ -123,7 +120,7 @@ namespace MementoMori.Server.Controllers
         }
 
         [HttpPost("addToCollection")]
-        public async Task<IActionResult> AddCardsToCollection(Guid deckId)
+        public IActionResult AddCardsToCollection(Guid deckId)
         {
             Guid? userId = _authService.GetRequesterId(HttpContext);
 
@@ -136,8 +133,9 @@ namespace MementoMori.Server.Controllers
 
             return Ok(new { message = "Deck successfully added to user's collection." });
         }
+        
         [HttpPost("cards/update/{cardId}")]
-        public async Task<IActionResult> UpdateCard(Guid deckId, Guid cardId, [FromBody] int quality)
+        public IActionResult UpdateCard(Guid deckId, Guid cardId, [FromBody] int quality)
         {
             Guid? userId = _authService.GetRequesterId(HttpContext);
 
@@ -145,9 +143,10 @@ namespace MementoMori.Server.Controllers
             {
                 return BadRequest(new { errorCode = "InvalidInput", message = "Invalid deck, card or user ID." });
             }
+            
             if(userId != null)
-                _cardService.UpdateSpacedRepetition(userId.Value, deckId, cardId, quality);
-
+                _updateQueue.Enqueue((userId.Value, deckId, cardId, quality));
+            
             return Ok(new {message = "Card updated successfully"});
         }
     }
