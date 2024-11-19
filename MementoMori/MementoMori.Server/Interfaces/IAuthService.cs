@@ -13,5 +13,6 @@ namespace MementoMori.Server.Interfaces
         Task<User?> GetUserByUsername(string username);
         string HashPassword(string password);
         bool VerifyPassword(string password, string storedHash);
+        User[] GetAllUsers();
     }
 }

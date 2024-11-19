@@ -30,6 +30,11 @@ namespace MementoMori.Server.Service
             }
         }
 
+        public User[] GetAllUsers() 
+        {
+            return _context.Users.ToArray();
+        }
+
         public bool VerifyPassword(string password, string storedHash)
         {
             var hashedPassword = HashPassword(password);
