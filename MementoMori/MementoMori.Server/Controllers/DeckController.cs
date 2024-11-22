@@ -94,6 +94,7 @@ namespace MementoMori.Server.Controllers
             if (deck == null)
                 return NotFound("Deck not found.");
 
+
             var Cards = deck.Cards.Select(Card => new CardDTO
             {
                 Id = Card.Id,

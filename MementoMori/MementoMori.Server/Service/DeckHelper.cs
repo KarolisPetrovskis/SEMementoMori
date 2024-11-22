@@ -54,7 +54,6 @@ namespace MementoMori.Server.Service
         {
             try
             {
-
                 _context.SecureUpdate<Deck, DeckEditableProperties>(editedDeckDTO.Deck, requesterId);
                 if (editedDeckDTO.Cards != null)
                 {

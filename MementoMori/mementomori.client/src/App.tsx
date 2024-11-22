@@ -6,8 +6,8 @@ import DeckPage from './mainFunctionality/DeckPage';
 import SpecificDeck from './SpecificDeck.tsx';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Deck } from './decks/Deck.tsx';
-import MainHeader from './homePage/MainHeader';
 import EditDeck from './Editor/DeckEditor.tsx';
+import MainHeader from './homePage/MainHeader';
 
 const client = new QueryClient();
 
