@@ -132,17 +132,13 @@ namespace MementoMori.Server.Controllers
                 return Unauthorized();
             try
             {
-                //createDeckDTO.Deck.Id = deckGuid;
                 Guid deckGuid = Guid.NewGuid();
                 return Ok(_deckHelper.CreateDeck(createDeckDTO, (Guid)requesterId));
-                //_deckHelper.CreateDeck(createDeckDTO.Deck, (Guid)requesterId);
-                //_deckHelper.UpdateDeck(createDeckDTO, (Guid)requesterId);
             }
             catch (UnauthorizedEditingException ex)
             {
                 return Unauthorized();
             }
-            //return Ok(deckGuid);
         }
         [HttpPost("deleteDeck")]
         public IActionResult DeleteDeck(Guid deckId)
