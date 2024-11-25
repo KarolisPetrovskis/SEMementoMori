@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace MementoMori.Tests.ServiceTests
+namespace MementoMori.Tests.UnitTests.ServiceTests
 {
     public class DeckHelperTests
     {
@@ -73,10 +73,10 @@ namespace MementoMori.Tests.ServiceTests
             var newCard = new Card { Id = Guid.NewGuid(), Question = "New Question", Answer = "New Answer" };
             var updatedDeckDTO = new EditedDeckDTO
             {
-                Deck = new DeckEditableProperties { Id = deck.Id, isPublic = true, Title="test" },
+                Deck = new DeckEditableProperties { Id = deck.Id, isPublic = true, Title = "test" },
                 NewCards = new[] { newCard }
             };
-            
+
             helper.UpdateDeck(updatedDeckDTO, creatorId);
 
             var addedCard = context.Cards.First();
@@ -97,7 +97,7 @@ namespace MementoMori.Tests.ServiceTests
             context.SaveChanges();
             var updatedDeckDTO = new EditedDeckDTO
             {
-                Deck = new DeckEditableProperties { Id = deck.Id, isPublic=true, Title="Title" },
+                Deck = new DeckEditableProperties { Id = deck.Id, isPublic = true, Title = "Title" },
                 RemovedCards = new[] { card.Id }
             };
 

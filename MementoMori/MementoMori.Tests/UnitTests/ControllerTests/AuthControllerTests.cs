@@ -4,10 +4,11 @@ using MementoMori.Server.Interfaces;
 using MementoMori.Server.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.TestPlatform.TestHost;
 using Moq;
 using Xunit;
 
-namespace MementoMori.Tests.ControllerTests
+namespace MementoMori.Tests.UnitTests.ControllerTests
 {
     public class AuthControllerTests
     {
@@ -16,6 +17,7 @@ namespace MementoMori.Tests.ControllerTests
 
         public AuthControllerTests()
         {
+
             _mockAuthService = new Mock<IAuthService>();
 
             _controller = new AuthController(_mockAuthService.Object)
