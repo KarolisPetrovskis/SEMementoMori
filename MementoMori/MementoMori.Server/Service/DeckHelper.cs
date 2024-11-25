@@ -85,30 +85,35 @@ namespace MementoMori.Server.Service
                 throw;
             }
         }
-        public void CreateDeck (DeckEditableProperties deck, Guid requesterId)
+        public Guid CreateDeck (EditedDeckDTO createDeck, Guid requesterId)
         {
+            Guid newDeckGuid = Guid.NewGuid();
             Deck newDeck = new()
             {
-                Id = deck.Id,
+                Id = newDeckGuid,
                 CreatorId = requesterId,
-                isPublic = deck.isPublic,
-                Title = deck.Title,
-                Description = deck.Title,
-                Tags = deck.Tags,
+                isPublic = createDeck.Deck.isPublic,
+                Title = createDeck.Deck.Title,
+                Description = createDeck.Deck.Title,
+                Tags = createDeck.Deck.Tags,
                 Rating = 0,
                 RatingCount = 0,
                 Modified = DateOnly.FromDateTime(DateTime.Now),
-                Cards = null,
+                Cards = createDeck.NewCards?.ToList(),
                 CardCount = 0,
             };
             _context.Decks.Add(newDeck);
             _context.SaveChanges();
+            return newDeckGuid;
         }
         public void DeleteDeck(Guid deckId)
         {
             var deck = _context.Decks.Include(d => d.Cards).FirstOrDefault(d => d.Id == deckId);
-            _context.Decks.Remove(deck);
-            _context.SaveChanges();
+            if (deck != null)
+            {
+                _context.Decks.Remove(deck);
+                _context.SaveChanges();
+            }
         }
         private void LogError(Guid deckId, Guid requesterId, Exception exception)
         {

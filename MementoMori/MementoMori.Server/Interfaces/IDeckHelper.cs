@@ -7,7 +7,7 @@ namespace MementoMori.Server.Interfaces
     {
         List<Deck> Filter(Guid[]? ids = null, string? titleSubstring = null, string[]? selectedTags = null);
         void UpdateDeck(EditedDeckDTO editedDeckDTO, Guid editorId);
-        void CreateDeck (DeckEditableProperties deck, Guid requesterId);
+        Guid CreateDeck (EditedDeckDTO createDeck, Guid requesterId);
         void DeleteDeck(Guid deckId);
     }
 }
