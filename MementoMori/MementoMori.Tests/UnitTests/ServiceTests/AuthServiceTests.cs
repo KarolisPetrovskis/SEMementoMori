@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 
-namespace MementoMori.Tests.ServiceTests;
+namespace MementoMori.Tests.UnitTests.ServiceTests;
 
 public class AuthServiceTests
 {
@@ -66,7 +66,7 @@ public class AuthServiceTests
     [Fact]
     public async Task CreateUserAsync_CreatesUserSuccessfully()
     {
-        var registerDetails = new RegisterDetails { Username = "newuser", Password = "SecurePassword123", RememberMe=true };
+        var registerDetails = new RegisterDetails { Username = "newuser", Password = "SecurePassword123", RememberMe = true };
         var hashedPassword = _authService.HashPassword(registerDetails.Password);
 
         var user = await _authService.CreateUserAsync(registerDetails);

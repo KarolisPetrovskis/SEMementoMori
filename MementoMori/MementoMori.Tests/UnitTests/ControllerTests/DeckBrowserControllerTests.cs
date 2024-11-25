@@ -12,7 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MementoMori.Tests.ControllerTests
+namespace MementoMori.Tests.UnitTests.ControllerTests
 {
 
     public class DeckBrowserControllerTests

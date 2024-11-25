@@ -14,7 +14,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("WebApiDatabase")));
 
-builder.Services.AddDbContext<AppDbContext, AppDbContext>();
 builder.Services.AddScoped<IDeckHelper, DeckHelper>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddControllers();
@@ -62,3 +61,5 @@ app.MapControllers();
 app.MapFallbackToFile("/index.html");
 
 app.Run();
+
+public partial class Program { }
