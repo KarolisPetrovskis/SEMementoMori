@@ -132,7 +132,6 @@ namespace MementoMori.Server.Controllers
                 return Unauthorized();
             try
             {
-                Guid deckGuid = Guid.NewGuid();
                 return Ok(_deckHelper.CreateDeck(createDeckDTO, (Guid)requesterId));
             }
             catch (UnauthorizedEditingException ex)
@@ -143,8 +142,15 @@ namespace MementoMori.Server.Controllers
         [HttpPost("deleteDeck")]
         public IActionResult DeleteDeck(Guid deckId)
         {
-            _deckHelper.DeleteDeck(deckId);
-            return Ok(deckId);
+            try
+            {
+                _deckHelper.DeleteDeck(deckId);
+                return Ok(deckId);
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
         }
 
     }

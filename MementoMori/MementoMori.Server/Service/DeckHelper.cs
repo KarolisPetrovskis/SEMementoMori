@@ -114,6 +114,10 @@ namespace MementoMori.Server.Service
                 _context.Decks.Remove(deck);
                 _context.SaveChanges();
             }
+            else
+            {
+                throw new KeyNotFoundException();
+            }
         }
         private void LogError(Guid deckId, Guid requesterId, Exception exception)
         {
