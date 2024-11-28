@@ -23,13 +23,10 @@ namespace MementoMori.Server.Database
 
     private void PerformCascadingDeletes()
     {
-        // Find all Deck entities marked for deletion
         var deletedDecks = ChangeTracker.Entries<Deck>()
             .Where(e => e.State == EntityState.Deleted)
             .Select(e => e.Entity)
             .ToList();
-
-        // Remove related Cards for each deleted Deck
         foreach (var deck in deletedDecks)
         {
             var relatedCards = Cards.Where(c => c.DeckId == deck.Id).ToList();
