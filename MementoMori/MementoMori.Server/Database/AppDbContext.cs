@@ -1,23 +1,41 @@
 using MementoMori.Server.Exceptions;
 using MementoMori.Server.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Configuration;
 
 namespace MementoMori.Server.Database
 {
     public class AppDbContext : DbContext 
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options ?? throw new ArgumentNullException(nameof(options))) { }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+    public override int SaveChanges()
+    {
+        PerformCascadingDeletes();
+        return base.SaveChanges();
+    }
+
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        PerformCascadingDeletes();
+        return await base.SaveChangesAsync(cancellationToken);
+    }
+
+    private void PerformCascadingDeletes()
+    {
+        // Find all Deck entities marked for deletion
+        var deletedDecks = ChangeTracker.Entries<Deck>()
+            .Where(e => e.State == EntityState.Deleted)
+            .Select(e => e.Entity)
+            .ToList();
+
+        // Remove related Cards for each deleted Deck
+        foreach (var deck in deletedDecks)
         {
-            modelBuilder.Entity<Card>()
-                .HasOne<Deck>()
-                .WithMany(d => d.Cards)
-                .HasForeignKey(c => c.DeckId)
-                .OnDelete(DeleteBehavior.Cascade);
-            
-            modelBuilder.Entity<User>().ToTable("Users");
-            base.OnModelCreating(modelBuilder);
+            var relatedCards = Cards.Where(c => c.DeckId == deck.Id).ToList();
+            Cards.RemoveRange(relatedCards);
         }
+    }
         public void SecureUpdate<T, P>(P item, Guid changedBy) where T : P where P : DatabaseObject
         {
             var entity = Set<T>().FirstOrDefault(e => e.Id == item.Id);
