@@ -2,7 +2,16 @@ import { useState, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { Box, Chip, CircularProgress } from '@mui/material';
+import {
+  Box,
+  Chip,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from '@mui/material';
 import { Typography } from '@mui/joy';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Button from '@mui/material/Button';
@@ -58,6 +67,7 @@ type ButtonProps = {
 function Buttons(props: ButtonProps) {
   const anchorRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [inCollection, setInCollection] = useState(props.inCollection);
   const { deckId } = useParams<{ deckId: string }>();
 
@@ -100,6 +110,19 @@ function Buttons(props: ButtonProps) {
     }
   };
 
+  const openDialog = () => {
+    setDialogOpen(true);
+  };
+
+  const closeDialog = () => {
+    setDialogOpen(false);
+  };
+
+  const confirmRemove = () => {
+    onRemoveClick();
+    closeDialog();
+  };
+
   const onEditClick = () => {
     window.location.href = `/decks/${deckId}/edit`;
   };
@@ -124,23 +147,51 @@ function Buttons(props: ButtonProps) {
       }}
     >
       {inCollection ? (
-        <Button color="success" onClick={onPracticeClick} variant="contained">
-          Practice
-        </Button>
+        <>
+          <Button color="success" onClick={onPracticeClick} variant="contained">
+            Practice
+          </Button>
+          <Button
+            color="error"
+            onClick={openDialog} // Open the dialog instead of directly executing the removal
+            variant="contained"
+          >
+            Remove
+          </Button>
+          <Dialog
+            open={dialogOpen}
+            onClose={closeDialog}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">
+              {'Confirm Removal'}
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Are you sure you want to remove this Deck from your collection?
+                This action cannot be undone.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={closeDialog} color="primary">
+                No
+              </Button>
+              <Button onClick={confirmRemove} color="error" autoFocus>
+                Yes
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </>
       ) : (
         <Button
           color="success"
           onClick={onAddToMyCollectionClick}
           variant="contained"
         >
-          Add to my collection
+          Actions
         </Button>
       )}
-      {inCollection ? (
-        <Button color="error" onClick={onRemoveClick} variant="contained">
-          Remove
-        </Button>
-      ) : null}
       {props.isOwner ? (
         <>
           <ButtonGroup
@@ -193,11 +244,7 @@ function Buttons(props: ButtonProps) {
             )}
           </Popper>
         </>
-      ) : (
-        <Button color="info" onClick={onUseAsTemplateClick} variant="contained">
-          Use as a template
-        </Button>
-      )}
+      ) : null}
     </Box>
   );
 }
