@@ -14,7 +14,8 @@ namespace MementoMori.Server.Database
                 .WithMany(d => d.Cards)
                 .HasForeignKey(c => c.DeckId)
                 .OnDelete(DeleteBehavior.Cascade);
-
+            
+            modelBuilder.Entity<User>().ToTable("Users");
             base.OnModelCreating(modelBuilder);
         }
         public void SecureUpdate<T, P>(P item, Guid changedBy) where T : P where P : DatabaseObject
