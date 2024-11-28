@@ -17,6 +17,7 @@ namespace MementoMori.Server.Database
                 .HasForeignKey(c => c.DeckId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+
             modelBuilder.Entity<User>().ToTable("Users");
 
             base.OnModelCreating(modelBuilder);
