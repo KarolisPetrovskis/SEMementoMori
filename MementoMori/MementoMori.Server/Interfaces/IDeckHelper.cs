@@ -1,4 +1,5 @@
 ﻿using MementoMori.Server.DTOS;
+using MementoMori.Server.Models;
 
 namespace MementoMori.Server.Interfaces
 {
@@ -6,5 +7,7 @@ namespace MementoMori.Server.Interfaces
     {
         List<Deck> Filter(Guid[]? ids = null, string? titleSubstring = null, string[]? selectedTags = null);
         void UpdateDeck(EditedDeckDTO editedDeckDTO, Guid editorId);
+        Guid CreateDeck (EditedDeckDTO createDeck, Guid requesterId);
+        void DeleteDeck(Guid deckId);
     }
 }

@@ -9,6 +9,30 @@ namespace MementoMori.Server.Database
     public class AppDbContext : DbContext 
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options ?? throw new ArgumentNullException(nameof(options))) { }
+    public override int SaveChanges()
+    {
+        PerformCascadingDeletes();
+        return base.SaveChanges();
+    }
+
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        PerformCascadingDeletes();
+        return await base.SaveChangesAsync(cancellationToken);
+    }
+
+    private void PerformCascadingDeletes()
+    {
+        var deletedDecks = ChangeTracker.Entries<Deck>()
+            .Where(e => e.State == EntityState.Deleted)
+            .Select(e => e.Entity)
+            .ToList();
+        foreach (var deck in deletedDecks)
+        {
+            var relatedCards = Cards.Where(c => c.DeckId == deck.Id).ToList();
+            Cards.RemoveRange(relatedCards);
+        }
+    }
         public void SecureUpdate<T, P>(P item, Guid changedBy) where T : P where P : DatabaseObject
         {
             var entity = Set<T>().FirstOrDefault(e => e.Id == item.Id);
@@ -35,7 +59,7 @@ namespace MementoMori.Server.Database
             }
             Remove(entity);
         }
-
+    
         public DbSet<Deck> Decks { get; set; }
         public DbSet<Card> Cards { get; set; }
         public DbSet<User> Users { get; set; }

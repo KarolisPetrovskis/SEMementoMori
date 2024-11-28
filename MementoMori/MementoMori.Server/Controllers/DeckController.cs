@@ -4,6 +4,7 @@ using MementoMori.Server.Extensions;
 using MementoMori.Server.Interfaces;
 using MementoMori.Server.Service;
 using MementoMori.Server.Exceptions;
+using MementoMori.Server.Models;
 
 namespace MementoMori.Server.Controllers
 {
@@ -93,6 +94,7 @@ namespace MementoMori.Server.Controllers
             if (deck == null)
                 return NotFound("Deck not found.");
 
+
             var Cards = deck.Cards.Select(Card => new CardDTO
             {
                 Id = Card.Id,
@@ -122,5 +124,34 @@ namespace MementoMori.Server.Controllers
             }
             return Ok();
         }
+        [HttpPost("createDeck")]
+        public IActionResult CreateDeck(EditedDeckDTO createDeckDTO)
+        {
+            var requesterId = _authService.GetRequesterId(HttpContext);
+            if (requesterId == null)
+                return Unauthorized();
+            try
+            {
+                return Ok(_deckHelper.CreateDeck(createDeckDTO, (Guid)requesterId));
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
+        }
+        [HttpPost("deleteDeck")]
+        public IActionResult DeleteDeck(Guid deckId)
+        {
+            try
+            {
+                _deckHelper.DeleteDeck(deckId);
+                return Ok(deckId);
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
+        }
+
     }
 }

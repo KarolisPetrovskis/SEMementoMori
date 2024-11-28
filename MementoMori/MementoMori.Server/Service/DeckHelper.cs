@@ -54,7 +54,6 @@ namespace MementoMori.Server.Service
         {
             try
             {
-
                 _context.SecureUpdate<Deck, DeckEditableProperties>(editedDeckDTO.Deck, requesterId);
                 if (editedDeckDTO.Cards != null)
                 {
@@ -84,6 +83,40 @@ namespace MementoMori.Server.Service
             {
                 LogError(editedDeckDTO.Deck.Id, requesterId, ex);
                 throw;
+            }
+        }
+        public Guid CreateDeck (EditedDeckDTO createDeck, Guid requesterId)
+        {
+            Guid newDeckGuid = Guid.NewGuid();
+            Deck newDeck = new()
+            {
+                Id = newDeckGuid,
+                CreatorId = requesterId,
+                isPublic = createDeck.Deck.isPublic,
+                Title = createDeck.Deck.Title,
+                Description = createDeck.Deck.Title,
+                Tags = createDeck.Deck.Tags,
+                Rating = 0,
+                RatingCount = 0,
+                Modified = DateOnly.FromDateTime(DateTime.Now),
+                Cards = createDeck.NewCards?.ToList(),
+                CardCount = 0,
+            };
+            _context.Decks.Add(newDeck);
+            _context.SaveChanges();
+            return newDeckGuid;
+        }
+        public void DeleteDeck(Guid deckId)
+        {
+            var deck = _context.Decks.Include(d => d.Cards).FirstOrDefault(d => d.Id == deckId);
+            if (deck != null)
+            {
+                _context.Decks.Remove(deck);
+                _context.SaveChanges();
+            }
+            else
+            {
+                throw new KeyNotFoundException();
             }
         }
         private void LogError(Guid deckId, Guid requesterId, Exception exception)

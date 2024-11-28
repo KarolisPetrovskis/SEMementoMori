@@ -3,12 +3,11 @@ import Home from './Home';
 import Browser from './deckBrowser/Browser';
 import './App.css';
 import DeckPage from './mainFunctionality/DeckPage';
-import Cards from './CardCreator.tsx';
 import SpecificDeck from './SpecificDeck.tsx';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Deck } from './decks/Deck.tsx';
-import MainHeader from './homePage/MainHeader';
 import EditDeck from './Editor/DeckEditor.tsx';
+import MainHeader from './homePage/MainHeader';
 
 const client = new QueryClient();
 
