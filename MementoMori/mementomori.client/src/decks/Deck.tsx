@@ -244,7 +244,11 @@ function Buttons(props: ButtonProps) {
             )}
           </Popper>
         </>
-      ) : null}
+      ) : (
+        <Button color="info" onClick={onUseAsTemplateClick} variant="contained">
+          Use as a template
+        </Button>
+      )}
     </Box>
   );
 }
