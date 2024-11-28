@@ -62,7 +62,9 @@ export default function DeckPage() {
 
     try {
       const response = await fetch(
-        `https://localhost:5173/api/card/update/${currentCard.id}`,
+        //https://localhost:5173/cards/dbba9b7e-6571-4238-ab4c-7bfdae98eee2/cards/update/91cd03ee-8d08-4a15-a228-f4cd43294ae6
+        //https://localhost:7122/Decks/dbba9b7e-6571-4238-ab4c-7bfdae98eee2/cards/update/dbba9b7e-6571-4238-ab4c-7bfdae98eee2
+        `https://localhost:5173/Decks/${deckId}/cards/update/${currentCard.id}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

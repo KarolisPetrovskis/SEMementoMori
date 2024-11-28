@@ -79,14 +79,17 @@ namespace MementoMori.Server.Service
         }
         public List<Card> GetCardsForReview(Guid deckId, Guid userId)
         {
+            var today = DateTime.Today;
             var cardsForReview = _context.UserCards
-            .Where(uc => uc.DeckId == deckId && uc.UserId == userId && uc.LastReviewed.AddDays(uc.Interval) <= DateTime.Today)
+            .Where(uc => uc.DeckId == deckId
+                     && uc.UserId == userId && uc.LastReviewed.AddDays(uc.Interval) <= today)
             .Select(uc => uc.CardId)
             .ToList();
 
             return _context.Cards
                 .Where(c => cardsForReview.Contains(c.Id))
                 .ToList();
+
         }
     }
 }

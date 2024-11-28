@@ -69,7 +69,7 @@ export default defineConfig({
         target,
         secure: false,
       },
-      "^/Decks/{deckId}/cards/update/{cardId}": {
+      "^/Decks/.*?/cards/update/.*?": {
         target,
         secure: false,
       },
