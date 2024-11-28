@@ -134,9 +134,9 @@ namespace MementoMori.Server.Controllers
             {
                 return Ok(_deckHelper.CreateDeck(createDeckDTO, (Guid)requesterId));
             }
-            catch (UnauthorizedEditingException ex)
+            catch
             {
-                return Unauthorized();
+                return StatusCode(500);
             }
         }
         [HttpPost("deleteDeck")]
