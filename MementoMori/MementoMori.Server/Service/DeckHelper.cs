@@ -80,7 +80,6 @@ namespace MementoMori.Server.Service
             }
             catch (UnauthorizedEditingException ex)
             {
-                LogError(editedDeckDTO.Deck.Id, requesterId, ex);
                 throw;
             }
         }
@@ -116,20 +115,6 @@ namespace MementoMori.Server.Service
             else
             {
                 throw new KeyNotFoundException();
-            }
-        }
-        private void LogError(Guid deckId, Guid requesterId, Exception exception)
-        {
-            string logFilePath = "error_log.txt";
-            string logEntry = $"Timestamp: {DateTime.UtcNow}\nDeckId: {deckId}\nRequesterId: {requesterId}\nError: {exception.Message}\n---\n";
-
-            try
-            {
-                File.AppendAllText(logFilePath, logEntry);
-            }
-            catch (Exception logEx)
-            {
-                Console.WriteLine($"Failed to log error: {logEx.Message}");
             }
         }
     }
