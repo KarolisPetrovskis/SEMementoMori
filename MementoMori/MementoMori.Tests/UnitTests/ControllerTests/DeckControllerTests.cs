@@ -59,7 +59,7 @@ public class DecksControllerTests
         {
             Id = deckId,
             Title = "Test Deck",
-            Creator = new User { Id = creatorId, Username = "TestUser" },
+            Creator = new User { Id = creatorId, Username = "TestUser", Password = "Password" },
             CardCount = 1,
             Modified = DateOnly.FromDateTime(DateTime.UtcNow),
             Rating = 4.5,
@@ -140,7 +140,7 @@ public class DecksControllerTests
         Assert.True(editorDTO.isPublic);
         Assert.Equal(2, editorDTO.CardCount);
         Assert.Equal("Editable Description", editorDTO.Description);
-        Assert.Equal("Q1", editorDTO.Cards.First().Question);
+        Assert.Equal("Q1", editorDTO.Cards?.First().Question);
     }
 
     

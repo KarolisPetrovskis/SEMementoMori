@@ -98,18 +98,22 @@ public class AuthServiceTests
     public async Task GetUserById_ReturnsUser_WhenUserExists()
     {
         var userId = Guid.NewGuid();
-        var username = "existinguser";
+        var username1 = "existinguser1";
+        var username2 = "existinguser2";
+        var username3 = "existinguser3";
         var password = "password";
         var passwordHash = _authService.HashPassword(password);
-        var user = new User { Id = userId, Username = username, Password = password };
-        _context.Users.Add(user);
+        var user1 = new User { Id = Guid.NewGuid(), Username = username1, Password = password };
+        var user2 = new User { Id = userId, Username = username2, Password = password };
+        var user3 = new User { Id = Guid.NewGuid(), Username = username3, Password = password };
+        _context.Users.AddRange([user1, user2]);
         await _context.SaveChangesAsync();
 
         var result = await _authRepo.GetUserById(userId);
 
         Assert.NotNull(result);
         Assert.Equal(userId, result.Id);
-        Assert.Equal(username, result.Username);
+        Assert.Equal(username2, result.Username);
     }
 
     [Fact]

@@ -116,7 +116,7 @@ namespace MementoMori.Server.Controllers
             {
                 _deckHelper.UpdateDeck(editedDeckDTO, (Guid)requesterId);
             }
-            catch (UnauthorizedEditingException ex)
+            catch (UnauthorizedEditingException)
             {
                 return Unauthorized();
             }

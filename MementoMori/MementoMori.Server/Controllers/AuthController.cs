@@ -91,7 +91,7 @@ namespace MementoMori.Server.Controllers
             return Ok(loginResponse);
         }
         [HttpPost("logout")]
-        public async Task<IActionResult> Logout()
+        public IActionResult Logout()
         {
             _authService.RemoveCookie(HttpContext);
             return Ok();

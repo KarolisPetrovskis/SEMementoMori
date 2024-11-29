@@ -78,7 +78,7 @@ namespace MementoMori.Server.Service
                 }
                 _context.SaveChanges();
             }
-            catch (UnauthorizedEditingException ex)
+            catch (UnauthorizedEditingException)
             {
                 throw;
             }
@@ -97,7 +97,7 @@ namespace MementoMori.Server.Service
                 Rating = 0,
                 RatingCount = 0,
                 Modified = DateOnly.FromDateTime(DateTime.Now),
-                Cards = createDeck.NewCards?.ToList(),
+                Cards = createDeck.NewCards?.ToList() ?? [],
                 CardCount = 0,
             };
             _context.Decks.Add(newDeck);
