@@ -1,9 +1,4 @@
-﻿using System.Text;
-using System.Security.Cryptography;
-using MementoMori.Server.Models;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
-using System.Security.Claims;
+﻿using MementoMori.Server.Models;
 using MementoMori.Server.Database;
 using MementoMori.Server.Interfaces;
 using MementoMori.Server.DTOS;

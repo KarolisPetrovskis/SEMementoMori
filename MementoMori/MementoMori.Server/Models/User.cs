@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace MementoMori.Server.Models
+﻿namespace MementoMori.Server.Models
 {
     public class User : DatabaseObject
     {

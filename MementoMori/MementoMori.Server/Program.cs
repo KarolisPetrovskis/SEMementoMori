@@ -1,4 +1,3 @@
-using MementoMori.Server;
 using MementoMori.Server.Service;
 using MementoMori.Server.Database;
 using Microsoft.EntityFrameworkCore;

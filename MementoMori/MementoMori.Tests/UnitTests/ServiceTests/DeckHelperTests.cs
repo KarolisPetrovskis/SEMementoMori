@@ -4,10 +4,6 @@ using MementoMori.Server.DTOS;
 using MementoMori.Server.Models;
 using MementoMori.Server.Service;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Xunit;
 
 namespace MementoMori.Tests.UnitTests.ServiceTests
 {

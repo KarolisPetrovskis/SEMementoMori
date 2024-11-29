@@ -1,7 +1,4 @@
-﻿using MementoMori.Server.DTOS;
-using MementoMori.Server.Models;
-
-namespace MementoMori.Server.Interfaces
+﻿namespace MementoMori.Server.Interfaces
 {
     public interface IAuthService
     {

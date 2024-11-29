@@ -1,7 +1,6 @@
 ﻿using MementoMori.Server.DTOS;
 using MementoMori.Server.Interfaces;
 using MementoMori.Server.Models;
-using MementoMori.Server.Service;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Concurrent;
 

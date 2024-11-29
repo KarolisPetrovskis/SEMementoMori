@@ -4,9 +4,7 @@ using MementoMori.Server.Interfaces;
 using MementoMori.Server.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
 using Moq;
-using Xunit;
 
 namespace MementoMori.Tests.UnitTests.ControllerTests
 {

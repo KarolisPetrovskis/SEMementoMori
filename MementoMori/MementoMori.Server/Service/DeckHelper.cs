@@ -5,7 +5,6 @@ using MementoMori.Server.Extensions;
 using MementoMori.Server.Interfaces;
 using MementoMori.Server.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace MementoMori.Server.Service
 {

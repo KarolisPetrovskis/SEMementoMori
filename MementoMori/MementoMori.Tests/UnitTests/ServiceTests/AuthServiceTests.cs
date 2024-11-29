@@ -1,15 +1,11 @@
-using Castle.Core.Logging;
 using MementoMori.Server.Database;
 using MementoMori.Server.Service;
 using MementoMori.Server.Models;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Microsoft.AspNetCore.Http;
-using Xunit;
 using MementoMori.Server.DTOS;
 using MementoMori.Server.Exceptions;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 
 namespace MementoMori.Tests.UnitTests.ServiceTests;
