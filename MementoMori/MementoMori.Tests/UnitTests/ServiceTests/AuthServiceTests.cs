@@ -17,6 +17,7 @@ namespace MementoMori.Tests.UnitTests.ServiceTests;
 public class AuthServiceTests
 {
     private readonly AuthService _authService;
+    private readonly AuthRepo _authRepo;
     private readonly AppDbContext _context;
     private readonly Mock<HttpContext> _mockHttpContext;
 
@@ -27,7 +28,8 @@ public class AuthServiceTests
             .Options;
 
         _context = new AppDbContext(options);
-        _authService = new AuthService(_context);
+        _authService = new AuthService();
+        _authRepo = new AuthRepo(_context, _authService);
 
         _mockHttpContext = new Mock<HttpContext>();
     }
@@ -69,7 +71,7 @@ public class AuthServiceTests
         var registerDetails = new RegisterDetails { Username = "newuser", Password = "SecurePassword123", RememberMe = true };
         var hashedPassword = _authService.HashPassword(registerDetails.Password);
 
-        var user = await _authService.CreateUserAsync(registerDetails);
+        var user = await _authRepo.CreateUserAsync(registerDetails);
 
         Assert.NotNull(user);
         Assert.Equal(registerDetails.Username, user.Username);
@@ -85,7 +87,7 @@ public class AuthServiceTests
 
         var registerDetails = new RegisterDetails { Username = "existinguser", Password = "SecurePassword123" };
 
-        await Assert.ThrowsAsync<Exception>(async () => await _authService.CreateUserAsync(registerDetails));
+        await Assert.ThrowsAsync<Exception>(async () => await _authRepo.CreateUserAsync(registerDetails));
     }
 
     [Fact]
@@ -93,7 +95,7 @@ public class AuthServiceTests
     {
         var registerDetails = new RegisterDetails { Username = "somenewuser", Password = "" };
 
-        await Assert.ThrowsAsync<Exception>(async () => await _authService.CreateUserAsync(registerDetails));
+        await Assert.ThrowsAsync<Exception>(async () => await _authRepo.CreateUserAsync(registerDetails));
     }
 
     [Fact]
@@ -107,7 +109,7 @@ public class AuthServiceTests
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
-        var result = await _authService.GetUserById(userId);
+        var result = await _authRepo.GetUserById(userId);
 
         Assert.NotNull(result);
         Assert.Equal(userId, result.Id);
@@ -119,7 +121,7 @@ public class AuthServiceTests
     {
         var userId = Guid.NewGuid();
 
-        await Assert.ThrowsAsync<UserNotFoundException>(async () => await _authService.GetUserById(userId));
+        await Assert.ThrowsAsync<UserNotFoundException>(async () => await _authRepo.GetUserById(userId));
     }
 
     [Fact]
@@ -131,7 +133,7 @@ public class AuthServiceTests
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
-        var result = await _authService.GetUserByUsername("existinguser");
+        var result = await _authRepo.GetUserByUsername("existinguser");
 
         Assert.NotNull(result);
         Assert.Equal("existinguser", result.Username);
@@ -140,7 +142,7 @@ public class AuthServiceTests
     [Fact]
     public async Task GetUserByUsername_ReturnsNull_WhenUserDoesNotExist()
     {
-        var result = await _authService.GetUserByUsername("nonexistentuser");
+        var result = await _authRepo.GetUserByUsername("nonexistentuser");
 
         Assert.Null(result);
     }

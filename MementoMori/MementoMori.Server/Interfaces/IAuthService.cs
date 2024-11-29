@@ -7,12 +7,8 @@ namespace MementoMori.Server.Interfaces
     {
         void AddCookie(HttpContext httpContext, Guid userId, bool isPersistent);
         void RemoveCookie(HttpContext httpContext);
-        Task<User> CreateUserAsync(RegisterDetails registerDetails);
         Guid? GetRequesterId(HttpContext httpContext);
-        Task<User> GetUserById(Guid id);
-        Task<User?> GetUserByUsername(string username);
         string HashPassword(string password);
         bool VerifyPassword(string password, string storedHash);
-        User[] GetAllUsers();
     }
 }
