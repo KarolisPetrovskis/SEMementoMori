@@ -1,13 +1,9 @@
-﻿using Xunit;
-using Moq;
+﻿using Moq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MementoMori.Server.Controllers;
 using MementoMori.Server.Interfaces;
 using MementoMori.Server.DTOS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using MementoMori.Server.Models;
 using MementoMori.Server;
 
@@ -32,30 +28,30 @@ public class DecksControllerTests
     }
 
     [Fact]
-    public void View_ReturnsNotFound_WhenDeckNotExists()
+    public async Task ViewAsync_ReturnsNotFound_WhenDeckNotExists()
     {
         var deckId = Guid.NewGuid();
         _mockDeckHelper
             .Setup(d => d.Filter(It.Is<Guid[]>(ids => ids.Contains(deckId)), null, null))
-            .Returns(new List<Deck>());
+            .ReturnsAsync(new List<Deck>());
 
-        var result = _controller.View(deckId);
+        var result = await _controller.ViewAsync(deckId);
 
         Assert.IsType<NotFoundObjectResult>(result);
     }
 
     [Fact]
-    public void View_ReturnsBadRequest_WhenGuidEmpty() 
+    public async Task ViewAsync_ReturnsBadRequest_WhenGuidEmpty() 
     {
         var deckId = Guid.Empty;
         
-        var result = _controller.View(deckId);
+        var result = await _controller.ViewAsync(deckId);
 
         Assert.IsType<BadRequestObjectResult>(result);
     }
 
     [Fact]
-    public void View_ReturnsDeckDTO_WhenDeckExists()
+    public async Task ViewAsync_ReturnsDeckDTO_WhenDeckExists()
     {
         var deckId = Guid.NewGuid();
         var creatorId = Guid.NewGuid();
@@ -63,7 +59,7 @@ public class DecksControllerTests
         {
             Id = deckId,
             Title = "Test Deck",
-            Creator = new User { Id = creatorId, Username = "TestUser" },
+            Creator = new User { Id = creatorId, Username = "TestUser", Password = "Password" },
             CardCount = 1,
             Modified = DateOnly.FromDateTime(DateTime.UtcNow),
             Rating = 4.5,
@@ -74,12 +70,12 @@ public class DecksControllerTests
         };
         _mockDeckHelper
             .Setup(d => d.Filter(It.Is<Guid[]>(ids => ids.Contains(deckId)), null, null))
-            .Returns(new List<Deck> { deck });
+            .ReturnsAsync([deck]);
         _mockAuthService
             .Setup(a => a.GetRequesterId(It.IsAny<HttpContext>()))
             .Returns(creatorId);
 
-        var result = _controller.View(deckId);
+        var result = await _controller.ViewAsync(deckId);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var deckDTO = Assert.IsType<DeckDTO>(okResult.Value);
@@ -90,30 +86,30 @@ public class DecksControllerTests
     }
 
     [Fact]
-    public void EditorView_ReturnsBadRequest_WhenGuidEmpty()
+    public async Task EditorViewAsync_ReturnsBadRequest_WhenGuidEmpty()
     {
         var deckId = Guid.Empty;
 
-        var result = _controller.EditorView(deckId);
+        var result = await _controller.EditorViewAsync(deckId);
 
         Assert.IsType<BadRequestObjectResult>(result);
     }
 
     [Fact]
-    public void EditorView_ReturnsNotFound_WhenDeckNotExists()
+    public async Task EditorView_ReturnsNotFound_WhenDeckNotExists()
     {
         var deckId = Guid.NewGuid();
         _mockDeckHelper
             .Setup(d => d.Filter(It.Is<Guid[]>(ids => ids.Contains(deckId)), null, null))
-            .Returns(new List<Deck>());
+            .ReturnsAsync([]);
 
-        var result = _controller.EditorView(deckId);
+        var result = await _controller.EditorViewAsync(deckId);
 
         Assert.IsType<NotFoundObjectResult>(result);
     }
 
     [Fact]
-    public void EditorView_ReturnsDeckEditorDTO_WhenDeckExists()
+    public async Task EditorViewAsync_ReturnsDeckEditorDTO_WhenDeckExists()
     {
         var deckId = Guid.NewGuid();
         var deck = new Deck
@@ -133,9 +129,9 @@ public class DecksControllerTests
 
         _mockDeckHelper
             .Setup(d => d.Filter(It.Is<Guid[]>(ids => ids.Contains(deckId)), null, null))
-            .Returns(new List<Deck> { deck });
+            .ReturnsAsync([deck]);
 
-        var result = _controller.EditorView(deckId);
+        var result = await _controller.EditorViewAsync(deckId);
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         var editorDTO = Assert.IsType<DeckEditorDTO>(okResult.Value);
@@ -144,7 +140,7 @@ public class DecksControllerTests
         Assert.True(editorDTO.isPublic);
         Assert.Equal(2, editorDTO.CardCount);
         Assert.Equal("Editable Description", editorDTO.Description);
-        Assert.Equal("Q1", editorDTO.Cards.First().Question);
+        Assert.Equal("Q1", editorDTO.Cards?.First().Question);
     }
 
     

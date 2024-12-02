@@ -1,15 +1,11 @@
-using Castle.Core.Logging;
 using MementoMori.Server.Database;
 using MementoMori.Server.Service;
 using MementoMori.Server.Models;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Microsoft.AspNetCore.Http;
-using Xunit;
 using MementoMori.Server.DTOS;
 using MementoMori.Server.Exceptions;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 
 namespace MementoMori.Tests.UnitTests.ServiceTests;
@@ -17,6 +13,7 @@ namespace MementoMori.Tests.UnitTests.ServiceTests;
 public class AuthServiceTests
 {
     private readonly AuthService _authService;
+    private readonly AuthRepo _authRepo;
     private readonly AppDbContext _context;
     private readonly Mock<HttpContext> _mockHttpContext;
 
@@ -27,7 +24,8 @@ public class AuthServiceTests
             .Options;
 
         _context = new AppDbContext(options);
-        _authService = new AuthService(_context);
+        _authService = new AuthService();
+        _authRepo = new AuthRepo(_context, _authService);
 
         _mockHttpContext = new Mock<HttpContext>();
     }
@@ -69,7 +67,7 @@ public class AuthServiceTests
         var registerDetails = new RegisterDetails { Username = "newuser", Password = "SecurePassword123", RememberMe = true };
         var hashedPassword = _authService.HashPassword(registerDetails.Password);
 
-        var user = await _authService.CreateUserAsync(registerDetails);
+        var user = await _authRepo.CreateUserAsync(registerDetails);
 
         Assert.NotNull(user);
         Assert.Equal(registerDetails.Username, user.Username);
@@ -85,7 +83,7 @@ public class AuthServiceTests
 
         var registerDetails = new RegisterDetails { Username = "existinguser", Password = "SecurePassword123" };
 
-        await Assert.ThrowsAsync<Exception>(async () => await _authService.CreateUserAsync(registerDetails));
+        await Assert.ThrowsAsync<Exception>(async () => await _authRepo.CreateUserAsync(registerDetails));
     }
 
     [Fact]
@@ -93,25 +91,29 @@ public class AuthServiceTests
     {
         var registerDetails = new RegisterDetails { Username = "somenewuser", Password = "" };
 
-        await Assert.ThrowsAsync<Exception>(async () => await _authService.CreateUserAsync(registerDetails));
+        await Assert.ThrowsAsync<Exception>(async () => await _authRepo.CreateUserAsync(registerDetails));
     }
 
     [Fact]
     public async Task GetUserById_ReturnsUser_WhenUserExists()
     {
         var userId = Guid.NewGuid();
-        var username = "existinguser";
+        var username1 = "existinguser1";
+        var username2 = "existinguser2";
+        var username3 = "existinguser3";
         var password = "password";
         var passwordHash = _authService.HashPassword(password);
-        var user = new User { Id = userId, Username = username, Password = password };
-        _context.Users.Add(user);
+        var user1 = new User { Id = Guid.NewGuid(), Username = username1, Password = password };
+        var user2 = new User { Id = userId, Username = username2, Password = password };
+        var user3 = new User { Id = Guid.NewGuid(), Username = username3, Password = password };
+        _context.Users.AddRange([user1, user2]);
         await _context.SaveChangesAsync();
 
-        var result = await _authService.GetUserById(userId);
+        var result = await _authRepo.GetUserByIdAsync(userId);
 
         Assert.NotNull(result);
         Assert.Equal(userId, result.Id);
-        Assert.Equal(username, result.Username);
+        Assert.Equal(username2, result.Username);
     }
 
     [Fact]
@@ -119,7 +121,7 @@ public class AuthServiceTests
     {
         var userId = Guid.NewGuid();
 
-        await Assert.ThrowsAsync<UserNotFoundException>(async () => await _authService.GetUserById(userId));
+        await Assert.ThrowsAsync<UserNotFoundException>(async () => await _authRepo.GetUserByIdAsync(userId));
     }
 
     [Fact]
@@ -131,18 +133,19 @@ public class AuthServiceTests
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
-        var result = await _authService.GetUserByUsername("existinguser");
+        var result = await _authRepo.GetUserByUsernameAsync("existinguser");
 
         Assert.NotNull(result);
         Assert.Equal("existinguser", result.Username);
     }
 
     [Fact]
-    public async Task GetUserByUsername_ReturnsNull_WhenUserDoesNotExist()
+    public async Task GetUserByUsername_Throws_WhenUserDoesNotExist()
     {
-        var result = await _authService.GetUserByUsername("nonexistentuser");
-
-        Assert.Null(result);
+        await Assert.ThrowsAsync<UserNotFoundException>(() =>
+        {
+            return _authRepo.GetUserByUsernameAsync("nonexistentuser");
+        });
     }
 
     [Fact]

@@ -2,7 +2,7 @@
 {
     public class UserNotFoundException : Exception
     {
-        public UserNotFoundException(Guid id) : base("This user does not exist") 
+        public UserNotFoundException() : base("This user does not exist") 
         {
         }
     }
