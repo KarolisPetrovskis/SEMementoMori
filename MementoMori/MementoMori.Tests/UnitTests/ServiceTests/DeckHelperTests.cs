@@ -154,9 +154,7 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
 
             Guid savedDeckId = await helper.CreateDeckAsync(editedDeck, requesterId);
 
-            var savedDeck = context.Decks
-                .Include(d => d.Cards)
-                .FirstOrDefault(d => d.Id == savedDeckId);
+            var savedDeck = context.Decks.Include(d => d.Cards).FirstOrDefault(d => d.Id == savedDeckId);
 
             Assert.NotNull(savedDeck);
             Assert.Equal(requesterId, savedDeck.CreatorId);
