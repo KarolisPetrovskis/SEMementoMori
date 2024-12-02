@@ -160,7 +160,7 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
 
             Assert.NotNull(savedDeck);
             Assert.Equal(requesterId, savedDeck.CreatorId);
-            Assert.Equal(" Test Deck", savedDeck.Title);
+            Assert.Equal("Test Deck", savedDeck.Title);
             Assert.Equal(deck.Description, savedDeck.Description);
             Assert.True(savedDeck.isPublic);
             Assert.Equal(deck.Tags, savedDeck.Tags);
