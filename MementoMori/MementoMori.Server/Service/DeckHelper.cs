@@ -91,7 +91,7 @@ namespace MementoMori.Server.Service
                 CreatorId = requesterId,
                 isPublic = createDeck.Deck.isPublic,
                 Title = createDeck.Deck.Title,
-                Description = createDeck.Deck.Title,
+                Description = createDeck.Deck.Description,
                 Tags = createDeck.Deck.Tags,
                 Rating = 0,
                 RatingCount = 0,
