@@ -110,7 +110,7 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
             var deck = new DeckEditableProperties{
                     isPublic = true,
                     Title = "Test deck",
-                    Description = null,
+                    Description = "something",
                     Tags = new List<TagTypes> ([TagTypes.Beginner, TagTypes.Biology]),     
                 };
             Card[] cards =
@@ -161,7 +161,7 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
             Assert.NotNull(savedDeck);
             Assert.Equal(requesterId, savedDeck.CreatorId);
             Assert.Equal(deck.Title, savedDeck.Title);
-            Assert.Null(savedDeck.Description);
+            Assert.Equal(deck.Description, savedDeck.Description);
             Assert.True(savedDeck.isPublic);
             Assert.Equal(deck.Tags, savedDeck.Tags);
 
