@@ -105,5 +105,47 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
 
             Assert.Empty(context.Cards);
         }
+
+        [Fact]
+        public async Task CreateDeck()
+        {
+            var context = CreateDbContext();
+            var helper = new DeckHelper(context);
+            var deck = new {
+                    isPublic = true,
+                    Title = " Test deck",
+                    Description = "",
+                    Tags = new List<TagTypes> ([TagTypes.Beginner, TagTypes.Biology]),     
+                };
+                            CardEditableProperties[] cards = new CardEditableProperties[]
+            {
+                new CardEditableProperties
+                {
+                    Question = "What is the capital of France?",
+                    Description = "Geography question",
+                    Answer = "Paris",
+                    lastInterval = null,
+                    nextShow = null,
+                },
+                new CardEditableProperties
+                {
+                    Question = "What is 2 + 2?",
+                    Description = "Simple math question",
+                    Answer = "4",
+                    lastInterval = null,
+                    nextShow = null,
+                },
+                new CardEditableProperties
+                {
+                    Question = "Who wrote 'To Kill a Mockingbird'?",
+                    Description = "Literature question",
+                    Answer = "Harper Lee",
+                    lastInterval = null, // No previous interval
+                    nextShow = null // No scheduled review
+                }
+            };
+
+            //await helper.CreateDeck()    
+        }
     }
 }
