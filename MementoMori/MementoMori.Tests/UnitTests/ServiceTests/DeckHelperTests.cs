@@ -109,7 +109,7 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
             var helper = new DeckHelper(context);
             var deck = new DeckEditableProperties{
                     isPublic = true,
-                    Title = " Test deck",
+                    Title = "Test deck",
                     Description = "",
                     Tags = new List<TagTypes> ([TagTypes.Beginner, TagTypes.Biology]),     
                 };
@@ -160,7 +160,7 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
 
             Assert.NotNull(savedDeck);
             Assert.Equal(requesterId, savedDeck.CreatorId);
-            Assert.Equal(deck.Title, savedDeck.Title);
+            Assert.Equal(" Test Deck", savedDeck.Title);
             Assert.Equal(deck.Description, savedDeck.Description);
             Assert.True(savedDeck.isPublic);
             Assert.Equal(deck.Tags, savedDeck.Tags);
@@ -178,7 +178,7 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
                 Id = deckId,
                 CreatorId = Guid.NewGuid(),
                 isPublic = true,
-                Title = "Test Deck",
+                Title = " Test Deck",
                 Description = "This is a test deck.",
                 Tags = new List<TagTypes> { TagTypes.Biology },
                 Modified = DateOnly.FromDateTime(DateTime.Now),
