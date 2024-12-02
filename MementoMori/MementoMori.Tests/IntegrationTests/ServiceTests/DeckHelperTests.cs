@@ -25,13 +25,13 @@ namespace MementoMori.Tests.IntegrationTests.ServiceTests
         }
 
         [Fact]
-        public void Filter_Works_WithTitleSubstring()
+        public async Task Filter_Works_WithTitleSubstring()
         {
             using var scope = _application.Services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             var deckHelper = new DeckHelper(context);
 
-            var filteredDecks = deckHelper.Filter(titleSubstring: "Deck 1");
+            var filteredDecks = await deckHelper.Filter(titleSubstring: "Deck 1");
 
             Assert.NotNull(filteredDecks);
             Assert.Single(filteredDecks);
@@ -39,14 +39,14 @@ namespace MementoMori.Tests.IntegrationTests.ServiceTests
         }
 
         [Fact]
-        public void Filter_Works_WithIds()
+        public async Task Filter_Works_WithIds()
         {
             using var scope = _application.Services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             var deckHelper = new DeckHelper(context);
             var targetDeckId = context.Decks.First(deck => deck.Title == "Test Deck 2").Id;
 
-            var filteredDecks = deckHelper.Filter(ids: [targetDeckId]);
+            var filteredDecks = await deckHelper.Filter(ids: [targetDeckId]);
 
             Assert.NotNull(filteredDecks);
             Assert.Single(filteredDecks);
@@ -54,13 +54,13 @@ namespace MementoMori.Tests.IntegrationTests.ServiceTests
         }
 
         [Fact]
-        public void Filter_Works_WithTags()
+        public async Task Filter_Works_WithTags()
         {
             using var scope = _application.Services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             var deckHelper = new DeckHelper(context);
 
-            var filteredDecks = deckHelper.Filter(selectedTags: ["Economics", "Beginner"]);
+            var filteredDecks = await deckHelper.Filter(selectedTags: ["Economics", "Beginner"]);
 
             Assert.NotNull(filteredDecks);
             Assert.Single(filteredDecks);
@@ -68,36 +68,35 @@ namespace MementoMori.Tests.IntegrationTests.ServiceTests
         }
 
         [Fact]
-        public void Filter_ReturnsEmpty_WhenTagsMismatch()
+        public async Task Filter_ReturnsEmpty_WhenTagsMismatch()
         {
             using var scope = _application.Services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             var deckHelper = new DeckHelper(context);
 
-            var filteredDecks = deckHelper.Filter(selectedTags: ["Biology"]);
+            var filteredDecks = await deckHelper.Filter(selectedTags: ["Biology"]);
 
             Assert.NotNull(filteredDecks);
             Assert.Empty(filteredDecks);
         }
 
         [Fact]
-        public void Filter_ReturnsEmpty_WhenIdsMismatch()
+        public async Task Filter_ReturnsEmpty_WhenIdsMismatch()
         {
             using var scope = _application.Services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             var deckHelper = new DeckHelper(context);
             var nonExistentId = Guid.NewGuid();
 
-            var filteredDecks = deckHelper.Filter(ids: [nonExistentId]);
+            var filteredDecks = await deckHelper.Filter(ids: [nonExistentId]);
 
             Assert.NotNull(filteredDecks);
             Assert.Empty(filteredDecks);
         }
 
         [Fact]
-        public void Filter_WithMultipleFilters()
+        public async Task Filter_WithMultipleFilters()
         {
-            // Arrange
             using var scope = _application.Services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
@@ -105,7 +104,7 @@ namespace MementoMori.Tests.IntegrationTests.ServiceTests
             var targetDeck = context.Decks.First(deck => deck.Title == "Test Deck 2");
             var targetId = targetDeck.Id;
 
-            var filteredDecks = deckHelper.Filter(
+            var filteredDecks = await deckHelper.Filter(
                 ids: [targetId],
                 titleSubstring: "Deck 2",
                 selectedTags: ["Philosophy"]
@@ -117,14 +116,14 @@ namespace MementoMori.Tests.IntegrationTests.ServiceTests
         }
 
         [Fact]
-        public void Filter_ReturnsMultipleDecks()
+        public async Task Filter_ReturnsMultipleDecks()
         {
             // Arrange
             using var scope = _application.Services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             var deckHelper = new DeckHelper(context);
 
-            var filteredDecks = deckHelper.Filter(
+            var filteredDecks = await deckHelper.Filter(
                 titleSubstring: "Test Deck",
                 selectedTags: ["Economics"]);
 
@@ -135,13 +134,13 @@ namespace MementoMori.Tests.IntegrationTests.ServiceTests
         }
 
         [Fact]
-        public void Filter_Works_WithNoFilters_ReturnsAllDecks()
+        public async Task Filter_Works_WithNoFilters_ReturnsAllDecks()
         {
             using var scope = _application.Services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             var deckHelper = new DeckHelper(context);
 
-            var filteredDecks = deckHelper.Filter();
+            var filteredDecks = await deckHelper.Filter();
 
             Assert.NotNull(filteredDecks);
             Assert.Equal(3, filteredDecks.Count);

@@ -33,9 +33,9 @@ namespace MementoMori.Server.Database
             Cards.RemoveRange(relatedCards);
         }
     }
-        public void SecureUpdate<T, P>(P item, Guid changedBy) where T : P where P : DatabaseObject
+        public async Task SecureUpdateAsync<T, P>(P item, Guid changedBy) where T : P where P : DatabaseObject
         {
-            var entity = Set<T>().FirstOrDefault(e => e.Id == item.Id);
+            var entity = await Set<T>().FirstOrDefaultAsync(e => e.Id == item.Id);
             if (entity == null)
             {
                 return;
@@ -50,12 +50,16 @@ namespace MementoMori.Server.Database
             return;
         }
 
-        public void Remove<T>(Guid id) where T : DatabaseObject
+        public async Task RemoveAsync<T>(Guid id, Guid changedBy) where T : DatabaseObject
         {
-            var entity = Set<T>().FirstOrDefault(e => e.Id == id);
+            var entity = await Set<T>().FirstOrDefaultAsync(e => e.Id == id);
             if (entity == null)
             {
                 return;
+            }
+            if (!entity.CanEdit(changedBy)) 
+            {
+                throw new UnauthorizedEditingException();
             }
             Remove(entity);
         }

@@ -2,9 +2,7 @@
 using MementoMori.Server.DTOS;
 using MementoMori.Server.Extensions;
 using MementoMori.Server.Interfaces;
-using MementoMori.Server.Service;
 using MementoMori.Server.Exceptions;
-using MementoMori.Server.Models;
 
 namespace MementoMori.Server.Controllers
 {
@@ -16,7 +14,7 @@ namespace MementoMori.Server.Controllers
         private readonly IAuthService _authService = authService;
 
         [HttpGet("deck")]
-        public IActionResult View(Guid deckId)
+        public async Task<ActionResult> ViewAsync(Guid deckId)
         {
 
             if (deckId == Guid.Empty)
@@ -24,7 +22,7 @@ namespace MementoMori.Server.Controllers
                 return BadRequest(new { errorCode = ErrorCode.InvalidInput, message = "Invalid deck ID." });
             }
 
-            var deck = _deckHelper.Filter(ids: [deckId]).FirstOrDefault();
+            var deck = (await _deckHelper.Filter(ids: [deckId])).FirstOrDefault();
 
             if (deck == null)
                 return NotFound("Deck not found.");
@@ -47,7 +45,7 @@ namespace MementoMori.Server.Controllers
         }
 
         [HttpGet("EditorView")]
-        public IActionResult EditorView(Guid deckId)
+        public async Task<ActionResult> EditorViewAsync(Guid deckId)
         {
 
             if (deckId == Guid.Empty)
@@ -55,7 +53,7 @@ namespace MementoMori.Server.Controllers
                 return BadRequest(new { errorCode = ErrorCode.InvalidInput, message = "Invalid deck ID." });
             }
 
-            var deck = _deckHelper.Filter(ids: [deckId]).FirstOrDefault();
+            var deck = (await _deckHelper.Filter(ids: [deckId])).FirstOrDefault();
 
             if (deck == null)
                 return NotFound("Deck not found.");
@@ -81,7 +79,7 @@ namespace MementoMori.Server.Controllers
         }
 
         [HttpGet("cards")]
-        public IActionResult GetCards(Guid deckId)
+        public async Task<ActionResult> GetCards(Guid deckId)
         {
 
             if (deckId == Guid.Empty)
@@ -89,7 +87,7 @@ namespace MementoMori.Server.Controllers
                 return BadRequest(new { errorCode = ErrorCode.InvalidInput, message = "Invalid deck ID." });
             }
 
-            var deck = _deckHelper.Filter(ids: [deckId]).First();
+            var deck = (await _deckHelper.Filter(ids: [deckId])).First();
 
             if (deck == null)
                 return NotFound("Deck not found.");
@@ -109,30 +107,31 @@ namespace MementoMori.Server.Controllers
         }
 
         [HttpPost("editDeck")]
-        public IActionResult EditDeck(EditedDeckDTO editedDeckDTO) 
+        public async Task<ActionResult> EditDeck(EditedDeckDTO editedDeckDTO) 
         {
             var requesterId = _authService.GetRequesterId(HttpContext);
             if (requesterId == null)
                 return Unauthorized();
             try
             {
-                _deckHelper.UpdateDeck(editedDeckDTO, (Guid)requesterId);
+                await _deckHelper.UpdateDeckAsync(editedDeckDTO, (Guid)requesterId);
             }
-            catch (UnauthorizedEditingException ex)
+            catch (UnauthorizedEditingException)
             {
                 return Unauthorized();
             }
             return Ok();
         }
         [HttpPost("createDeck")]
-        public IActionResult CreateDeck(EditedDeckDTO createDeckDTO)
+        public async Task<ActionResult<Guid>> CreateDeck(EditedDeckDTO createDeckDTO)
         {
             var requesterId = _authService.GetRequesterId(HttpContext);
             if (requesterId == null)
                 return Unauthorized();
             try
             {
-                return Ok(_deckHelper.CreateDeck(createDeckDTO, (Guid)requesterId));
+                var newDeckId = await _deckHelper.CreateDeckAsync(createDeckDTO, (Guid)requesterId);
+                return Ok(newDeckId);
             }
             catch
             {
@@ -140,12 +139,12 @@ namespace MementoMori.Server.Controllers
             }
         }
         [HttpPost("deleteDeck")]
-        public IActionResult DeleteDeck(Guid deckId)
+        public async Task<ActionResult> DeleteDeck(Guid deckId)
         {
             try
             {
-                _deckHelper.DeleteDeck(deckId);
-                return Ok(deckId);
+                await _deckHelper.DeleteDeckAsync(deckId);
+                return Ok();
             }
             catch
             {
