@@ -110,7 +110,7 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
             var deck = new DeckEditableProperties{
                     isPublic = true,
                     Title = "Test deck",
-                    Description = "something",
+                    Description = null,
                     Tags = new List<TagTypes> ([TagTypes.Beginner, TagTypes.Biology]),     
                 };
             Card[] cards =
@@ -159,13 +159,14 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
             Assert.NotNull(savedDeck);
             Assert.Equal(requesterId, savedDeck.CreatorId);
             Assert.Equal(deck.Title, savedDeck.Title);
-            Assert.Equal(deck.Description, savedDeck.Description);
+            Assert.Null(savedDeck.Description);
             Assert.True(savedDeck.isPublic);
             Assert.Equal(deck.Tags, savedDeck.Tags);
 
             Assert.NotNull(savedDeck.Cards);
             Assert.Equal(cards.Length, savedDeck.Cards.Count);
         }
+        [Fact]
         public async Task DeleteDeck_DeleteDeckSuccessfully()
         {
             var context = CreateDbContext();
