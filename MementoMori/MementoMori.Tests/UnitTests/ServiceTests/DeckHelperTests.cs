@@ -18,7 +18,7 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
         }
 
         [Fact]
-        public void Filter_ReturnsEmptyList_WhenNoMatches()
+        public async Task Filter_ReturnsEmptyList_WhenNoMatches()
         {
             var context = CreateDbContext();
             var helper = new DeckHelper(context);
@@ -26,7 +26,7 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
             context.Decks.Add(deck1);
             context.SaveChanges();
 
-            var result = helper.Filter(selectedTags: new[] { "Mathematics" });
+            var result = await helper.Filter(selectedTags: new[] { "Mathematics" });
 
             Assert.Empty(result);
         }
@@ -50,7 +50,7 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
                 }
             };
 
-            helper.UpdateDeck(updatedDeckDTO, creatorId);
+            helper.UpdateDeckAsync(updatedDeckDTO, creatorId);
 
             var updatedDeck = context.Decks.First();
             Assert.Equal("New Title", updatedDeck.Title);
@@ -73,7 +73,7 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
                 NewCards = new[] { newCard }
             };
 
-            helper.UpdateDeck(updatedDeckDTO, creatorId);
+            helper.UpdateDeckAsync(updatedDeckDTO, creatorId);
 
             var addedCard = context.Cards.First();
             Assert.Equal(newCard.Question, addedCard.Question);
@@ -97,7 +97,7 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
                 RemovedCards = new[] { card.Id }
             };
 
-            helper.UpdateDeck(updatedDeckDTO, creatorId);
+            helper.UpdateDeckAsync(updatedDeckDTO, creatorId);
 
             Assert.Empty(context.Cards);
         }

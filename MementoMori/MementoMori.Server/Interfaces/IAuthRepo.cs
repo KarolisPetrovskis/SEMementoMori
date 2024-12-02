@@ -7,7 +7,7 @@ namespace MementoMori.Server.Interfaces
     {
         Task<User> CreateUserAsync(RegisterDetails registerDetails);
         User[] GetAllUsers();
-        Task<User> GetUserById(Guid id);
-        Task<User?> GetUserByUsername(string username);
+        Task<User> GetUserByIdAsync(Guid id);
+        Task<User> GetUserByUsernameAsync(string username);
     }
 }

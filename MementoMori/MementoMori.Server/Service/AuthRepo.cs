@@ -18,10 +18,7 @@ namespace MementoMori.Server.Service
             _authService = authService;
         }
 
-        public User[] GetAllUsers()
-        {
-            return _context.Users.ToArray();
-        }
+        public User[] GetAllUsers() => [.. _context.Users];
 
         public async Task<User> CreateUserAsync(RegisterDetails registerDetails)
         {
@@ -50,19 +47,23 @@ namespace MementoMori.Server.Service
             return user;
         }
 
-        public async Task<User> GetUserById(Guid id)
+        public async Task<User> GetUserByIdAsync(Guid id)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
             if (user == null)
             {
-                throw new UserNotFoundException(id);
+                throw new UserNotFoundException();
             }
             return user;
         }
 
-        public async Task<User?> GetUserByUsername(string username)
+        public async Task<User> GetUserByUsernameAsync(string username)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+            if (user == null) 
+            {
+                throw new UserNotFoundException();
+            }
             return user;
         }
     }

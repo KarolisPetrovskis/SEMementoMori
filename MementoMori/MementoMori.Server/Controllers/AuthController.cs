@@ -1,4 +1,5 @@
 ﻿using MementoMori.Server.DTOS;
+using MementoMori.Server.Exceptions;
 using MementoMori.Server.Interfaces;
 using MementoMori.Server.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -61,21 +62,23 @@ namespace MementoMori.Server.Controllers
         [HttpPost("login")]
         public async Task<ActionResult> Login([FromBody] LoginDetails loginDetails)
         {
-            var user = await _authRepo.GetUserByUsername(loginDetails.Username);
-            if (user == null)
+            try
+            {
+                var user = await _authRepo.GetUserByUsernameAsync(loginDetails.Username);
+                bool isValidPassword = _authService.VerifyPassword(loginDetails.Password, user.Password);
+                if (!isValidPassword)
+                {
+                    return Unauthorized();
+                }
+
+                _authService.AddCookie(HttpContext, user.Id, loginDetails.RememberMe);
+
+                return Ok();
+            }
+            catch (UserNotFoundException)
             {
                 return Unauthorized();
             }
-
-            bool isValidPassword = _authService.VerifyPassword(loginDetails.Password, user.Password);
-            if (!isValidPassword)
-            {
-                return Unauthorized();
-            }
-
-            _authService.AddCookie(HttpContext, user.Id, loginDetails.RememberMe);
-
-            return Ok();
         }
 
         [HttpGet("loginResponse")]

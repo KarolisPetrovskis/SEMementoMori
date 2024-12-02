@@ -109,7 +109,7 @@ public class AuthServiceTests
         _context.Users.AddRange([user1, user2]);
         await _context.SaveChangesAsync();
 
-        var result = await _authRepo.GetUserById(userId);
+        var result = await _authRepo.GetUserByIdAsync(userId);
 
         Assert.NotNull(result);
         Assert.Equal(userId, result.Id);
@@ -121,7 +121,7 @@ public class AuthServiceTests
     {
         var userId = Guid.NewGuid();
 
-        await Assert.ThrowsAsync<UserNotFoundException>(async () => await _authRepo.GetUserById(userId));
+        await Assert.ThrowsAsync<UserNotFoundException>(async () => await _authRepo.GetUserByIdAsync(userId));
     }
 
     [Fact]
@@ -133,18 +133,19 @@ public class AuthServiceTests
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
-        var result = await _authRepo.GetUserByUsername("existinguser");
+        var result = await _authRepo.GetUserByUsernameAsync("existinguser");
 
         Assert.NotNull(result);
         Assert.Equal("existinguser", result.Username);
     }
 
     [Fact]
-    public async Task GetUserByUsername_ReturnsNull_WhenUserDoesNotExist()
+    public async Task GetUserByUsername_Throws_WhenUserDoesNotExist()
     {
-        var result = await _authRepo.GetUserByUsername("nonexistentuser");
-
-        Assert.Null(result);
+        await Assert.ThrowsAsync<UserNotFoundException>(() =>
+        {
+            return _authRepo.GetUserByUsernameAsync("nonexistentuser");
+        });
     }
 
     [Fact]
