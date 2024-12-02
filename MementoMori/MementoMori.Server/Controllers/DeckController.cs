@@ -3,7 +3,6 @@ using MementoMori.Server.DTOS;
 using MementoMori.Server.Extensions;
 using MementoMori.Server.Interfaces;
 using MementoMori.Server.Exceptions;
-using MementoMori.Server.Models;
 
 namespace MementoMori.Server.Controllers
 {

@@ -103,45 +103,125 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
         }
 
         [Fact]
-        public async Task CreateDeck()
+        public async Task CreateDeck_CreatesNewDeckSuccessfully()
         {
             var context = CreateDbContext();
             var helper = new DeckHelper(context);
-            var deck = new {
+            var deck = new DeckEditableProperties{
                     isPublic = true,
                     Title = " Test deck",
                     Description = "",
                     Tags = new List<TagTypes> ([TagTypes.Beginner, TagTypes.Biology]),     
                 };
-                            CardEditableProperties[] cards = new CardEditableProperties[]
-            {
-                new CardEditableProperties
+            Card[] cards =
+            [
+                new Card
                 {
+                    DeckId = Guid.Empty,
                     Question = "What is the capital of France?",
                     Description = "Geography question",
                     Answer = "Paris",
                     lastInterval = null,
                     nextShow = null,
                 },
-                new CardEditableProperties
+                new Card
                 {
+                    DeckId = Guid.Empty,
                     Question = "What is 2 + 2?",
                     Description = "Simple math question",
                     Answer = "4",
                     lastInterval = null,
                     nextShow = null,
                 },
-                new CardEditableProperties
+                new Card
                 {
+                    DeckId = Guid.Empty,
                     Question = "Who wrote 'To Kill a Mockingbird'?",
                     Description = "Literature question",
                     Answer = "Harper Lee",
-                    lastInterval = null, // No previous interval
-                    nextShow = null // No scheduled review
+                    lastInterval = null,
+                    nextShow = null,
+                }
+            ];
+            var editedDeck = new EditedDeckDTO{
+                Deck = deck,
+                Cards = null,
+                NewCards = cards,
+                RemovedCards = null,
+            };
+
+            Guid requesterId = Guid.NewGuid();
+
+            Guid savedDeckId = await helper.CreateDeckAsync(editedDeck, requesterId);
+
+            var savedDeck = context.Decks
+                .Include(d => d.Cards)
+                .FirstOrDefault(d => d.Id == savedDeckId);
+
+            Assert.NotNull(savedDeck);
+            Assert.Equal(requesterId, savedDeck.CreatorId);
+            Assert.Equal(deck.Title, savedDeck.Title);
+            Assert.Equal(deck.Description, savedDeck.Description);
+            Assert.True(savedDeck.isPublic);
+            Assert.Equal(deck.Tags, savedDeck.Tags);
+
+            Assert.NotNull(savedDeck.Cards);
+            Assert.Equal(cards.Length, savedDeck.Cards.Count);
+        }
+        public async Task DeleteDeck_DeleteDeckSuccessfully()
+        {
+            var context = CreateDbContext();
+            var helper = new DeckHelper(context);
+                var deckId = Guid.NewGuid();
+            var deck = new Deck
+            {
+                Id = deckId,
+                CreatorId = Guid.NewGuid(),
+                isPublic = true,
+                Title = "Test Deck",
+                Description = "This is a test deck.",
+                Tags = new List<TagTypes> { TagTypes.Biology },
+                Modified = DateOnly.FromDateTime(DateTime.Now),
+                CardCount = 2,
+                Cards = new List<Card>
+                {
+                    new Card
+                    {
+                        Id = Guid.NewGuid(),
+                        DeckId = deckId,
+                        Question = "What is the capital of France?",
+                        Answer = "Paris",
+                        Description = "Geography question",
+                        lastInterval = null,
+                        nextShow = null,
+                    },
+                    new Card
+                    {
+                        Id = Guid.NewGuid(),
+                        DeckId = deckId,
+                        Question = "What is 2 + 2?",
+                        Answer = "4",
+                        Description = "Math question",
+                        lastInterval = null,
+                        nextShow = null
+                    }
                 }
             };
 
-            //await helper.CreateDeck()    
-        }
+            context.Decks.Add(deck);
+            await context.SaveChangesAsync();
+
+            // Act: Call the DeleteDeckAsync method
+            await helper.DeleteDeckAsync(deckId);
+
+            // Assert: Verify the deck and associated cards are deleted
+            var deletedDeck = await context.Decks.FindAsync(deckId);
+            Assert.Null(deletedDeck); // The deck should no longer exist
+
+            var associatedCards = context.Cards.Where(c => c.DeckId == deckId).ToList();
+            Assert.Empty(associatedCards); // The associated cards should be deleted
+                    
+                }
+
     }
 }
