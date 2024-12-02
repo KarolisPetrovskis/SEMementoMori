@@ -110,7 +110,7 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
             var deck = new DeckEditableProperties{
                     isPublic = true,
                     Title = "Test deck",
-                    Description = "",
+                    Description = null,
                     Tags = new List<TagTypes> ([TagTypes.Beginner, TagTypes.Biology]),     
                 };
             Card[] cards =
