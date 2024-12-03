@@ -60,7 +60,6 @@ namespace MementoMori.Server.Service
             }
         }
 
-
         public void UpdateSpacedRepetition(Guid userId, Guid deckId, Guid cardId, int quality)
         {
             var userCardData =_context.UserCards

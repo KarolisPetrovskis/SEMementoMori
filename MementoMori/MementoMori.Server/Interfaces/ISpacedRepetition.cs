@@ -6,5 +6,7 @@ namespace MementoMori.Server
     {
     void UpdateCard(UserCardData card, int quality);
     bool IsDueForReview(UserCardData card);
+    void UpdateCard(Task<UserCardData?> userCardData, int quality);
+    
     }
 }

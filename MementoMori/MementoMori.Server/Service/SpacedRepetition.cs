@@ -41,7 +41,7 @@ namespace MementoMori.Server.Service
 
                 public bool IsDueForReview(UserCardData card)
                 {
-                return DateTime.Now >= card.LastReviewed.AddDays(card.Interval);
+                        return DateTime.Now >= card.LastReviewed.AddDays(card.Interval);
                 }   
         }
 

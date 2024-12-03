@@ -118,7 +118,6 @@ namespace MementoMori.Server.Controllers
                 return StatusCode(500, new { errorCode = "ServerError", message = "An unexpected error occurred." });
             }
         }
-        //https://localhost:5173/Decks/dbba9b7e-6571-4238-ab4c-7bfdae98eee2/addToCollection
         [HttpPost("addToCollection")]
         public IActionResult AddCardsToCollection(Guid deckId)
         {
