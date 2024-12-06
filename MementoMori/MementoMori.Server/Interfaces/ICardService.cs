@@ -4,7 +4,7 @@ namespace MementoMori.Server
 {
     public interface ICardService
     {
-        void UpdateSpacedRepetition(Guid userId, Guid deckId, Guid cardId, int quality);
+        Task UpdateSpacedRepetition(Guid userId, Guid deckId, Guid cardId, int quality);
         void AddCardsToCollection(Guid userId, Guid deckId);
         List<Card> GetCardsForReview(Guid deckId, Guid userId);
     }

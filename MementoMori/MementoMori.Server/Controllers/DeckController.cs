@@ -10,13 +10,11 @@ namespace MementoMori.Server.Controllers
 {
     [ApiController]
     [Route("[controller]/{deckId}")]
-    public class DecksController(IDeckHelper deckHelper, IAuthService authService, ICardService cardService, 
-    ConcurrentQueue<(Guid UserId, Guid DeckId, Guid CardId, int Quality)> updateQueue) : ControllerBase
+    public class DecksController(IDeckHelper deckHelper, IAuthService authService, ICardService cardService) : ControllerBase
     {
         private readonly IDeckHelper _deckHelper = deckHelper;
         private readonly IAuthService _authService = authService;
         private readonly ICardService _cardService = cardService;
-        private readonly ConcurrentQueue<(Guid UserId, Guid DeckId, Guid CardId, int Quality)> _updateQueue = updateQueue;
 
         [HttpGet("deck")]
         public IActionResult View(Guid deckId) {
@@ -132,21 +130,32 @@ namespace MementoMori.Server.Controllers
 
             return Ok(new { message = "Deck successfully added to user's collection." });
         }
-        
+                
         [HttpPost("cards/update/{cardId}")]
-        public IActionResult UpdateCard(Guid deckId, Guid cardId, [FromBody] int quality)
+        public async Task<IActionResult> UpdateCard(Guid deckId, Guid cardId, [FromBody] int quality)
         {
             Guid? userId = _authService.GetRequesterId(HttpContext);
 
             if (deckId == Guid.Empty || userId == Guid.Empty || cardId == Guid.Empty)
             {
-                return BadRequest(new { errorCode = "InvalidInput", message = "Invalid deck, card or user ID." });
+                return BadRequest(new { errorCode = "InvalidInput", message = "Invalid deck, card, or user ID." });
             }
-            
-            if(userId != null)
-                _updateQueue.Enqueue((userId.Value, deckId, cardId, quality));
-            
-            return Ok(new {message = "Card updated successfully"});
+
+            try
+            {
+                await _cardService.UpdateSpacedRepetition(userId.Value, deckId, cardId, quality);
+                return Ok(new { message = "Card updated successfully" });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { errorCode = "NotFound", message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error updating card: {ex.Message}\n{ex.StackTrace}");
+                return StatusCode(500, new { errorCode = "ServerError", message = "An unexpected error occurred." });
+            }
         }
+
     }
 }

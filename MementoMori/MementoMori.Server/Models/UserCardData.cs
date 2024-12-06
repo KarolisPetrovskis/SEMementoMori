@@ -10,7 +10,7 @@ namespace MementoMori.Server.Models
         public Guid DeckId { get; set; }
         public Guid UserId { get; set; }
 
-        public int Interval { get; set; } = 1;    // Number of days until next review
+        public int Interval { get; set; } = 1;    
 
         public int Repetitions { get; set; } = 0; 
 

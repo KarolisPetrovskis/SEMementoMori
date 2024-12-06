@@ -4,9 +4,9 @@ namespace MementoMori.Server
 {
     public interface ISpacedRepetition
     {
-    void UpdateCard(UserCardData card, int quality);
+    UserCardData UpdateCard(UserCardData card, int quality);
     bool IsDueForReview(UserCardData card);
-    void UpdateCard(Task<UserCardData?> userCardData, int quality);
+    //void UpdateCard(Task<UserCardData?> card, int quality);
     
     }
 }

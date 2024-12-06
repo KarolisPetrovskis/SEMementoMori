@@ -8,14 +8,10 @@ namespace MementoMori.Server.Service
     {
         private readonly AppDbContext _context;
         private readonly ISpacedRepetition _spacedRepetitionService;
-        //private readonly DeckHelper _deckHelper;
-
         public CardService(AppDbContext context, ISpacedRepetition spacedRepetitionService)
         {
             _context = context;
             _spacedRepetitionService = spacedRepetitionService;
-            //_deckHelper = deckHelper;
-
         }
         public void AddCardsToCollection(Guid userId, Guid deckId)
         {
@@ -37,7 +33,6 @@ namespace MementoMori.Server.Service
 
             foreach (var card in deck.Cards)
             {
-                // Skip adding cards that already exist in the user's collection
                 if (!existingUserCards.Contains(card.Id))
                 {
                     newUserCards.Add(new UserCardData
@@ -60,10 +55,10 @@ namespace MementoMori.Server.Service
             }
         }
 
-        public void UpdateSpacedRepetition(Guid userId, Guid deckId, Guid cardId, int quality)
+        public async Task UpdateSpacedRepetition(Guid userId, Guid deckId, Guid cardId, int quality)
         {
-            var userCardData =_context.UserCards
-            .FirstOrDefault(uc => uc.UserId == userId && uc.DeckId == deckId && uc.CardId == cardId);
+            var userCardData = await _context.UserCards
+                .FirstOrDefaultAsync(uc => uc.UserId == userId && uc.DeckId == deckId && uc.CardId == cardId);
 
             if (userCardData == null)
             {
@@ -71,11 +66,19 @@ namespace MementoMori.Server.Service
             }
 
             _spacedRepetitionService.UpdateCard(userCardData, quality);
-            userCardData.LastReviewed = DateTime.Now;
 
+            userCardData.LastReviewed = DateTime.UtcNow; 
             _context.UserCards.Update(userCardData);
-            _context.SaveChanges();
+
+            var changes = await _context.SaveChangesAsync();
+
+            if (changes == 0)
+            {
+                throw new Exception("Database update failed. No rows affected.");
+            }
         }
+
+
         public List<Card> GetCardsForReview(Guid deckId, Guid userId)
         {
             var today = DateTime.Today;
