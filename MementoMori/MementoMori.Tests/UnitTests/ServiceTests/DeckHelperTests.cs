@@ -1,6 +1,7 @@
 ﻿using MementoMori.Server;
 using MementoMori.Server.Database;
 using MementoMori.Server.DTOS;
+using MementoMori.Server.Exceptions;
 using MementoMori.Server.Models;
 using MementoMori.Server.Service;
 using Microsoft.EntityFrameworkCore;
@@ -167,7 +168,7 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
         }
 
         [Fact]
-        public void UpdateDeck_RemovesCards()
+        public async void UpdateDeck_RemovesCards()
         {
             var context = CreateDbContext();
             var helper = new DeckHelper(context);
@@ -183,7 +184,7 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
                 RemovedCards = new[] { card.Id }
             };
 
-            helper.UpdateDeckAsync(updatedDeckDTO, creatorId);
+            await helper.UpdateDeckAsync(updatedDeckDTO, creatorId);
 
             Assert.Empty(context.Cards);
         }
@@ -211,6 +212,30 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
             Assert.NotNull(savedDeck.Cards);
             Assert.Equal(deck.NewCards?.Length, savedDeck.Cards.Count);
         }
+
+        [Fact]
+        public async Task CreateDeck_FailsWithArgumentException()
+        {
+            var context = CreateDbContext();
+            var helper = new DeckHelper(context);
+
+            var invalidDeckDTO = new EditedDeckDTO
+            {
+                Deck = new DeckEditableProperties
+                {
+                    isPublic = true,
+                    Title = "   ",
+                    Description = null,
+                    Tags = new List<TagTypes> { TagTypes.Biology }
+                },
+                NewCards = new[]
+                {
+                    new Card { Question = "Question?", Answer = "Answer", DeckId = Guid.Empty }
+                }
+            };
+            Guid requesterId = Guid.NewGuid();
+            await Assert.ThrowsAsync<ArgumentException>(() => helper.CreateDeckAsync(invalidDeckDTO, requesterId));
+        }
         [Fact]
         public async Task DeleteDeck_DeleteDeckSuccessfully()
         {
@@ -218,10 +243,10 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
             var helper = new DeckHelper(context);
 
             var deck = createTestDeck2();
-
+            Guid requesterId = deck.CreatorId;
             context.Decks.Add(deck);
             await context.SaveChangesAsync();
-            await helper.DeleteDeckAsync(deck.Id);
+            await helper.DeleteDeckAsync(deck.Id, requesterId);
 
             var deletedDeck = await context.Decks.FindAsync(deck.Id);
             Assert.Null(deletedDeck);
@@ -231,5 +256,31 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
                     
         }
 
+        [Fact]
+        public async Task DeleteDeck_ThrowsUnauthorizedEditingException_WhenUserIsNotCreator()
+        {
+            var context = CreateDbContext();
+            var helper = new DeckHelper(context);
+
+            var deck = createTestDeck2();
+            Guid requesterId = Guid.NewGuid();
+            context.Decks.Add(deck);
+            await context.SaveChangesAsync();
+            var exception = await Assert.ThrowsAsync<UnauthorizedEditingException>(() => helper.DeleteDeckAsync(deck.Id, requesterId));
+            Assert.NotNull(exception); 
+        }
+
+        [Fact]
+        public async Task DeleteDeck_KeyNotFoundException()
+        {
+            var context = CreateDbContext();
+            var helper = new DeckHelper(context);
+
+            Guid nonExistentDeckId = Guid.NewGuid();
+            Guid requesterId = Guid.NewGuid();
+
+            var exception = await Assert.ThrowsAsync<KeyNotFoundException>(() => helper.DeleteDeckAsync(nonExistentDeckId, requesterId));
+            Assert.NotNull(exception);
+        }
     }
 }

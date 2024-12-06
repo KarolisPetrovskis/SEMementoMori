@@ -8,6 +8,6 @@ namespace MementoMori.Server.Interfaces
         Task<List<Deck>> Filter(Guid[]? ids = null, string? titleSubstring = null, string[]? selectedTags = null);
         Task UpdateDeckAsync(EditedDeckDTO editedDeckDTO, Guid editorId);
         Task<Guid> CreateDeckAsync (EditedDeckDTO createDeck, Guid requesterId);
-        Task DeleteDeckAsync(Guid deckId);
+        Task DeleteDeckAsync(Guid deckId, Guid requesterId);
     }
 }

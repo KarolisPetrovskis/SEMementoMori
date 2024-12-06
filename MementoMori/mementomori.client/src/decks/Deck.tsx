@@ -160,6 +160,11 @@ function Buttons(props: ButtonProps) {
           Add to my collection
         </Button>
       )}
+      {inCollection ? (
+        <Button color="error" onClick={onRemoveClick} variant="contained">
+          Remove
+        </Button>
+      ) : null}
       {props.isOwner ? (
         <>
           <ButtonGroup
@@ -235,11 +240,7 @@ function Buttons(props: ButtonProps) {
             )}
           </Popper>
         </>
-      ) : (
-        <Button color="info" onClick={onUseAsTemplateClick} variant="contained">
-          Use as a template
-        </Button>
-      )}
+      ) : null}
     </Box>
   );
 }
