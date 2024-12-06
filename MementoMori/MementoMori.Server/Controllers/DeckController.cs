@@ -125,7 +125,6 @@ namespace MementoMori.Server.Controllers
         [HttpPost("createDeck")]
         public async Task<ActionResult<Guid>> CreateDeck(EditedDeckDTO createDeckDTO)
         {
-            /// check if user is logged in so that he can create deck and write test when he is not
             var requesterId = _authService.GetRequesterId(HttpContext);
             if (requesterId == null)
                 return Unauthorized();
