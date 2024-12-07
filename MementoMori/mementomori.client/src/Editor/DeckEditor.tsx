@@ -642,10 +642,7 @@ export default function EditDeck() {
             color="primary"
             fullWidth
             sx={{ flex: 1 }}
-            onClick={() => {
-              console.log(newCards);
-              revertChanges();
-            }}
+            onClick={() => revertChanges()}
           >
             Revert Changes
           </Button>
