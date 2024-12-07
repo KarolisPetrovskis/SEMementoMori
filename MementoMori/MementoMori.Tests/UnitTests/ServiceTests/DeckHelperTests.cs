@@ -283,9 +283,6 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
             Assert.NotNull(exception);
         }
 
-
-
-
         [Fact]
         public async Task HasAccessToDeck_ReturnsTrue_WhenDeckIsPublic()
         {
@@ -300,18 +297,14 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
             await context.SaveChangesAsync();
             
             var differentUserId = Guid.NewGuid();
-
-            // Act
             var result = await helper.HasAccessToDeck(differentUserId, deck.Id);
 
-            // Assert
             Assert.True(result);
         }
 
         [Fact]
         public async Task HasAccessToDeck_ReturnsTrue_WhenUserIsCreator()
         {
-            // Arrange
             var context = CreateDbContext();
             var helper = new DeckHelper(context);
             
@@ -321,17 +314,14 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
             context.Decks.Add(deck);
             await context.SaveChangesAsync();
 
-            // Act
             var result = await helper.HasAccessToDeck(deck.CreatorId, deck.Id);
 
-            // Assert
             Assert.True(result);
         }
 
         [Fact]
         public async Task HasAccessToDeck_ReturnsFalse_WhenDeckIsPrivateAndUserIsNotCreator()
         {
-            // Arrange
             var context = CreateDbContext();
             var helper = new DeckHelper(context);
             
@@ -343,17 +333,8 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
 
             var differentUserId = Guid.NewGuid();
 
-            // Act
             var result = await helper.HasAccessToDeck(differentUserId, deck.Id);
-
-            // Assert
             Assert.False(result);
         }
-
-
-
-
-
-        
     }
 }
