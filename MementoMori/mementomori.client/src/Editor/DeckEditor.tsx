@@ -59,17 +59,31 @@ export default function EditDeck() {
   const [newCards, setNewCards] = useState<NewCard[] | null>(null);
   const [removeCards, setRemoveCards] = useState<string[] | null>(null);
   const [showTags, setShowTags] = useState(true);
-
   useEffect(() => {
     async function fetchDeck() {
-      try {
-        const response = await axios.get(`/Decks/${deckId}/EditorView`);
-        const fetchedDeck = response.data;
-        setDeck(fetchedDeck);
-        setOriginalDeck(fetchedDeck);
-        setSelectedTags(fetchedDeck.tags || []);
-      } catch (error) {
-        console.error('Error fetching deck:', error);
+      if (deckId === '00000000-0000-0000-0000-000000000000') {
+        const emptyDeck: Deck = {
+          id: '',
+          isPublic: false,
+          title: '',
+          description: '',
+          cardCount: 0,
+          tags: [],
+          cards: [],
+        };
+        setDeck(emptyDeck);
+        setOriginalDeck(emptyDeck);
+        setSelectedTags([]);
+      } else {
+        try {
+          const response = await axios.get(`/Decks/${deckId}/EditorView`);
+          const fetchedDeck = response.data as Deck;
+          setDeck(fetchedDeck);
+          setOriginalDeck(fetchedDeck);
+          setSelectedTags(fetchedDeck.tags || []);
+        } catch (error) {
+          console.error('Error fetching deck:', error);
+        }
       }
     }
     fetchDeck();
@@ -79,6 +93,7 @@ export default function EditDeck() {
     if (deck) {
       setDeck({ ...deck, tags: selectedTags });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTags]);
 
   useEffect(() => {
@@ -89,7 +104,7 @@ export default function EditDeck() {
 
   const revertChanges = () => {
     setDeck(originalDeck);
-    setSelectedTags(originalDeck.tags);
+    if (originalDeck) setSelectedTags(originalDeck.tags);
     setNumberForId(0);
     setTitleError('');
     setShowTags(false);
@@ -120,7 +135,6 @@ export default function EditDeck() {
 
       const updatedCards = deck.cards.filter((_, i) => i !== index);
       setDeck({ ...deck, cards: updatedCards });
-
       setAlteredCards((prevAlteredCards) => {
         if (!prevAlteredCards) return null;
 
@@ -149,21 +163,11 @@ export default function EditDeck() {
         return prevNewCards;
       });
 
-      if (newCards?.length === 0) setNewCards(null);
-
       setRemoveCards((prevRemoveCards) => {
-        const isCardInNewCards = newCards?.some(
-          (newCard) =>
-            newCard.question === cardToDelete.question &&
-            newCard.description === cardToDelete.description &&
-            newCard.answer === cardToDelete.answer
-        );
-
-        if (!isCardInNewCards) {
-          if (!prevRemoveCards) return [cardToDelete.id];
+        if (!prevRemoveCards) return [cardToDelete.id];
+        if (!prevRemoveCards.includes(cardToDelete.id)) {
           return [...prevRemoveCards, cardToDelete.id];
         }
-
         return prevRemoveCards;
       });
 
@@ -224,6 +228,7 @@ export default function EditDeck() {
     const trimmedQuestion = editQuestion.trim();
     const trimmedAnswer = editAnswer.trim();
     const trimmedDescription = editDescription.trim();
+
     if (!trimmedQuestion) {
       setQuestionError('Question cannot be empty.');
       return;
@@ -249,25 +254,49 @@ export default function EditDeck() {
 
       updatedCards[index] = updatedCard;
       setDeck({ ...deck, cards: updatedCards });
+      const originalCard = { ...deck.cards[index] };
+      let xx = 0;
+      setNewCards((prevNewCards) => {
+        if (!prevNewCards) return null;
 
-      setAlteredCards((prevAlteredCards) => {
-        if (!prevAlteredCards) return [updatedCard];
-
-        const existingIndex = prevAlteredCards.findIndex(
-          (card) => card.id === updatedCard.id
-        );
-
-        if (existingIndex !== -1) {
-          // Update the existing card
-          const updatedAlteredCards = [...prevAlteredCards];
-          updatedAlteredCards[existingIndex] = updatedCard;
-          return updatedAlteredCards;
-        }
-        // Add new card to alteredCards
-        return [...prevAlteredCards, updatedCard];
+        const updatedNewCards = prevNewCards.map((newCard) => {
+          if (
+            newCard.question === originalCard.question &&
+            newCard.description === originalCard.description &&
+            newCard.answer === originalCard.answer
+          ) {
+            xx++;
+            return {
+              question: trimmedQuestion,
+              answer: trimmedAnswer,
+              description: trimmedDescription,
+            };
+          }
+          return newCard;
+        });
+        return updatedNewCards;
       });
+      // If the card was not in newCards, add it to alteredCards
+      if (xx !== 0) {
+        setAlteredCards((prevAlteredCards) => {
+          if (!prevAlteredCards) return [updatedCard];
+
+          const existingIndex = prevAlteredCards.findIndex(
+            (card) => card.id === updatedCard.id
+          );
+
+          if (existingIndex !== -1) {
+            const updatedAlteredCards = [...prevAlteredCards];
+            updatedAlteredCards[existingIndex] = updatedCard;
+            return updatedAlteredCards;
+          }
+
+          return [...prevAlteredCards, updatedCard];
+        });
+      }
     }
 
+    // Reset the active edit fields
     setActiveEditCardId(null);
     setEditQuestion('');
     setEditAnswer('');
@@ -294,6 +323,15 @@ export default function EditDeck() {
 
   if (!deck) return <Typography>Loading...</Typography>;
   const saveAllChanges = async () => {
+    async function fetchDeck() {
+      const response = await axios.get(`/Decks/${deckId}/EditorView`);
+      const fetchedDeck = response.data as Deck;
+      setDeck(fetchedDeck);
+      setOriginalDeck(fetchedDeck);
+    }
+    if (titleError) {
+      return;
+    }
     if (deck && originalDeck) {
       const postDeck = {
         id: deck.id,
@@ -303,21 +341,41 @@ export default function EditDeck() {
         cardCount: deck.cardCount,
         tags: deck.tags.map((tag) => getTagId(tag)),
       };
-      //setPostDeck(postDeck);
-      // Modify the post endpoint according to your needs
-      const response = await axios.post(`/Decks/${deckId}/editDeck`, {
-        Deck: postDeck,
-        NewCards: newCards,
-        RemovedCards: removeCards,
-        Cards: alteredCards,
-      });
-      if (response.status === 200) {
-        setOriginalDeck(deck);
+      if (deckId !== '00000000-0000-0000-0000-000000000000') {
+        const response = await axios.post(`/Decks/${deckId}/editDeck`, {
+          Deck: postDeck,
+          NewCards: newCards,
+          RemovedCards: removeCards,
+          Cards: alteredCards,
+        });
+        if (response.status === 200) {
+          fetchDeck();
+          setNewCards(null);
+          setRemoveCards(null);
+          setAlteredCards(null);
+        }
+      } else {
+        if (deck.title.length === 0) {
+          setTitleError('Title cannot be empty');
+          return;
+        }
+        postDeck.id = '00000000-0000-0000-0000-000000000000';
+        const response = await axios.post(`/Decks/${deckId}/createDeck`, {
+          Deck: postDeck,
+          NewCards: newCards,
+          RemovedCards: removeCards,
+          Cards: alteredCards, // Will be null
+        });
+        if (response.status === 200) {
+          const deckGuid = response.data;
+          if (deckGuid) {
+            const deckGuidString = deckGuid.toString();
+            window.location.href = `https://localhost:5173/decks/${deckGuidString}`;
+          } else {
+            console.error('No deckGuid returned in response.');
+          }
+        }
       }
-      /*       console.log(postDeck);
-      console.log(newCards);
-      console.log(removeCards);
-      console.log(alteredCards); */
       setNewCards(null);
       setRemoveCards(null);
       setAlteredCards(null);
@@ -327,9 +385,15 @@ export default function EditDeck() {
 
   return (
     <Box sx={{ maxWidth: 600, mx: 'auto', mt: 4, p: 2, boxShadow: 3 }}>
-      <Typography variant="h4" gutterBottom>
-        Edit Deck {deck.title}
-      </Typography>
+      {deckId === '00000000-0000-0000-0000-000000000000' ? (
+        <Typography variant="h4" gutterBottom>
+          Create Deck {deck.title}
+        </Typography>
+      ) : (
+        <Typography variant="h4" gutterBottom>
+          Edit Deck {deck.title}
+        </Typography>
+      )}
       <TextField
         label="Title"
         fullWidth
@@ -541,26 +605,33 @@ export default function EditDeck() {
             gap: 2,
           }}
         >
+          {deckId === '00000000-0000-0000-0000-000000000000' ? (
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              sx={{ flex: 1 }}
+              onClick={() => saveAllChanges()}
+            >
+              Create Deck
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              sx={{ flex: 1 }}
+              onClick={() => saveAllChanges()}
+            >
+              Save all changes
+            </Button>
+          )}
           <Button
             variant="contained"
             color="primary"
             fullWidth
             sx={{ flex: 1 }}
-            onClick={() => saveAllChanges()}
-          >
-            Save all changes
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            sx={{ flex: 1 }}
-            onClick={() => {
-              revertChanges();
-              console.log(removeCards);
-              console.log(newCards);
-              console.log(alteredCards);
-            }}
+            onClick={() => revertChanges()}
           >
             Revert Changes
           </Button>

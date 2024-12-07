@@ -1,11 +1,9 @@
 ﻿using MementoMori.Server.Database;
 using MementoMori.Server.DTOS;
 using MementoMori.Server.Exceptions;
-using MementoMori.Server.Extensions;
 using MementoMori.Server.Interfaces;
 using MementoMori.Server.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace MementoMori.Server.Service
 {
@@ -17,7 +15,7 @@ namespace MementoMori.Server.Service
         {
             _context = context;
         }
-        public List<Deck> Filter(Guid[]? ids = null, string? titleSubstring = null, string[]? selectedTags = null)
+        public async Task<List<Deck>> Filter(Guid[]? ids = null, string? titleSubstring = null, string[]? selectedTags = null)
         {
             var Decks = _context.Decks.Include(deck => deck.Cards).Include(deck => deck.Creator).Where(deck => deck.isPublic);
 
@@ -41,26 +39,25 @@ namespace MementoMori.Server.Service
                 catch (Exception)
                 {
                     // This state should not be reachable by using only UI
-                    return new List<Deck>();
+                    return [];
                 }
 
                 Decks = Decks.Where(deck => deck.Tags != null && !(selectedTagEnums.Except(deck.Tags).Any()));
             }
 
-            return Decks.ToList();
+            return (await Decks.ToListAsync());
         }
 
-        public void UpdateDeck(EditedDeckDTO editedDeckDTO, Guid requesterId)
+        public async Task UpdateDeckAsync(EditedDeckDTO editedDeckDTO, Guid requesterId)
         {
             try
             {
-
-                _context.SecureUpdate<Deck, DeckEditableProperties>(editedDeckDTO.Deck, requesterId);
+                await _context.SecureUpdateAsync<Deck, DeckEditableProperties>(editedDeckDTO.Deck, requesterId);
                 if (editedDeckDTO.Cards != null)
                 {
                     foreach (CardEditableProperties card in editedDeckDTO.Cards)
                     {
-                        _context.SecureUpdate<Card, CardEditableProperties>(card, editedDeckDTO.Deck.Id);
+                        await _context.SecureUpdateAsync<Card, CardEditableProperties>(card, editedDeckDTO.Deck.Id);
                     }
                 }
                 if (editedDeckDTO.NewCards != null)
@@ -75,29 +72,48 @@ namespace MementoMori.Server.Service
                 {
                     foreach (Guid cardId in editedDeckDTO.RemovedCards)
                     {
-                        _context.Remove<Card>(cardId);
+                        await _context.RemoveAsync<Card>(cardId, editedDeckDTO.Deck.Id);
                     }
                 }
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
-            catch (UnauthorizedEditingException ex)
+            catch (UnauthorizedEditingException)
             {
-                LogError(editedDeckDTO.Deck.Id, requesterId, ex);
                 throw;
             }
         }
-        private void LogError(Guid deckId, Guid requesterId, Exception exception)
+        public async Task<Guid> CreateDeckAsync (EditedDeckDTO createDeck, Guid requesterId)
         {
-            string logFilePath = "error_log.txt";
-            string logEntry = $"Timestamp: {DateTime.UtcNow}\nDeckId: {deckId}\nRequesterId: {requesterId}\nError: {exception.Message}\n---\n";
-
-            try
+            Guid newDeckGuid = Guid.NewGuid();
+            Deck newDeck = new()
             {
-                File.AppendAllText(logFilePath, logEntry);
+                Id = newDeckGuid,
+                CreatorId = requesterId,
+                isPublic = createDeck.Deck.isPublic,
+                Title = createDeck.Deck.Title,
+                Description = createDeck.Deck.Title,
+                Tags = createDeck.Deck.Tags,
+                Rating = 0,
+                RatingCount = 0,
+                Modified = DateOnly.FromDateTime(DateTime.Now),
+                Cards = createDeck.NewCards?.ToList() ?? [],
+                CardCount = 0,
+            };
+            _context.Decks.Add(newDeck);
+            await _context.SaveChangesAsync();
+            return newDeckGuid;
+        }
+        public async Task DeleteDeckAsync(Guid deckId)
+        {
+            var deck = _context.Decks.Include(d => d.Cards).FirstOrDefault(d => d.Id == deckId);
+            if (deck != null)
+            {
+                _context.Decks.Remove(deck);
+                await _context.SaveChangesAsync();
             }
-            catch (Exception logEx)
+            else
             {
-                Console.WriteLine($"Failed to log error: {logEx.Message}");
+                throw new KeyNotFoundException();
             }
         }
     }

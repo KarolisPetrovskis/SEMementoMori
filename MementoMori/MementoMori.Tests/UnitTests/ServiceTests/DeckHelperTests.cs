@@ -4,12 +4,8 @@ using MementoMori.Server.DTOS;
 using MementoMori.Server.Models;
 using MementoMori.Server.Service;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Xunit;
 
-namespace MementoMori.Tests.ServiceTests
+namespace MementoMori.Tests.UnitTests.ServiceTests
 {
     public class DeckHelperTests
     {
@@ -22,7 +18,7 @@ namespace MementoMori.Tests.ServiceTests
         }
 
         [Fact]
-        public void Filter_ReturnsEmptyList_WhenNoMatches()
+        public async Task Filter_ReturnsEmptyList_WhenNoMatches()
         {
             var context = CreateDbContext();
             var helper = new DeckHelper(context);
@@ -30,7 +26,7 @@ namespace MementoMori.Tests.ServiceTests
             context.Decks.Add(deck1);
             context.SaveChanges();
 
-            var result = helper.Filter(selectedTags: new[] { "Mathematics" });
+            var result = await helper.Filter(selectedTags: new[] { "Mathematics" });
 
             Assert.Empty(result);
         }
@@ -54,7 +50,7 @@ namespace MementoMori.Tests.ServiceTests
                 }
             };
 
-            helper.UpdateDeck(updatedDeckDTO, creatorId);
+            helper.UpdateDeckAsync(updatedDeckDTO, creatorId);
 
             var updatedDeck = context.Decks.First();
             Assert.Equal("New Title", updatedDeck.Title);
@@ -73,11 +69,11 @@ namespace MementoMori.Tests.ServiceTests
             var newCard = new Card { Id = Guid.NewGuid(), Question = "New Question", Answer = "New Answer" };
             var updatedDeckDTO = new EditedDeckDTO
             {
-                Deck = new DeckEditableProperties { Id = deck.Id, isPublic = true, Title="test" },
+                Deck = new DeckEditableProperties { Id = deck.Id, isPublic = true, Title = "test" },
                 NewCards = new[] { newCard }
             };
-            
-            helper.UpdateDeck(updatedDeckDTO, creatorId);
+
+            helper.UpdateDeckAsync(updatedDeckDTO, creatorId);
 
             var addedCard = context.Cards.First();
             Assert.Equal(newCard.Question, addedCard.Question);
@@ -97,11 +93,11 @@ namespace MementoMori.Tests.ServiceTests
             context.SaveChanges();
             var updatedDeckDTO = new EditedDeckDTO
             {
-                Deck = new DeckEditableProperties { Id = deck.Id, isPublic=true, Title="Title" },
+                Deck = new DeckEditableProperties { Id = deck.Id, isPublic = true, Title = "Title" },
                 RemovedCards = new[] { card.Id }
             };
 
-            helper.UpdateDeck(updatedDeckDTO, creatorId);
+            helper.UpdateDeckAsync(updatedDeckDTO, creatorId);
 
             Assert.Empty(context.Cards);
         }

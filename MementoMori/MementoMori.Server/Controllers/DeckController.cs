@@ -5,7 +5,6 @@ using MementoMori.Server.Service;
 using Microsoft.VisualBasic;
 using System.Collections.Concurrent;
 using MementoMori.Server.Interfaces;
-using MementoMori.Server.Service;
 using MementoMori.Server.Exceptions;
 
 namespace MementoMori.Server.Controllers
@@ -19,7 +18,7 @@ namespace MementoMori.Server.Controllers
         private readonly ICardService _cardService = cardService;
 
         [HttpGet("deck")]
-        public IActionResult View(Guid deckId)
+        public async Task<ActionResult> ViewAsync(Guid deckId)
         {
 
             if (deckId == Guid.Empty)
@@ -27,7 +26,7 @@ namespace MementoMori.Server.Controllers
                 return BadRequest(new { errorCode = ErrorCode.InvalidInput, message = "Invalid deck ID." });
             }
 
-            var deck = _deckHelper.Filter(ids: [deckId]).FirstOrDefault();
+            var deck = (await _deckHelper.Filter(ids: [deckId])).FirstOrDefault();
 
             if (deck == null)
                 return NotFound("Deck not found.");
@@ -50,7 +49,7 @@ namespace MementoMori.Server.Controllers
         }
 
         [HttpGet("EditorView")]
-        public IActionResult EditorView(Guid deckId)
+        public async Task<ActionResult> EditorViewAsync(Guid deckId)
         {
 
             if (deckId == Guid.Empty)
@@ -58,7 +57,7 @@ namespace MementoMori.Server.Controllers
                 return BadRequest(new { errorCode = ErrorCode.InvalidInput, message = "Invalid deck ID." });
             }
 
-            var deck = _deckHelper.Filter(ids: [deckId]).FirstOrDefault();
+            var deck = (await _deckHelper.Filter(ids: [deckId])).FirstOrDefault();
 
             if (deck == null)
                 return NotFound("Deck not found.");
@@ -86,6 +85,7 @@ namespace MementoMori.Server.Controllers
         [HttpGet("cards")]
         public IActionResult GetDueCards(Guid deckId)
         {
+
             try
             {
                 Guid? userId = _authService.GetRequesterId(HttpContext);
@@ -160,16 +160,16 @@ namespace MementoMori.Server.Controllers
             }
         }
         [HttpPost("editDeck")]
-        public IActionResult EditDeck(EditedDeckDTO editedDeckDTO) 
+        public async Task<ActionResult> EditDeck(EditedDeckDTO editedDeckDTO) 
         {
             var requesterId = _authService.GetRequesterId(HttpContext);
             if (requesterId == null)
                 return Unauthorized();
             try
             {
-                _deckHelper.UpdateDeck(editedDeckDTO, (Guid)requesterId);
+                await _deckHelper.UpdateDeckAsync(editedDeckDTO, (Guid)requesterId);
             }
-            catch (UnauthorizedEditingException ex)
+            catch (UnauthorizedEditingException)
             {
                 return Unauthorized();
             }
