@@ -152,6 +152,14 @@ namespace MementoMori.Server.Controllers
                 return StatusCode(500);
             }
         }
+        [HttpGet("hasAccessIfPrivate")]
+        public async Task<ActionResult> HasAccessIfPrivate(Guid deckId)
+        {
+            var requesterId = _authService.GetRequesterId(HttpContext);
+            bool answer = await _deckHelper.HasAccessToDeck((Guid)requesterId, deckId);
+            return Ok(answer);
+        }
+
 
     }
 }

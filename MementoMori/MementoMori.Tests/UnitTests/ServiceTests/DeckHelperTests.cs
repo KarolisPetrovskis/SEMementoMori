@@ -282,5 +282,78 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
             var exception = await Assert.ThrowsAsync<KeyNotFoundException>(() => helper.DeleteDeckAsync(nonExistentDeckId, requesterId));
             Assert.NotNull(exception);
         }
+
+
+
+
+        [Fact]
+        public async Task HasAccessToDeck_ReturnsTrue_WhenDeckIsPublic()
+        {
+            // Arrange
+            var context = CreateDbContext();
+            var helper = new DeckHelper(context);
+            
+            var deck = createTestDeck2();
+            deck.isPublic = true;
+            
+            context.Decks.Add(deck);
+            await context.SaveChangesAsync();
+            
+            var differentUserId = Guid.NewGuid();
+
+            // Act
+            var result = await helper.HasAccessToDeck(differentUserId, deck.Id);
+
+            // Assert
+            Assert.True(result);
+        }
+
+        [Fact]
+        public async Task HasAccessToDeck_ReturnsTrue_WhenUserIsCreator()
+        {
+            // Arrange
+            var context = CreateDbContext();
+            var helper = new DeckHelper(context);
+            
+            var deck = createTestDeck2();
+            deck.isPublic = false;
+            
+            context.Decks.Add(deck);
+            await context.SaveChangesAsync();
+
+            // Act
+            var result = await helper.HasAccessToDeck(deck.CreatorId, deck.Id);
+
+            // Assert
+            Assert.True(result);
+        }
+
+        [Fact]
+        public async Task HasAccessToDeck_ReturnsFalse_WhenDeckIsPrivateAndUserIsNotCreator()
+        {
+            // Arrange
+            var context = CreateDbContext();
+            var helper = new DeckHelper(context);
+            
+            var deck = createTestDeck2();
+            deck.isPublic = false;
+            
+            context.Decks.Add(deck);
+            await context.SaveChangesAsync();
+
+            var differentUserId = Guid.NewGuid();
+
+            // Act
+            var result = await helper.HasAccessToDeck(differentUserId, deck.Id);
+
+            // Assert
+            Assert.False(result);
+        }
+
+
+
+
+
+        
     }
 }

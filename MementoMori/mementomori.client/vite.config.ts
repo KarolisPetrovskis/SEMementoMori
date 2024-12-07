@@ -81,11 +81,7 @@ export default defineConfig({
         target,
         secure: false,
       },
-      '^/CardData/createCard': {
-        target,
-        secure: false,
-      },
-      '^/CardFile/getFileContent': {
+      '^/Decks/.*?/hasAccessIfPrivate': {
         target,
         secure: false,
       },
@@ -106,6 +102,10 @@ export default defineConfig({
         secure: false,
       },
       '^/auth/logout': {
+        target,
+        secure: false,
+      },
+      '^/auth/userInformation': {
         target,
         secure: false,
       },

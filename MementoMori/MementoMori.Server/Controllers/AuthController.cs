@@ -1,8 +1,10 @@
-﻿using MementoMori.Server.DTOS;
+﻿using MementoMori.Server.Database;
+using MementoMori.Server.DTOS;
 using MementoMori.Server.Exceptions;
 using MementoMori.Server.Interfaces;
 using MementoMori.Server.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Concurrent;
 
 namespace MementoMori.Server.Controllers
@@ -13,14 +15,15 @@ namespace MementoMori.Server.Controllers
     {
         private readonly IAuthService _authService;
         private readonly IAuthRepo _authRepo;
+        private readonly IDeckHelper _deckHelper;
         private static readonly ConcurrentDictionary<string, User> _registeredUsers = new();
         private static bool initialized = false;
         
-        public AuthController(IAuthService authService, IAuthRepo authRepo)
+        public AuthController(IAuthService authService, IAuthRepo authRepo, IDeckHelper deckHelper)
         {
             _authService = authService;
             _authRepo = authRepo;
-
+            _deckHelper = deckHelper;
             if (!initialized)
             {
 
@@ -99,5 +102,24 @@ namespace MementoMori.Server.Controllers
             _authService.RemoveCookie(HttpContext);
             return Ok();
         }
+
+        [HttpGet("userInformation")]
+        public async Task<ActionResult> userInformation()
+        {
+            var requesterId = _authService.GetRequesterId(HttpContext);
+            //if (requesterId != null)
+            {
+                var userDecks = await _deckHelper.getUserDecks((Guid)requesterId);
+                var userInfo = new UserDeckInformationDTO{
+                    Decks = userDecks ?? [],
+                    IsLoggedIn = true,
+                };
+                //information.Decks = _deckHelper.getUserDecks((Guid)requesterId);
+                //information.Decks = userDecks; 
+                return Ok(userInfo);
+            }
+
+        }
+
     }
 }

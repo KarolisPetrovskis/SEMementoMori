@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
@@ -62,6 +63,7 @@ function Tags(props: TagsProps) {
 type ButtonProps = {
   isOwner: boolean;
   inCollection: boolean;
+  hasAccess: boolean;
 };
 
 function Buttons(props: ButtonProps) {
@@ -70,6 +72,11 @@ function Buttons(props: ButtonProps) {
   const [inCollection, setInCollection] = useState(props.inCollection);
   const [dialogOpen, setDialogOpen] = useState(false);
   const { deckId } = useParams<{ deckId: string }>();
+
+  // If no access, return null or access denied message
+  if (!props.hasAccess) {
+    return null;
+  }
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -90,23 +97,15 @@ function Buttons(props: ButtonProps) {
     window.location.href = `/decks/${deckId}/practice`;
   };
   const onAddToMyCollectionClick = () => {
-    // send request to backend to verify that can add and then add
-    // show spinner until response
     setInCollection(true);
   };
 
   const onRemoveClick = async () => {
-    // send req to backend
-    // show spinner til response
     setInCollection(false);
   };
 
   const onEditClick = () => {
     window.location.href = `/decks/${deckId}/edit`;
-  };
-
-  const onUseAsTemplateClick = () => {
-    console.error();
   };
 
   const onDeleteClick = async () => {
@@ -199,7 +198,6 @@ function Buttons(props: ButtonProps) {
                     <MenuList id="split-button-menu" autoFocusItem>
                       <MenuItem
                         sx={{ color: 'red' }}
-                        // onDeleteClick
                         onClick={openDialog}
                         key={'Delete'}
                       >
@@ -247,6 +245,9 @@ function Buttons(props: ButtonProps) {
 
 export function Deck() {
   const { deckId } = useParams<{ deckId: string }>();
+  const [hasAccessIfPrivate, setHasAccessIfPrivate] = useState<boolean>(false);
+  const [isAccessChecked, setIsAccessChecked] = useState(false);
+
   const { data, isFetched, isError } = useQuery({
     queryKey: ['main', 'deck', 'deckId'] as const,
     queryFn: async () => {
@@ -254,6 +255,32 @@ export function Deck() {
       return response.data;
     },
   });
+
+  React.useEffect(() => {
+    async function checkAccess() {
+      try {
+        const response = await axios.get<boolean>(
+          `/Decks/${deckId}/hasAccessIfPrivate`
+        );
+        setHasAccessIfPrivate(response.data);
+      } catch (error) {
+        console.error('Error checking deck access:', error);
+      } finally {
+        setIsAccessChecked(true);
+      }
+    }
+    checkAccess();
+  }, [deckId]);
+
+  if (!isAccessChecked) {
+    return <CircularProgress />;
+  }
+
+  if (!hasAccessIfPrivate) {
+    return (
+      <Typography level="h2">You do not have access to this deck.</Typography>
+    );
+  }
 
   return isFetched ? (
     !isError && data ? (
@@ -276,13 +303,15 @@ export function Deck() {
             alignItems: 'center',
             justifyContent: 'space-between',
             minWidth: '94.3%',
-            //marginTop: '20px',
             borderRadius: '6px',
           }}
         >
           <Typography level="h1">{data.title}</Typography>
-          <Buttons isOwner={data.isOwner} inCollection={false} />{' '}
-          {/*Provide actual values when users are implemented*/}
+          <Buttons
+            isOwner={data.isOwner}
+            inCollection={false}
+            hasAccess={hasAccessIfPrivate}
+          />
         </Box>
         <h2>Tags:</h2>
         <Tags tags={data.tags} />

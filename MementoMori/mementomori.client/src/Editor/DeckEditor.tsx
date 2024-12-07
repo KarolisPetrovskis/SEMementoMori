@@ -486,8 +486,6 @@ export default function EditDeck() {
               open={activeEditCardId === card.id}
               onClose={() => {
                 setActiveEditCardId(null);
-                //setAnswerError('');
-                //setQuestionError('');
               }}
             >
               <DialogTitle>Edit Card Details</DialogTitle>
