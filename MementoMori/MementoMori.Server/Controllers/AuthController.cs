@@ -107,16 +107,20 @@ namespace MementoMori.Server.Controllers
         public async Task<ActionResult> userInformation()
         {
             var requesterId = _authService.GetRequesterId(HttpContext);
-            //if (requesterId != null)
+            if (requesterId != null)
             {
                 var userDecks = await _deckHelper.getUserDecks((Guid)requesterId);
                 var userInfo = new UserDeckInformationDTO{
                     Decks = userDecks ?? [],
                     IsLoggedIn = true,
                 };
-                //information.Decks = _deckHelper.getUserDecks((Guid)requesterId);
-                //information.Decks = userDecks; 
+
                 return Ok(userInfo);
+            }
+            else
+            {
+                var userDecks = new UserDeckInformationDTO{Decks = null, IsLoggedIn = false};
+                return Ok(userDecks);
             }
 
         }
