@@ -141,9 +141,10 @@ namespace MementoMori.Server.Controllers
         [HttpPost("deleteDeck")]
         public async Task<ActionResult> DeleteDeck(Guid deckId)
         {
+            var requesterId = _authService.GetRequesterId(HttpContext);
             try
             {
-                await _deckHelper.DeleteDeckAsync(deckId);
+                await _deckHelper.DeleteDeckAsync(deckId, (Guid)requesterId);
                 return Ok();
             }
             catch
@@ -151,6 +152,14 @@ namespace MementoMori.Server.Controllers
                 return StatusCode(500);
             }
         }
+        [HttpGet("hasAccessIfPrivate")]
+        public async Task<ActionResult> HasAccessIfPrivate(Guid deckId)
+        {
+            var requesterId = _authService.GetRequesterId(HttpContext);
+            bool answer = await _deckHelper.HasAccessToDeck((Guid)requesterId, deckId);
+            return Ok(answer);
+        }
+
 
     }
 }

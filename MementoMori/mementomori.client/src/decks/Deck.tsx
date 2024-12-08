@@ -1,17 +1,8 @@
+import React from 'react';
 import { useState, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import {
-  Box,
-  Chip,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from '@mui/material';
 import { Typography } from '@mui/joy';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Button from '@mui/material/Button';
@@ -22,6 +13,16 @@ import Paper from '@mui/material/Paper';
 import Popper from '@mui/material/Popper';
 import MenuItem from '@mui/material/MenuItem';
 import MenuList from '@mui/material/MenuList';
+import {
+  Box,
+  Chip,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from '@mui/material';
 
 type DeckQueryData = {
   id: string;
@@ -62,13 +63,14 @@ function Tags(props: TagsProps) {
 type ButtonProps = {
   isOwner: boolean;
   inCollection: boolean;
+  hasAccess: boolean;
 };
 
 function Buttons(props: ButtonProps) {
   const anchorRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
-  const [dialogOpen, setDialogOpen] = useState(false);
   const [inCollection, setInCollection] = useState(props.inCollection);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const { deckId } = useParams<{ deckId: string }>();
 
   const handleToggle = () => {
@@ -90,12 +92,18 @@ function Buttons(props: ButtonProps) {
     window.location.href = `/decks/${deckId}/practice`;
   };
   const onAddToMyCollectionClick = () => {
-    // send request to backend to verify that can add and then add
-    // show spinner until response
     setInCollection(true);
   };
 
   const onRemoveClick = async () => {
+    setInCollection(false);
+  };
+
+  const onEditClick = () => {
+    window.location.href = `/decks/${deckId}/edit`;
+  };
+
+  const onDeleteClick = async () => {
     try {
       const response = await axios.post(`/Decks/${deckId}/deleteDeck`, {
         Id: deckId,
@@ -119,21 +127,8 @@ function Buttons(props: ButtonProps) {
   };
 
   const confirmRemove = () => {
-    onRemoveClick();
+    onDeleteClick();
     closeDialog();
-  };
-
-  const onEditClick = () => {
-    window.location.href = `/decks/${deckId}/edit`;
-  };
-
-  const onUseAsTemplateClick = () => {
-    console.error();
-  };
-
-  const onDeleteClick = () => {
-    // send req to backend
-    console.error();
   };
 
   return (
@@ -147,51 +142,23 @@ function Buttons(props: ButtonProps) {
       }}
     >
       {inCollection ? (
-        <>
-          <Button color="success" onClick={onPracticeClick} variant="contained">
-            Practice
-          </Button>
-          <Button
-            color="error"
-            onClick={openDialog} // Open the dialog instead of directly executing the removal
-            variant="contained"
-          >
-            Remove
-          </Button>
-          <Dialog
-            open={dialogOpen}
-            onClose={closeDialog}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-          >
-            <DialogTitle id="alert-dialog-title">
-              {'Confirm Removal'}
-            </DialogTitle>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                Are you sure you want to remove this Deck from your collection?
-                This action cannot be undone.
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={closeDialog} color="primary">
-                No
-              </Button>
-              <Button onClick={confirmRemove} color="error" autoFocus>
-                Yes
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </>
+        <Button color="success" onClick={onPracticeClick} variant="contained">
+          Practice
+        </Button>
       ) : (
         <Button
           color="success"
           onClick={onAddToMyCollectionClick}
           variant="contained"
         >
-          Actions
+          Add to my collection
         </Button>
       )}
+      {inCollection ? (
+        <Button color="error" onClick={onRemoveClick} variant="contained">
+          Remove
+        </Button>
+      ) : null}
       {props.isOwner ? (
         <>
           <ButtonGroup
@@ -225,18 +192,40 @@ function Buttons(props: ButtonProps) {
                   <ClickAwayListener onClickAway={handleClose}>
                     <MenuList id="split-button-menu" autoFocusItem>
                       <MenuItem
-                        key={'Use as a template'}
-                        onClick={onUseAsTemplateClick}
-                      >
-                        Use as a template
-                      </MenuItem>
-                      <MenuItem
                         sx={{ color: 'red' }}
-                        onClick={onDeleteClick}
+                        onClick={openDialog}
                         key={'Delete'}
                       >
                         Delete
                       </MenuItem>
+                      <Dialog
+                        open={dialogOpen}
+                        onClose={closeDialog}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                      >
+                        <DialogTitle id="alert-dialog-title">
+                          {'Confirm Removal'}
+                        </DialogTitle>
+                        <DialogContent>
+                          <DialogContentText id="alert-dialog-description">
+                            Are you sure you want to remove this Deck from your
+                            collection? This action cannot be undone.
+                          </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                          <Button onClick={closeDialog} color="primary">
+                            No
+                          </Button>
+                          <Button
+                            onClick={confirmRemove}
+                            color="error"
+                            autoFocus
+                          >
+                            Yes
+                          </Button>
+                        </DialogActions>
+                      </Dialog>
                     </MenuList>
                   </ClickAwayListener>
                 </Paper>
@@ -244,17 +233,16 @@ function Buttons(props: ButtonProps) {
             )}
           </Popper>
         </>
-      ) : (
-        <Button color="info" onClick={onUseAsTemplateClick} variant="contained">
-          Use as a template
-        </Button>
-      )}
+      ) : null}
     </Box>
   );
 }
 
 export function Deck() {
   const { deckId } = useParams<{ deckId: string }>();
+  const [hasAccessIfPrivate, setHasAccessIfPrivate] = useState<boolean>(false);
+  const [isAccessChecked, setIsAccessChecked] = useState(false);
+
   const { data, isFetched, isError } = useQuery({
     queryKey: ['main', 'deck', 'deckId'] as const,
     queryFn: async () => {
@@ -262,6 +250,32 @@ export function Deck() {
       return response.data;
     },
   });
+
+  React.useEffect(() => {
+    async function checkAccess() {
+      try {
+        const response = await axios.get<boolean>(
+          `/Decks/${deckId}/hasAccessIfPrivate`
+        );
+        setHasAccessIfPrivate(response.data);
+      } catch (error) {
+        console.error('Error checking deck access:', error);
+      } finally {
+        setIsAccessChecked(true);
+      }
+    }
+    checkAccess();
+  }, [deckId]);
+
+  if (!isAccessChecked) {
+    return <CircularProgress />;
+  }
+
+  if (!hasAccessIfPrivate) {
+    return (
+      <Typography level="h2">You do not have access to this deck.</Typography>
+    );
+  }
 
   return isFetched ? (
     !isError && data ? (
@@ -284,13 +298,15 @@ export function Deck() {
             alignItems: 'center',
             justifyContent: 'space-between',
             minWidth: '94.3%',
-            //marginTop: '20px',
             borderRadius: '6px',
           }}
         >
           <Typography level="h1">{data.title}</Typography>
-          <Buttons isOwner={data.isOwner} inCollection={false} />{' '}
-          {/*Provide actual values when users are implemented*/}
+          <Buttons
+            isOwner={data.isOwner}
+            inCollection={false}
+            hasAccess={hasAccessIfPrivate}
+          />
         </Box>
         <h2>Tags:</h2>
         <Tags tags={data.tags} />

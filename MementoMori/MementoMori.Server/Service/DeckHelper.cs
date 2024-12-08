@@ -85,35 +85,73 @@ namespace MementoMori.Server.Service
         public async Task<Guid> CreateDeckAsync (EditedDeckDTO createDeck, Guid requesterId)
         {
             Guid newDeckGuid = Guid.NewGuid();
+            if (createDeck.Deck.Title == "" || createDeck.Deck.Title.TrimStart(' ').Length == 0)
+            {
+                throw new ArgumentException();
+            }
+            var cards = createDeck.NewCards?.ToList() ?? [];
+            int cardCount = cards.Count; 
             Deck newDeck = new()
             {
                 Id = newDeckGuid,
                 CreatorId = requesterId,
                 isPublic = createDeck.Deck.isPublic,
                 Title = createDeck.Deck.Title,
-                Description = createDeck.Deck.Title,
+                Description = createDeck.Deck.Description,
                 Tags = createDeck.Deck.Tags,
                 Rating = 0,
                 RatingCount = 0,
                 Modified = DateOnly.FromDateTime(DateTime.Now),
-                Cards = createDeck.NewCards?.ToList() ?? [],
-                CardCount = 0,
+                Cards = cards,
+                CardCount = cardCount,
             };
             _context.Decks.Add(newDeck);
             await _context.SaveChangesAsync();
             return newDeckGuid;
         }
-        public async Task DeleteDeckAsync(Guid deckId)
+        public async Task DeleteDeckAsync(Guid deckId, Guid requesterId)
         {
             var deck = _context.Decks.Include(d => d.Cards).FirstOrDefault(d => d.Id == deckId);
             if (deck != null)
             {
+                if (deck.CreatorId != requesterId)
+                {
+                    throw new UnauthorizedEditingException();
+                }
                 _context.Decks.Remove(deck);
                 await _context.SaveChangesAsync();
             }
             else
             {
                 throw new KeyNotFoundException();
+            }
+        }
+        public async Task<UserDecksDTO[]?> getUserDecks(Guid userId)
+        {
+            var userDecks = await _context.Decks
+                .Where(deck => deck.CreatorId == userId)
+                .Select(deck => new UserDecksDTO
+                {
+                    Id = deck.Id,
+                    Title = deck.Title
+                })
+                .ToArrayAsync();
+            return userDecks;
+        }
+
+        public async Task<bool> HasAccessToDeck(Guid userId, Guid deckId)
+        {
+            var userDeck = await _context.Decks.SingleOrDefaultAsync(deck => deck.Id == deckId);
+            if (userDeck.isPublic)
+            {
+                return true;
+            }
+            else
+            {
+                if(userDeck.CreatorId == userId)
+                    return true;
+                else
+                    return false;
             }
         }
     }
