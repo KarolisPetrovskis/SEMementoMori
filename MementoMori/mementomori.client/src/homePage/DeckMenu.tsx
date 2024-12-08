@@ -43,8 +43,6 @@ export default function DeckMenu() {
       } catch (error) {
         console.error('Error fetching deck:', error);
       }
-      console.log(decks);
-      console.log(isLoggedOn);
     }
     fetchDeck();
   }, []);
@@ -60,7 +58,7 @@ export default function DeckMenu() {
           left: 106,
           background: 'white',
           padding: '15px 0px 15px 0px',
-          width: '30%', // Total width of the Decks header
+          width: '30%',
           border: 1,
           borderTopLeftRadius: '6px',
           borderTopRightRadius: '6px',
@@ -237,6 +235,38 @@ export default function DeckMenu() {
             </div>
           </Box>
         ) : null}
+      </Box>
+
+      {/* Single button lower down */}
+      <Box
+        sx={{
+          position: 'absolute',
+          top: 620,
+          width: '30%',
+          display: 'flex',
+          justifyContent: 'left',
+          padding: '10px 0',
+        }}
+      >
+        {isLoggedOn && (
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            sx={{
+              flex: 1,
+              margin: '0 8px', // Adds a margin on the left and right
+              borderRadius: '8px', // Adjusts the corner rounding
+              maxWidth: 'calc(40% - 16px)', // Ensures the button width respects the margins
+            }}
+            onClick={() =>
+              (window.location.href = window.location.href =
+                `https://localhost:5173//shop`)
+            }
+          >
+            Go to Shop
+          </Button>
+        )}
       </Box>
     </Box>
   );
