@@ -336,5 +336,127 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
             var result = await helper.HasAccessToDeck(differentUserId, deck.Id);
             Assert.False(result);
         }
+
+        [Fact]
+        public async Task GetUserDecks_ReturnsUserDecks_WhenUserHasDecks()
+        {
+            // Arrange
+            var context = CreateDbContext();
+            var helper = new DeckHelper(context);
+            var userId = Guid.NewGuid();
+
+            var decks = new List<Deck>
+            {
+                new Deck 
+                { 
+                    Id = Guid.NewGuid(), 
+                    CreatorId = userId, 
+                    Title = "Deck 1", 
+                    isPublic = true,
+                    Modified = DateOnly.FromDateTime(DateTime.Now),
+                    CardCount = 0
+                },
+                new Deck 
+                { 
+                    Id = Guid.NewGuid(), 
+                    CreatorId = userId, 
+                    Title = "Deck 2", 
+                    isPublic = false,
+                    Modified = DateOnly.FromDateTime(DateTime.Now),
+                    CardCount = 0
+                }
+            };
+
+            context.Decks.AddRange(decks);
+            await context.SaveChangesAsync();
+            var userDecks = await helper.getUserDecks(userId);
+
+            Assert.NotNull(userDecks);
+            Assert.Equal(2, userDecks.Length);
+            Assert.Contains(userDecks, d => d.Title == "Deck 1");
+            Assert.Contains(userDecks, d => d.Title == "Deck 2");
+        }
+
+        [Fact]
+        public async Task GetUserDecks_ReturnsEmptyArray_WhenUserHasNoDecks()
+        {
+            var context = CreateDbContext();
+            var helper = new DeckHelper(context);
+            var userId = Guid.NewGuid();
+            await context.SaveChangesAsync();
+            var userDecks = await helper.getUserDecks(userId);
+
+            Assert.NotNull(userDecks);
+            Assert.Empty(userDecks);
+        }
+
+        [Fact]
+        public async Task GetUserDecks_ReturnsOnlyUserOwnedDecks()
+        {
+            var context = CreateDbContext();
+            var helper = new DeckHelper(context);
+            var userId = Guid.NewGuid();
+            var otherUserId = Guid.NewGuid();
+
+            var decks = new List<Deck>
+            {
+                new Deck 
+                { 
+                    Id = Guid.NewGuid(), 
+                    CreatorId = userId, 
+                    Title = "User's Deck", 
+                    isPublic = false,
+                    Modified = DateOnly.FromDateTime(DateTime.Now),
+                    CardCount = 0
+                },
+                new Deck 
+                { 
+                    Id = Guid.NewGuid(), 
+                    CreatorId = otherUserId, 
+                    Title = "Other User's Deck", 
+                    isPublic = true,
+                    Modified = DateOnly.FromDateTime(DateTime.Now),
+                    CardCount = 0
+                }
+            };
+
+            context.Decks.AddRange(decks);
+            await context.SaveChangesAsync();
+            var userDecks = await helper.getUserDecks(userId);
+
+            Assert.NotNull(userDecks);
+            Assert.Single(userDecks);
+            Assert.Equal("User's Deck", userDecks[0].Title);
+        }
+
+        [Fact]
+        public async Task GetUserDecks_ReturnsCorrectDTOProperties()
+        {
+            var context = CreateDbContext();
+            var helper = new DeckHelper(context);
+            var userId = Guid.NewGuid();
+
+            var deck = new Deck 
+            { 
+                Id = Guid.NewGuid(), 
+                CreatorId = userId, 
+                Title = "Test Deck", 
+                isPublic = true,
+                Modified = DateOnly.FromDateTime(DateTime.Now),
+                CardCount = 0
+            };
+
+            context.Decks.Add(deck);
+            await context.SaveChangesAsync();
+            var userDecks = await helper.getUserDecks(userId);
+
+            Assert.NotNull(userDecks);
+            Assert.Single(userDecks);
+            
+            var userDeck = userDecks[0];
+
+            Assert.Equal(deck.Id, userDeck.Id);
+            Assert.Equal(deck.Title, userDeck.Title);
+        }
     }
 }
