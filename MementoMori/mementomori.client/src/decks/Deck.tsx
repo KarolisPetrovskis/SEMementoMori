@@ -73,11 +73,6 @@ function Buttons(props: ButtonProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const { deckId } = useParams<{ deckId: string }>();
 
-  // If no access, return null or access denied message
-  if (!props.hasAccess) {
-    return null;
-  }
-
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
   };

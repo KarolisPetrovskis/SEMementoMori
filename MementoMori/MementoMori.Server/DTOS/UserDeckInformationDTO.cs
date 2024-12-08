@@ -1,5 +1,3 @@
-
-
 namespace MementoMori.Server.DTOS
 {
     public class UserDeckInformationDTO
