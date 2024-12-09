@@ -144,8 +144,14 @@ namespace MementoMori.Server.Controllers
             var requesterId = _authService.GetRequesterId(HttpContext);
             try
             {
-                await _deckHelper.DeleteDeckAsync(deckId, (Guid)requesterId);
-                return Ok();
+                if(requesterId != null)
+                {
+                    await _deckHelper.DeleteDeckAsync(deckId, (Guid)requesterId);
+                    return Ok();
+                }
+                else
+                    return Unauthorized();
+
             }
             catch
             {
