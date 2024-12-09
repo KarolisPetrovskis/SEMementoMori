@@ -36,7 +36,7 @@ export default function DeckMenu() {
     async function fetchDeck() {
       try {
         const response = await axios.get<UserInformationResponse>(
-          `/auth/userInformation`
+          `/UserDecks/userInformation`
         );
         setIsLoggedOn(response.data.isLoggedIn);
         setDecks(response.data.decks);

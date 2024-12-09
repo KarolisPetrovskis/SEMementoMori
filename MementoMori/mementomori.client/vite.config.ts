@@ -101,7 +101,7 @@ export default defineConfig({
         target,
         secure: false,
       },
-      '^/auth/userInformation': {
+      '^/UserDecks/userInformation': {
         target,
         secure: false,
       },

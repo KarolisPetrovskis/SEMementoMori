@@ -13,7 +13,6 @@ namespace MementoMori.Tests.UnitTests.ControllerTests
     {
         private readonly Mock<IAuthService> _mockAuthService;
         private readonly Mock<IAuthRepo> _mockAuthRepo;
-        private readonly Mock<IDeckHelper> _mockDeckHelper;
         private readonly AuthController _controller;
 
         public AuthControllerTests()
@@ -21,9 +20,8 @@ namespace MementoMori.Tests.UnitTests.ControllerTests
 
             _mockAuthService = new Mock<IAuthService>();
             _mockAuthRepo = new Mock<IAuthRepo>();
-            _mockDeckHelper = new Mock<IDeckHelper>();
 
-            _controller = new AuthController(_mockAuthService.Object, _mockAuthRepo.Object, _mockDeckHelper.Object)
+            _controller = new AuthController(_mockAuthService.Object, _mockAuthRepo.Object)
             {
                 ControllerContext = new ControllerContext
                 {
