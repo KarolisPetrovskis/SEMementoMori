@@ -90,7 +90,7 @@ export default function DeckMenu() {
             flexDirection: 'column',
             height: '100%',
             boxSizing: 'border-box',
-            borderRight: 'none',
+            //borderRight: 'none',
           }}
         >
           <List
@@ -215,7 +215,6 @@ export default function DeckMenu() {
                   sx={{
                     padding: '20px',
                     textAlign: 'center',
-                    color: '#D4A017',
                     fontSize: 16,
                   }}
                 >

@@ -81,10 +81,6 @@ export default defineConfig({
         target,
         secure: false,
       },
-      '^/Decks/.*?/hasAccessIfPrivate': {
-        target,
-        secure: false,
-      },
       '^/QuestController/isComplete': {
         target,
         secure: false,

@@ -284,63 +284,8 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
         }
 
         [Fact]
-        public async Task HasAccessToDeck_ReturnsTrue_WhenDeckIsPublic()
-        {
-            // Arrange
-            var context = CreateDbContext();
-            var helper = new DeckHelper(context);
-            
-            var deck = createTestDeck2();
-            deck.isPublic = true;
-            
-            context.Decks.Add(deck);
-            await context.SaveChangesAsync();
-            
-            var differentUserId = Guid.NewGuid();
-            var result = await helper.HasAccessToDeck(differentUserId, deck.Id);
-
-            Assert.True(result);
-        }
-
-        [Fact]
-        public async Task HasAccessToDeck_ReturnsTrue_WhenUserIsCreator()
-        {
-            var context = CreateDbContext();
-            var helper = new DeckHelper(context);
-            
-            var deck = createTestDeck2();
-            deck.isPublic = false;
-            
-            context.Decks.Add(deck);
-            await context.SaveChangesAsync();
-
-            var result = await helper.HasAccessToDeck(deck.CreatorId, deck.Id);
-
-            Assert.True(result);
-        }
-
-        [Fact]
-        public async Task HasAccessToDeck_ReturnsFalse_WhenDeckIsPrivateAndUserIsNotCreator()
-        {
-            var context = CreateDbContext();
-            var helper = new DeckHelper(context);
-            
-            var deck = createTestDeck2();
-            deck.isPublic = false;
-            
-            context.Decks.Add(deck);
-            await context.SaveChangesAsync();
-
-            var differentUserId = Guid.NewGuid();
-
-            var result = await helper.HasAccessToDeck(differentUserId, deck.Id);
-            Assert.False(result);
-        }
-
-        [Fact]
         public async Task GetUserDecks_ReturnsUserDecks_WhenUserHasDecks()
         {
-            // Arrange
             var context = CreateDbContext();
             var helper = new DeckHelper(context);
             var userId = Guid.NewGuid();

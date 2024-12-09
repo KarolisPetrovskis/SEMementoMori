@@ -138,21 +138,5 @@ namespace MementoMori.Server.Service
                 .ToArrayAsync();
             return userDecks;
         }
-
-        public async Task<bool> HasAccessToDeck(Guid userId, Guid deckId)
-        {
-            var userDeck = await _context.Decks.SingleOrDefaultAsync(deck => deck.Id == deckId);
-            if (userDeck.isPublic)
-            {
-                return true;
-            }
-            else
-            {
-                if(userDeck.CreatorId == userId)
-                    return true;
-                else
-                    return false;
-            }
-        }
     }
 }
