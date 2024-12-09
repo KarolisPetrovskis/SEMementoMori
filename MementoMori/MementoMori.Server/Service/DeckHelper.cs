@@ -126,5 +126,17 @@ namespace MementoMori.Server.Service
                 throw new KeyNotFoundException();
             }
         }
+        public async Task<UserDeckDTO[]?> GetUserDecks(Guid userId)
+        {
+            var userDecks = await _context.Decks
+                .Where(deck => deck.CreatorId == userId)
+                .Select(deck => new UserDeckDTO
+                {
+                    Id = deck.Id,
+                    Title = deck.Title
+                })
+                .ToArrayAsync();
+            return userDecks;
+        }
     }
 }

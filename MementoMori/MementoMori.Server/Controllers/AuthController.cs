@@ -20,7 +20,6 @@ namespace MementoMori.Server.Controllers
         {
             _authService = authService;
             _authRepo = authRepo;
-
             if (!initialized)
             {
 

@@ -81,14 +81,6 @@ export default defineConfig({
         target,
         secure: false,
       },
-      '^/CardData/createCard': {
-        target,
-        secure: false,
-      },
-      '^/CardFile/getFileContent': {
-        target,
-        secure: false,
-      },
       '^/QuestController/isComplete': {
         target,
         secure: false,
@@ -106,6 +98,10 @@ export default defineConfig({
         secure: false,
       },
       '^/auth/logout': {
+        target,
+        secure: false,
+      },
+      '^/UserDecks/userInformation': {
         target,
         secure: false,
       },

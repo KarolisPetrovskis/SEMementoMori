@@ -486,8 +486,6 @@ export default function EditDeck() {
               open={activeEditCardId === card.id}
               onClose={() => {
                 setActiveEditCardId(null);
-                //setAnswerError('');
-                //setQuestionError('');
               }}
             >
               <DialogTitle>Edit Card Details</DialogTitle>
@@ -593,7 +591,7 @@ export default function EditDeck() {
         </DialogContent>
         <DialogActions>
           <Button variant="contained" color="success" onClick={createCard}>
-            {/*Can implement in this onclick the adding of a new card for quests, advisably have a new card array that you can create a new post for once user clicks on save all changes*/}
+            {/*Can implement  in this onclick the adding of a new card for quests, advisably have a new card array that you can create a new post for once user clicks on save all changes*/}
             Create
           </Button>
           <Button
@@ -644,10 +642,7 @@ export default function EditDeck() {
             color="primary"
             fullWidth
             sx={{ flex: 1 }}
-            onClick={() => {
-              console.log(newCards);
-              revertChanges();
-            }}
+            onClick={() => revertChanges()}
           >
             Revert Changes
           </Button>
