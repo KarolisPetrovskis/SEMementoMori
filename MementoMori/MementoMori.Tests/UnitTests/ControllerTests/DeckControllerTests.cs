@@ -11,14 +11,16 @@ public class DecksControllerTests
 {
     private readonly Mock<IDeckHelper> _mockDeckHelper;
     private readonly Mock<IAuthService> _mockAuthService;
+    private readonly Mock<ICardService> _mockCardService;
     private readonly DecksController _controller;
 
     public DecksControllerTests()
     {
         _mockDeckHelper = new Mock<IDeckHelper>();
         _mockAuthService = new Mock<IAuthService>();
+        _mockCardService = new Mock<ICardService>();
 
-        _controller = new DecksController(_mockDeckHelper.Object, _mockAuthService.Object);
+        _controller = new DecksController(_mockDeckHelper.Object, _mockAuthService.Object, _mockCardService.Object);
 
         var httpContext = new DefaultHttpContext();
         _controller.ControllerContext = new ControllerContext
