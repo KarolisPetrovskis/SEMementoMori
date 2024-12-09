@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import {
@@ -71,7 +71,7 @@ function Buttons(props: ButtonProps) {
   const [inCollection, setInCollection] = useState(props.inCollection);
   const { deckId } = useParams<{ deckId: string }>();
 
-  const { mutate: AddToCollection } = useMutation({
+  const { mutate: AddToCollection, isPending } = useMutation({
     mutationFn: async () => {
       return axios.post(`/Decks/${deckId}/addToCollection`);
     },
