@@ -141,9 +141,10 @@ namespace MementoMori.Server.Controllers
         [HttpPost("deleteDeck")]
         public async Task<ActionResult> DeleteDeck(Guid deckId)
         {
+            var requesterId = _authService.GetRequesterId(HttpContext);
             try
             {
-                await _deckHelper.DeleteDeckAsync(deckId);
+                await _deckHelper.DeleteDeckAsync(deckId, (Guid)requesterId);
                 return Ok();
             }
             catch

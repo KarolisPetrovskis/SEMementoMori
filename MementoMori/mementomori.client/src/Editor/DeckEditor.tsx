@@ -105,6 +105,9 @@ export default function EditDeck() {
   const revertChanges = () => {
     setDeck(originalDeck);
     if (originalDeck) setSelectedTags(originalDeck.tags);
+    setNewCards(null);
+    setAlteredCards(null);
+    setRemoveCards(null);
     setNumberForId(0);
     setTitleError('');
     setShowTags(false);
@@ -517,13 +520,22 @@ export default function EditDeck() {
                 />
               </DialogContent>
               <DialogActions>
-                <Button color="primary" onClick={() => modifyCard(index)}>
+                <Button
+                  variant="contained"
+                  color="success"
+                  onClick={() => modifyCard(index)}
+                >
                   Save
                 </Button>
-                <Button color="primary" onClick={() => deleteCard(index)}>
+                <Button
+                  variant="contained"
+                  color="error"
+                  onClick={() => deleteCard(index)}
+                >
                   Delete
                 </Button>
                 <Button
+                  variant="contained"
                   onClick={() => {
                     setActiveEditCardId(null);
                     setAnswerError('');
@@ -580,11 +592,12 @@ export default function EditDeck() {
           />
         </DialogContent>
         <DialogActions>
-          <Button color="primary" onClick={createCard}>
+          <Button variant="contained" color="success" onClick={createCard}>
             {/*Can implement in this onclick the adding of a new card for quests, advisably have a new card array that you can create a new post for once user clicks on save all changes*/}
             Create
           </Button>
           <Button
+            variant="contained"
             onClick={() => {
               setShowAddCardDialog(false);
               setAnswerError('');
@@ -631,7 +644,10 @@ export default function EditDeck() {
             color="primary"
             fullWidth
             sx={{ flex: 1 }}
-            onClick={() => revertChanges()}
+            onClick={() => {
+              console.log(newCards);
+              revertChanges();
+            }}
           >
             Revert Changes
           </Button>
