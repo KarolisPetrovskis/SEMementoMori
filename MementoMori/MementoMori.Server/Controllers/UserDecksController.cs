@@ -20,7 +20,7 @@ namespace MementoMori.Server.Controllers
             var requesterId = _authService.GetRequesterId(HttpContext);
             if (requesterId != null)
             {
-                var userDecks = await _deckHelper.getUserDecks((Guid)requesterId);
+                var userDecks = await _deckHelper.GetUserDecks((Guid)requesterId);
                 var userInfo = new UserDeckInformationDTO{
                     Decks = userDecks ?? [],
                     IsLoggedIn = true,

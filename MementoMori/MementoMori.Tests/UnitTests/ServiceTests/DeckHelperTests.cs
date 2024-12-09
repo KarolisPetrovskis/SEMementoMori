@@ -314,7 +314,7 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
 
             context.Decks.AddRange(decks);
             await context.SaveChangesAsync();
-            var userDecks = await helper.getUserDecks(userId);
+            var userDecks = await helper.GetUserDecks(userId);
 
             Assert.NotNull(userDecks);
             Assert.Equal(2, userDecks.Length);
@@ -329,7 +329,7 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
             var helper = new DeckHelper(context);
             var userId = Guid.NewGuid();
             await context.SaveChangesAsync();
-            var userDecks = await helper.getUserDecks(userId);
+            var userDecks = await helper.GetUserDecks(userId);
 
             Assert.NotNull(userDecks);
             Assert.Empty(userDecks);
@@ -367,7 +367,7 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
 
             context.Decks.AddRange(decks);
             await context.SaveChangesAsync();
-            var userDecks = await helper.getUserDecks(userId);
+            var userDecks = await helper.GetUserDecks(userId);
 
             Assert.NotNull(userDecks);
             Assert.Single(userDecks);
@@ -393,7 +393,7 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
 
             context.Decks.Add(deck);
             await context.SaveChangesAsync();
-            var userDecks = await helper.getUserDecks(userId);
+            var userDecks = await helper.GetUserDecks(userId);
 
             Assert.NotNull(userDecks);
             Assert.Single(userDecks);
