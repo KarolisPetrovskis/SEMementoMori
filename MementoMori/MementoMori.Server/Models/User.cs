@@ -1,9 +1,11 @@
-﻿namespace MementoMori.Server.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace MementoMori.Server.Models
 {
     public class User : DatabaseObject
     {
-        public required string Username { get; set; }
-        public required string Password { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
 
         public override bool CanEdit(Guid editorId)
         {

@@ -12,9 +12,9 @@ namespace MementoMori.Server.Controllers
         private readonly IDeckHelper _deckHelper = deckHelper;
 
         [HttpGet("getDecks")]
-        public async Task<ActionResult<DeckBrowserDTO>> GetDecksAsync([FromQuery] string[] selectedTags, string? searchString)
+        public ActionResult<DeckBrowserDTO> GetDecks([FromQuery] string[] selectedTags, string? searchString)
         {
-            var filteredDecksList = await _deckHelper.Filter(titleSubstring: searchString, selectedTags: selectedTags);
+            var filteredDecksList = _deckHelper.Filter(titleSubstring: searchString, selectedTags: selectedTags);
             filteredDecksList.Sort();
 
             var result = filteredDecksList.Select(deck => new DeckBrowserDTO

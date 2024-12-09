@@ -1,5 +1,4 @@
 ﻿using MementoMori.Server.DTOS;
-using MementoMori.Server.Exceptions;
 using MementoMori.Server.Interfaces;
 using MementoMori.Server.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -12,19 +11,17 @@ namespace MementoMori.Server.Controllers
     public class AuthController: ControllerBase
     {
         private readonly IAuthService _authService;
-        private readonly IAuthRepo _authRepo;
         private static readonly ConcurrentDictionary<string, User> _registeredUsers = new();
         private static bool initialized = false;
         
-        public AuthController(IAuthService authService, IAuthRepo authRepo)
+        public AuthController(IAuthService authService)
         {
             _authService = authService;
-            _authRepo = authRepo;
 
             if (!initialized)
             {
 
-                var users = _authRepo.GetAllUsers();
+                var users = _authService.GetAllUsers();
                 foreach (var user in users)
                 {
                     _registeredUsers.TryAdd(user.Username, user);
@@ -50,7 +47,7 @@ namespace MementoMori.Server.Controllers
             };
             _registeredUsers.TryAdd(registerDetails.Username, placeholderUser);
 
-            var user = await _authRepo.CreateUserAsync(registerDetails);
+            var user = await _authService.CreateUserAsync(registerDetails);
 
             _registeredUsers[registerDetails.Username] = user;
 
@@ -62,23 +59,21 @@ namespace MementoMori.Server.Controllers
         [HttpPost("login")]
         public async Task<ActionResult> Login([FromBody] LoginDetails loginDetails)
         {
-            try
-            {
-                var user = await _authRepo.GetUserByUsernameAsync(loginDetails.Username);
-                bool isValidPassword = _authService.VerifyPassword(loginDetails.Password, user.Password);
-                if (!isValidPassword)
-                {
-                    return Unauthorized();
-                }
-
-                _authService.AddCookie(HttpContext, user.Id, loginDetails.RememberMe);
-
-                return Ok();
-            }
-            catch (UserNotFoundException)
+            var user = await _authService.GetUserByUsername(loginDetails.Username);
+            if (user == null)
             {
                 return Unauthorized();
             }
+
+            bool isValidPassword = _authService.VerifyPassword(loginDetails.Password, user.Password);
+            if (!isValidPassword)
+            {
+                return Unauthorized();
+            }
+
+            _authService.AddCookie(HttpContext, user.Id, loginDetails.RememberMe);
+
+            return Ok();
         }
 
         [HttpGet("loginResponse")]
@@ -94,7 +89,7 @@ namespace MementoMori.Server.Controllers
             return Ok(loginResponse);
         }
         [HttpPost("logout")]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
             _authService.RemoveCookie(HttpContext);
             return Ok();

@@ -1,10 +1,10 @@
+using MementoMori.Server;
 using MementoMori.Server.Service;
 using MementoMori.Server.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using MementoMori.Server.Interfaces;
 using System.Collections.Concurrent;
-using MementoMori.Server;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,9 +15,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("WebApiDatabase")));
 
+builder.Services.AddDbContext<AppDbContext, AppDbContext>();
 builder.Services.AddScoped<IDeckHelper, DeckHelper>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IAuthRepo, AuthRepo>();
 builder.Services.AddScoped<ICardService, CardService>();
 builder.Services.AddScoped<ISpacedRepetition, SpacedRepetition>();
 builder.Services.AddControllers();
@@ -65,5 +65,3 @@ app.MapControllers();
 app.MapFallbackToFile("/index.html");
 
 app.Run();
-
-public partial class Program { }

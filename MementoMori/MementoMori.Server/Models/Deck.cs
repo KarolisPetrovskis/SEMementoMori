@@ -1,10 +1,11 @@
 ﻿using MementoMori.Server.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace MementoMori.Server
 {
     public class Deck : DeckEditableProperties, IComparable<Deck>
     {
-        public User? Creator { get; set; }
+        public User Creator { get; set; }
 
         public Guid CreatorId { get; set; }
 
@@ -16,7 +17,7 @@ namespace MementoMori.Server
 
         public required long CardCount { get; set; }
 
-        public List<Card> Cards { get; set; } = [];
+        public List<Card>? Cards { get; set; }
 
         public int CompareTo(Deck? other)
         {

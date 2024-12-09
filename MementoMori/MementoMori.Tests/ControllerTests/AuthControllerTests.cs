@@ -1,27 +1,24 @@
 ﻿using MementoMori.Server.Controllers;
 using MementoMori.Server.DTOS;
-using MementoMori.Server.Exceptions;
 using MementoMori.Server.Interfaces;
 using MementoMori.Server.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using Xunit;
 
-namespace MementoMori.Tests.UnitTests.ControllerTests
+namespace MementoMori.Tests.ControllerTests
 {
     public class AuthControllerTests
     {
         private readonly Mock<IAuthService> _mockAuthService;
-        private readonly Mock<IAuthRepo> _mockAuthRepo;
         private readonly AuthController _controller;
 
         public AuthControllerTests()
         {
-
             _mockAuthService = new Mock<IAuthService>();
-            _mockAuthRepo = new Mock<IAuthRepo>();
 
-            _controller = new AuthController(_mockAuthService.Object, _mockAuthRepo.Object)
+            _controller = new AuthController(_mockAuthService.Object)
             {
                 ControllerContext = new ControllerContext
                 {
@@ -40,9 +37,9 @@ namespace MementoMori.Tests.UnitTests.ControllerTests
                 RememberMe = true
             };
             var userId = Guid.NewGuid();
-            _mockAuthRepo
+            _mockAuthService
                 .Setup(service => service.CreateUserAsync(registerDetails))
-                .ReturnsAsync(new User { Id = userId, Username = "Username", Password= "Password" });
+                .ReturnsAsync(new User { Id = userId });
             _mockAuthService
                 .Setup(service => service.AddCookie(It.IsAny<HttpContext>(), userId, registerDetails.RememberMe));
 
@@ -61,9 +58,9 @@ namespace MementoMori.Tests.UnitTests.ControllerTests
                 RememberMe = true
             };
             var userId = Guid.NewGuid();
-            var mockUser = new User { Id = userId, Username = "Username", Password = "hashedPassword" };
-            _mockAuthRepo
-                .Setup(service => service.GetUserByUsernameAsync(loginDetails.Username))
+            var mockUser = new User { Id = userId, Password = "hashedPassword" };
+            _mockAuthService
+                .Setup(service => service.GetUserByUsername(loginDetails.Username))
                 .ReturnsAsync(mockUser);
             _mockAuthService
                 .Setup(service => service.VerifyPassword(loginDetails.Password, mockUser.Password))
@@ -84,9 +81,9 @@ namespace MementoMori.Tests.UnitTests.ControllerTests
                 Username = "nonExistentUser",
                 Password = "TestPassword123!"
             };
-            _mockAuthRepo
-                .Setup(service => service.GetUserByUsernameAsync(loginDetails.Username))
-                .ThrowsAsync(new UserNotFoundException());
+            _mockAuthService
+                .Setup(service => service.GetUserByUsername(loginDetails.Username))
+                .ReturnsAsync((User)null); // Simulate user not found
 
             var result = await _controller.Login(loginDetails);
 
@@ -101,13 +98,13 @@ namespace MementoMori.Tests.UnitTests.ControllerTests
                 Username = "testUser",
                 Password = "WrongPassword!"
             };
-            var mockUser = new User { Id = Guid.NewGuid(), Username = "Username", Password = "hashedPassword" };
-            _mockAuthRepo
-                .Setup(service => service.GetUserByUsernameAsync(loginDetails.Username))
+            var mockUser = new User { Id = Guid.NewGuid(), Password = "hashedPassword" };
+            _mockAuthService
+                .Setup(service => service.GetUserByUsername(loginDetails.Username))
                 .ReturnsAsync(mockUser);
             _mockAuthService
                 .Setup(service => service.VerifyPassword(loginDetails.Password, mockUser.Password))
-                .Returns(false);
+                .Returns(false); // Simulate password mismatch
 
             var result = await _controller.Login(loginDetails);
 

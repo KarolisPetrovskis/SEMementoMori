@@ -3,10 +3,16 @@ using MementoMori.Server.Controllers;
 using MementoMori.Server.DTOS;
 using MementoMori.Server.Interfaces;
 using MementoMori.Server.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace MementoMori.Tests.UnitTests.ControllerTests
+namespace MementoMori.Tests.ControllerTests
 {
 
     public class DeckBrowserControllerTests
@@ -21,15 +27,15 @@ namespace MementoMori.Tests.UnitTests.ControllerTests
         }
 
         [Fact]
-        public async Task GetDecksAsync_ReturnsEmptyList_WhenNoDecksMatchFilter()
+        public void GetDecks_ReturnsEmptyList_WhenNoDecksMatchFilter()
         {
             var tags = new string[] { "Science" };
             var searchString = "Physics";
             _mockDeckHelper
                 .Setup(d => d.Filter(It.IsAny<Guid[]>(), searchString, tags))
-                .ReturnsAsync([]);
+                .Returns(new List<Deck>());
 
-            var result = await _controller.GetDecksAsync(tags, searchString);
+            var result = _controller.GetDecks(tags, searchString);
 
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
             var decks = Assert.IsType<DeckBrowserDTO[]>(okResult.Value);
@@ -37,7 +43,7 @@ namespace MementoMori.Tests.UnitTests.ControllerTests
         }
 
         [Fact]
-        public async Task GetDecksAsync_SortsDecksByRating()
+        public void GetDecks_SortsDecksByRating()
         {
             var decks = new List<Deck>
             {
@@ -75,9 +81,9 @@ namespace MementoMori.Tests.UnitTests.ControllerTests
             };
             _mockDeckHelper
                 .Setup(dh => dh.Filter(It.IsAny<Guid[]>(), It.IsAny<string>(), It.IsAny<string[]>()))
-                .ReturnsAsync(decks);
+                .Returns(decks);
 
-            var result = await _controller.GetDecksAsync(Array.Empty<string>(), null);
+            var result = _controller.GetDecks(Array.Empty<string>(), null);
 
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
             var deckDTOs = Assert.IsType<DeckBrowserDTO[]>(okResult.Value);
@@ -90,7 +96,7 @@ namespace MementoMori.Tests.UnitTests.ControllerTests
 
 
         [Fact]
-        public async Task GetDecksAsync_ReturnsAllDecks_WhenNoFiltersProvided()
+        public void GetDecks_ReturnsAllDecks_WhenNoFiltersProvided()
         {
             var decks = new List<Deck>
             {
@@ -117,9 +123,9 @@ namespace MementoMori.Tests.UnitTests.ControllerTests
             };
             _mockDeckHelper
                 .Setup(dh => dh.Filter(It.IsAny<Guid[]>(), It.IsAny<string>(), It.IsAny<string[]>()))
-                .ReturnsAsync(decks);
+                .Returns(decks);
 
-            var result = await _controller.GetDecksAsync([], null);
+            var result = _controller.GetDecks(Array.Empty<string>(), null);
 
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
             var deckDTOs = Assert.IsType<DeckBrowserDTO[]>(okResult.Value);

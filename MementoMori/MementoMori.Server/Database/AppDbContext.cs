@@ -10,33 +10,9 @@ namespace MementoMori.Server.Database
     public class AppDbContext : DbContext 
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options ?? throw new ArgumentNullException(nameof(options))) { }
-    public override int SaveChanges()
-    {
-        PerformCascadingDeletes();
-        return base.SaveChanges();
-    }
-
-    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-    {
-        PerformCascadingDeletes();
-        return await base.SaveChangesAsync(cancellationToken);
-    }
-
-    private void PerformCascadingDeletes()
-    {
-        var deletedDecks = ChangeTracker.Entries<Deck>()
-            .Where(e => e.State == EntityState.Deleted)
-            .Select(e => e.Entity)
-            .ToList();
-        foreach (var deck in deletedDecks)
+        public void SecureUpdate<T, P>(P item, Guid changedBy) where T : P where P : DatabaseObject
         {
-            var relatedCards = Cards.Where(c => c.DeckId == deck.Id).ToList();
-            Cards.RemoveRange(relatedCards);
-        }
-    }
-        public async Task SecureUpdateAsync<T, P>(P item, Guid changedBy) where T : P where P : DatabaseObject
-        {
-            var entity = await Set<T>().FirstOrDefaultAsync(e => e.Id == item.Id);
+            var entity = Set<T>().FirstOrDefault(e => e.Id == item.Id);
             if (entity == null)
             {
                 return;
@@ -51,20 +27,16 @@ namespace MementoMori.Server.Database
             return;
         }
 
-        public async Task RemoveAsync<T>(Guid id, Guid changedBy) where T : DatabaseObject
+        public void Remove<T>(Guid id) where T : DatabaseObject
         {
-            var entity = await Set<T>().FirstOrDefaultAsync(e => e.Id == id);
+            var entity = Set<T>().FirstOrDefault(e => e.Id == id);
             if (entity == null)
             {
                 return;
             }
-            if (!entity.CanEdit(changedBy)) 
-            {
-                throw new UnauthorizedEditingException();
-            }
             Remove(entity);
         }
-    
+
         public DbSet<Deck> Decks { get; set; }
         public DbSet<Card> Cards { get; set; }
 
