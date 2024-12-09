@@ -1,10 +1,8 @@
-﻿using MementoMori.Server.Database;
-using MementoMori.Server.DTOS;
+﻿using MementoMori.Server.DTOS;
 using MementoMori.Server.Exceptions;
 using MementoMori.Server.Interfaces;
 using MementoMori.Server.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Concurrent;
 
 namespace MementoMori.Server.Controllers

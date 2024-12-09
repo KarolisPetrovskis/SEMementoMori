@@ -126,11 +126,11 @@ namespace MementoMori.Server.Service
                 throw new KeyNotFoundException();
             }
         }
-        public async Task<UserDecksDTO[]?> getUserDecks(Guid userId)
+        public async Task<UserDeckDTO[]?> getUserDecks(Guid userId)
         {
             var userDecks = await _context.Decks
                 .Where(deck => deck.CreatorId == userId)
-                .Select(deck => new UserDecksDTO
+                .Select(deck => new UserDeckDTO
                 {
                     Id = deck.Id,
                     Title = deck.Title

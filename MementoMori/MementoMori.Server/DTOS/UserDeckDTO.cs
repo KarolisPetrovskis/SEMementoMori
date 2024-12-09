@@ -1,6 +1,6 @@
 namespace MementoMori.Server.DTOS
 {
-    public class UserDecksDTO
+    public class UserDeckDTO
     {
         public required Guid Id { get; set; }
 
