@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Typography } from '@mui/joy';
@@ -90,8 +90,9 @@ function Buttons(props: ButtonProps) {
     window.location.href = `/decks/${deckId}/practice`;
   };
   const onAddToMyCollectionClick = () => {
-    // send request to backend to verify that can add and then add
+    // send request to backend, verify that can add and then add
     // show spinner until response
+    AddToCollection();
     setInCollection(true);
   };
 
@@ -104,6 +105,18 @@ function Buttons(props: ButtonProps) {
   const onEditClick = () => {
     window.location.href = `/decks/${deckId}/edit`;
   };
+  const { mutate: AddToCollection } = useMutation({
+    mutationFn: async () => {
+      return axios.post(`/Decks/${deckId}/addToCollection`);
+    },
+    onSuccess: (response) => {
+      console.log(response.data.message); // Show success message
+      setInCollection(true);
+    },
+    onError: (error) => {
+      console.error('Failed to add cards to collection', error);
+    },
+  });
 
   const onDeleteClick = async () => {
     try {

@@ -1,18 +1,18 @@
-import { fileURLToPath, URL } from "node:url";
+import { fileURLToPath, URL } from 'node:url';
 
-import { defineConfig } from "vite";
-import plugin from "@vitejs/plugin-react";
-import fs from "fs";
-import path from "path";
-import child_process from "child_process";
-import { env } from "process";
+import { defineConfig } from 'vite';
+import plugin from '@vitejs/plugin-react';
+import fs from 'fs';
+import path from 'path';
+import child_process from 'child_process';
+import { env } from 'process';
 
 const baseFolder =
-  env.APPDATA !== undefined && env.APPDATA !== ""
+  env.APPDATA !== undefined && env.APPDATA !== ''
     ? `${env.APPDATA}/ASP.NET/https`
     : `${env.HOME}/.aspnet/https`;
 
-const certificateName = "mementomori.client";
+const certificateName = 'mementomori.client';
 const certFilePath = path.join(baseFolder, `${certificateName}.pem`);
 const keyFilePath = path.join(baseFolder, `${certificateName}.key`);
 
@@ -20,92 +20,100 @@ if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
   if (
     0 !==
     child_process.spawnSync(
-      "dotnet",
+      'dotnet',
       [
-        "dev-certs",
-        "https",
-        "--export-path",
+        'dev-certs',
+        'https',
+        '--export-path',
         certFilePath,
-        "--format",
-        "Pem",
-        "--no-password",
+        '--format',
+        'Pem',
+        '--no-password',
       ],
-      { stdio: "inherit" }
+      { stdio: 'inherit' }
     ).status
   ) {
-    throw new Error("Could not create certificate.");
+    throw new Error('Could not create certificate.');
   }
 }
 
 const target = env.ASPNETCORE_HTTPS_PORT
   ? `https://localhost:${env.ASPNETCORE_HTTPS_PORT}`
   : env.ASPNETCORE_URLS
-  ? env.ASPNETCORE_URLS.split(";")[0]
-  : "https://localhost:7122";
+  ? env.ASPNETCORE_URLS.split(';')[0]
+  : 'https://localhost:7122';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [plugin()],
   resolve: {
     alias: {
-      "@": fileURLToPath(new URL("./src", import.meta.url)),
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
   server: {
     proxy: {
-      "^/DeckBrowser/getDecks": {
+      '^/DeckBrowser/getDecks': {
         target,
         secure: false,
       },
-      "^/decks/.*?/cards": {
+      '^/decks/.*?/cards': {
         target,
         secure: false,
       },
-      "^/Decks/.*?/editDeck": {
+      '^/Decks/.*?/editDeck': {
         target,
         secure: false,
       },
-      "^/Decks/.*?/EditorView": {
+      '^/Decks/.*?/EditorView': {
         target,
         secure: false,
       },
-      "^/Decks/.*?/createDeck": {
+      '^/Decks/.*?/createDeck': {
         target,
         secure: false,
       },
-      "^/Decks/.*?/deleteDeck": {
+      '^/Decks/.*?/deleteDeck': {
         target,
         secure: false,
       },
-      "^/Decks/.*?/cards/update/.*?": {
+      '^/Decks/.*?/deck': {
         target,
         secure: false,
       },
-      "^/QuestController/isComplete": {
+      '^/Decks/.*?/addToCollection': {
         target,
         secure: false,
       },
-      "^/auth/login": {
+      '^/Decks/.*?/cards/update/.*?': {
         target,
         secure: false,
       },
-      "^/auth/register": {
+      '^/QuestController/isComplete': {
         target,
         secure: false,
       },
-      "^/auth/loginResponse": {
+      '^/auth/login': {
         target,
         secure: false,
       },
-      "^/auth/logout": {
+      '^/auth/register': {
         target,
         secure: false,
       },
-      "^/UserDecks/userInformation": {
+      '^/auth/loginResponse': {
         target,
         secure: false,
       },
-      "^/QuestController/quests": {
+      '^/auth/logout': {
+        target,
+        secure: false,
+      },
+      '^/UserDecks/userInformation': {
+        target,
+        secure: false,
+      },
+      '^/QuestController/quests': {
         target,
         secure: false,
       },
