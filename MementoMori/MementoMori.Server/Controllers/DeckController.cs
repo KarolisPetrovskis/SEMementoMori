@@ -175,6 +175,26 @@ namespace MementoMori.Server.Controllers
             }
             return Ok();
         }
+        [HttpPost("deleteDeck")]
+        public async Task<ActionResult> DeleteDeck(Guid deckId)
+        {
+            var requesterId = _authService.GetRequesterId(HttpContext);
+            try
+            {
+                if(requesterId != null)
+                {
+                    await _deckHelper.DeleteDeckAsync(deckId, (Guid)requesterId);
+                    return Ok();
+                }
+                else
+                    return Unauthorized();
+
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
         
+        }
     }
 }

@@ -104,9 +104,7 @@ function Buttons(props: ButtonProps) {
   };
   const onAddToMyCollectionClick = () => {
     // send request to backend, verify that can add and then add
-    // send request to backend, verify that can add and then add
     // show spinner until response
-    AddToCollection();
     AddToCollection();
     setInCollection(true);
   };
