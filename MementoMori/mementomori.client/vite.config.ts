@@ -69,11 +69,15 @@ export default defineConfig({
         target,
         secure: false,
       },
-      "^/CardData/createCard": {
+      "^/Decks/.*?/createDeck": {
         target,
         secure: false,
       },
-      "^/CardFile/getFileContent": {
+      "^/Decks/.*?/deleteDeck": {
+        target,
+        secure: false,
+      },
+      "^/Decks/.*?/cards/update/.*?": {
         target,
         secure: false,
       },
@@ -97,19 +101,11 @@ export default defineConfig({
         target,
         secure: false,
       },
+      "^/UserDecks/userInformation": {
+        target,
+        secure: false,
+      },
       "^/QuestController/quests": {
-        target,
-        secure: false,
-      },
-      "^/Decks/.*?/deck": {
-        target,
-        secure: false,
-      },
-      "^/Decks/.*?/addToCollection": {
-        target,
-        secure: false,
-      },
-      "^/Decks/.*?/cards/update/.*?": {
         target,
         secure: false,
       },

@@ -1,17 +1,7 @@
 import { useState, useRef } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import {
-  Box,
-  Chip,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from "@mui/material";
 import { Typography } from "@mui/joy";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Button from "@mui/material/Button";
@@ -22,6 +12,16 @@ import Paper from "@mui/material/Paper";
 import Popper from "@mui/material/Popper";
 import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
+import {
+  Box,
+  Chip,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 
 type DeckQueryData = {
   id: string;
@@ -67,22 +67,9 @@ type ButtonProps = {
 function Buttons(props: ButtonProps) {
   const anchorRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
-  const [dialogOpen, setDialogOpen] = useState(false);
   const [inCollection, setInCollection] = useState(props.inCollection);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const { deckId } = useParams<{ deckId: string }>();
-
-  const { mutate: AddToCollection } = useMutation({
-    mutationFn: async () => {
-      return axios.post(`/Decks/${deckId}/addToCollection`);
-    },
-    onSuccess: (response) => {
-      console.log(response.data.message); // Show success message
-      setInCollection(true);
-    },
-    onError: (error) => {
-      console.error("Failed to add cards to collection", error);
-    },
-  });
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -103,15 +90,22 @@ function Buttons(props: ButtonProps) {
     window.location.href = `/decks/${deckId}/practice`;
   };
   const onAddToMyCollectionClick = () => {
-    // send request to backend, verify that can add and then add
-    // send request to backend, verify that can add and then add
+    // send request to backend to verify that can add and then add
     // show spinner until response
-    AddToCollection();
-    AddToCollection();
     setInCollection(true);
   };
 
   const onRemoveClick = async () => {
+    // send req to backend
+    // show spinner til response
+    setInCollection(false);
+  };
+
+  const onEditClick = () => {
+    window.location.href = `/decks/${deckId}/edit`;
+  };
+
+  const onDeleteClick = async () => {
     try {
       const response = await axios.post(`/Decks/${deckId}/deleteDeck`, {
         Id: deckId,
@@ -135,21 +129,8 @@ function Buttons(props: ButtonProps) {
   };
 
   const confirmRemove = () => {
-    onRemoveClick();
+    onDeleteClick();
     closeDialog();
-  };
-
-  const onEditClick = () => {
-    window.location.href = `/decks/${deckId}/edit`;
-  };
-
-  const onUseAsTemplateClick = () => {
-    console.error();
-  };
-
-  const onDeleteClick = () => {
-    // send req to backend
-    console.error();
   };
 
   return (
@@ -163,51 +144,23 @@ function Buttons(props: ButtonProps) {
       }}
     >
       {inCollection ? (
-        <>
-          <Button color="success" onClick={onPracticeClick} variant="contained">
-            Practice
-          </Button>
-          <Button
-            color="error"
-            onClick={openDialog} // Open the dialog instead of directly executing the removal
-            variant="contained"
-          >
-            Remove
-          </Button>
-          <Dialog
-            open={dialogOpen}
-            onClose={closeDialog}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-          >
-            <DialogTitle id="alert-dialog-title">
-              {"Confirm Removal"}
-            </DialogTitle>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                Are you sure you want to remove this Deck from your collection?
-                This action cannot be undone.
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={closeDialog} color="primary">
-                No
-              </Button>
-              <Button onClick={confirmRemove} color="error" autoFocus>
-                Yes
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </>
+        <Button color="success" onClick={onPracticeClick} variant="contained">
+          Practice
+        </Button>
       ) : (
         <Button
           color="success"
           onClick={onAddToMyCollectionClick}
           variant="contained"
         >
-          Actions
+          Add to my collection
         </Button>
       )}
+      {inCollection ? (
+        <Button color="error" onClick={onRemoveClick} variant="contained">
+          Remove
+        </Button>
+      ) : null}
       {props.isOwner ? (
         <>
           <ButtonGroup
@@ -241,18 +194,41 @@ function Buttons(props: ButtonProps) {
                   <ClickAwayListener onClickAway={handleClose}>
                     <MenuList id="split-button-menu" autoFocusItem>
                       <MenuItem
-                        key={"Use as a template"}
-                        onClick={onUseAsTemplateClick}
-                      >
-                        Use as a template
-                      </MenuItem>
-                      <MenuItem
                         sx={{ color: "red" }}
-                        onClick={onDeleteClick}
+                        // onDeleteClick
+                        onClick={openDialog}
                         key={"Delete"}
                       >
                         Delete
                       </MenuItem>
+                      <Dialog
+                        open={dialogOpen}
+                        onClose={closeDialog}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                      >
+                        <DialogTitle id="alert-dialog-title">
+                          {"Confirm Removal"}
+                        </DialogTitle>
+                        <DialogContent>
+                          <DialogContentText id="alert-dialog-description">
+                            Are you sure you want to remove this Deck from your
+                            collection? This action cannot be undone.
+                          </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                          <Button onClick={closeDialog} color="primary">
+                            No
+                          </Button>
+                          <Button
+                            onClick={confirmRemove}
+                            color="error"
+                            autoFocus
+                          >
+                            Yes
+                          </Button>
+                        </DialogActions>
+                      </Dialog>
                     </MenuList>
                   </ClickAwayListener>
                 </Paper>
@@ -260,11 +236,7 @@ function Buttons(props: ButtonProps) {
             )}
           </Popper>
         </>
-      ) : (
-        <Button color="info" onClick={onUseAsTemplateClick} variant="contained">
-          Use as a template
-        </Button>
-      )}
+      ) : null}
     </Box>
   );
 }
