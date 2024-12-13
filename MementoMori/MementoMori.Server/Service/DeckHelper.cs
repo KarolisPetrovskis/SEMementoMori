@@ -15,9 +15,9 @@ namespace MementoMori.Server.Service
         {
             _context = context;
         }
-        public async Task<List<Deck>> Filter(Guid[]? ids = null, string? titleSubstring = null, string[]? selectedTags = null)
+        public async Task<List<Deck>> Filter(Guid[]? ids = null, string? titleSubstring = null, string[]? selectedTags = null, Guid? userId = null)
         {
-            var Decks = _context.Decks.Include(deck => deck.Cards).Include(deck => deck.Creator).Where(deck => deck.isPublic);
+            var Decks = _context.Decks.Include(deck => deck.Cards).Include(deck => deck.Creator).Where(deck => deck.isPublic || deck.CreatorId == userId);
 
             if (ids != null && ids.Length > 0)
             {

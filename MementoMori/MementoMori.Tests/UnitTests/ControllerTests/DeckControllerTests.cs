@@ -37,7 +37,7 @@ namespace MementoMori.Tests.UnitTests.ControllerTests
         {
             var deckId = Guid.NewGuid();
             _mockDeckHelper
-                .Setup(d => d.Filter(It.Is<Guid[]>(ids => ids.Contains(deckId)), null, null))
+                .Setup(d => d.Filter(It.Is<Guid[]>(ids => ids.Contains(deckId)), null, null, null))
                 .ReturnsAsync(new List<Deck>());
 
             var result = await _controller.ViewAsync(deckId);
@@ -74,21 +74,21 @@ namespace MementoMori.Tests.UnitTests.ControllerTests
                 Cards = new List<Card> { new Card { Id = Guid.NewGuid(), Question = "Q1", Answer = "A1" } }
             };
             _mockDeckHelper
-                .Setup(d => d.Filter(It.Is<Guid[]>(ids => ids.Contains(deckId)), null, null))
+                .Setup(d => d.Filter(It.Is<Guid[]>(ids => ids.Contains(deckId)), null, null, It.Is<Guid?>(id => id == creatorId)))
                 .ReturnsAsync([deck]);
             _mockAuthService
                 .Setup(a => a.GetRequesterId(It.IsAny<HttpContext>()))
                 .Returns(creatorId);
 
-            var result = await _controller.ViewAsync(deckId);
+                var result = await _controller.ViewAsync(deckId);
 
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            var deckDTO = Assert.IsType<DeckDTO>(okResult.Value);
-            Assert.Equal(deckId, deckDTO.Id);
-            Assert.Equal("TestUser", deckDTO.CreatorName);
-            Assert.Equal(1, deckDTO.CardCount);
-            Assert.True(deckDTO.IsOwner);
-        }
+                var okResult = Assert.IsType<OkObjectResult>(result);
+                var deckDTO = Assert.IsType<DeckDTO>(okResult.Value);
+                Assert.Equal(deckId, deckDTO.Id);
+                Assert.Equal("TestUser", deckDTO.CreatorName);
+                Assert.Equal(1, deckDTO.CardCount);
+                Assert.True(deckDTO.IsOwner);
+            }
 
         [Fact]
         public async Task EditorViewAsync_ReturnsBadRequest_WhenGuidEmpty()
@@ -100,12 +100,13 @@ namespace MementoMori.Tests.UnitTests.ControllerTests
             Assert.IsType<BadRequestObjectResult>(result);
         }
 
+
         [Fact]
         public async Task EditorView_ReturnsNotFound_WhenDeckNotExists()
         {
             var deckId = Guid.NewGuid();
             _mockDeckHelper
-                .Setup(d => d.Filter(It.Is<Guid[]>(ids => ids.Contains(deckId)), null, null))
+                .Setup(d => d.Filter(It.Is<Guid[]>(ids => ids.Contains(deckId)), null, null, null))
                 .ReturnsAsync([]);
 
             var result = await _controller.EditorViewAsync(deckId);
@@ -132,8 +133,9 @@ namespace MementoMori.Tests.UnitTests.ControllerTests
             }
             };
 
+
             _mockDeckHelper
-                .Setup(d => d.Filter(It.Is<Guid[]>(ids => ids.Contains(deckId)), null, null))
+                .Setup(d => d.Filter(It.Is<Guid[]>(ids => ids.Contains(deckId)), null, null, null))
                 .ReturnsAsync([deck]);
 
             var result = await _controller.EditorViewAsync(deckId);

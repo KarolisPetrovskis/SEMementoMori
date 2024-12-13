@@ -26,12 +26,12 @@ namespace MementoMori.Server.Controllers
                 return BadRequest(new { errorCode = ErrorCode.InvalidInput, message = "Invalid deck ID." });
             }
 
-            var deck = (await _deckHelper.Filter(ids: [deckId])).FirstOrDefault();
+            var requesterId = _authService.GetRequesterId(HttpContext);
+
+            var deck = (await _deckHelper.Filter(ids: [deckId], userId: requesterId)).FirstOrDefault();
 
             if (deck == null)
                 return NotFound("Deck not found.");
-
-            var requesterId = _authService.GetRequesterId(HttpContext);
 
             var DeckDTO = new DeckDTO
             {
@@ -57,7 +57,9 @@ namespace MementoMori.Server.Controllers
                 return BadRequest(new { errorCode = ErrorCode.InvalidInput, message = "Invalid deck ID." });
             }
 
-            var deck = (await _deckHelper.Filter(ids: [deckId])).FirstOrDefault();
+            var requesterId = _authService.GetRequesterId(HttpContext);
+
+            var deck = (await _deckHelper.Filter(ids: [deckId], userId: requesterId)).FirstOrDefault();
 
             if (deck == null)
                 return NotFound("Deck not found.");
