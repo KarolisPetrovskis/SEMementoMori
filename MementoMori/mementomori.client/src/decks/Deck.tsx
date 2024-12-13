@@ -1,17 +1,17 @@
-import { useState, useRef } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
-import axios from "axios";
-import { Typography } from "@mui/joy";
-import ButtonGroup from "@mui/material/ButtonGroup";
-import Button from "@mui/material/Button";
-import { ArrowDropDown } from "@mui/icons-material";
-import ClickAwayListener from "@mui/material/ClickAwayListener";
-import Grow from "@mui/material/Grow";
-import Paper from "@mui/material/Paper";
-import Popper from "@mui/material/Popper";
-import MenuItem from "@mui/material/MenuItem";
-import MenuList from "@mui/material/MenuList";
+import { useState, useRef } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import { Typography } from '@mui/joy';
+import ButtonGroup from '@mui/material/ButtonGroup';
+import Button from '@mui/material/Button';
+import { ArrowDropDown } from '@mui/icons-material';
+import ClickAwayListener from '@mui/material/ClickAwayListener';
+import Grow from '@mui/material/Grow';
+import Paper from '@mui/material/Paper';
+import Popper from '@mui/material/Popper';
+import MenuItem from '@mui/material/MenuItem';
+import MenuList from '@mui/material/MenuList';
 import {
   Box,
   Chip,
@@ -21,7 +21,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-} from "@mui/material";
+} from '@mui/material';
 
 type DeckQueryData = {
   id: string;
@@ -43,15 +43,15 @@ function Tags(props: TagsProps) {
   return props.tags ? (
     <Box
       sx={{
-        flexDirection: "row",
-        display: "flex",
-        alignItems: "flex-start",
-        justifyContent: "flex-start",
+        flexDirection: 'row',
+        display: 'flex',
+        alignItems: 'flex-start',
+        justifyContent: 'flex-start',
         gap: 1,
       }}
     >
       {props.tags.map((tag) => (
-        <Chip label={tag} variant="outlined" />
+        <Chip label={tag} variant='outlined' />
       ))}
     </Box>
   ) : (
@@ -113,10 +113,10 @@ function Buttons(props: ButtonProps) {
       if (response.status === 200) {
         window.location.href = `https://localhost:5173/browser`;
       } else {
-        console.error("Failed to delete the deck");
+        console.error('Failed to delete the deck');
       }
     } catch (error) {
-      console.error("Error while deleting the deck:", error);
+      console.error('Error while deleting the deck:', error);
     }
   };
 
@@ -136,41 +136,41 @@ function Buttons(props: ButtonProps) {
   return (
     <Box
       sx={{
-        flexDirection: "row",
-        display: "flex",
-        alignItems: "flex-start",
-        justifyContent: "flex-end",
+        flexDirection: 'row',
+        display: 'flex',
+        alignItems: 'flex-start',
+        justifyContent: 'flex-end',
         gap: 1,
       }}
     >
       {inCollection ? (
-        <Button color="success" onClick={onPracticeClick} variant="contained">
+        <Button color='success' onClick={onPracticeClick} variant='contained'>
           Practice
         </Button>
       ) : (
         <Button
-          color="success"
+          color='success'
           onClick={onAddToMyCollectionClick}
-          variant="contained"
+          variant='contained'
         >
           Add to my collection
         </Button>
       )}
       {inCollection ? (
-        <Button color="error" onClick={onRemoveClick} variant="contained">
+        <Button color='error' onClick={onRemoveClick} variant='contained'>
           Remove
         </Button>
       ) : null}
       {props.isOwner ? (
         <>
           <ButtonGroup
-            color="info"
-            variant="contained"
+            color='info'
+            variant='contained'
             ref={anchorRef}
-            aria-label="Button group with a nested menu"
+            aria-label='Button group with a nested menu'
           >
             <Button onClick={onEditClick}>Edit</Button>
-            <Button size="small" onClick={handleToggle}>
+            <Button size='small' onClick={handleToggle}>
               <ArrowDropDown />
             </Button>
           </ButtonGroup>
@@ -187,42 +187,42 @@ function Buttons(props: ButtonProps) {
                 {...TransitionProps}
                 style={{
                   transformOrigin:
-                    placement === "bottom" ? "center top" : "center bottom",
+                    placement === 'bottom' ? 'center top' : 'center bottom',
                 }}
               >
                 <Paper>
                   <ClickAwayListener onClickAway={handleClose}>
-                    <MenuList id="split-button-menu" autoFocusItem>
+                    <MenuList id='split-button-menu' autoFocusItem>
                       <MenuItem
-                        sx={{ color: "red" }}
+                        sx={{ color: 'red' }}
                         // onDeleteClick
                         onClick={openDialog}
-                        key={"Delete"}
+                        key={'Delete'}
                       >
                         Delete
                       </MenuItem>
                       <Dialog
                         open={dialogOpen}
                         onClose={closeDialog}
-                        aria-labelledby="alert-dialog-title"
-                        aria-describedby="alert-dialog-description"
+                        aria-labelledby='alert-dialog-title'
+                        aria-describedby='alert-dialog-description'
                       >
-                        <DialogTitle id="alert-dialog-title">
-                          {"Confirm Removal"}
+                        <DialogTitle id='alert-dialog-title'>
+                          {'Confirm Removal'}
                         </DialogTitle>
                         <DialogContent>
-                          <DialogContentText id="alert-dialog-description">
+                          <DialogContentText id='alert-dialog-description'>
                             Are you sure you want to remove this Deck from your
                             collection? This action cannot be undone.
                           </DialogContentText>
                         </DialogContent>
                         <DialogActions>
-                          <Button onClick={closeDialog} color="primary">
+                          <Button onClick={closeDialog} color='primary'>
                             No
                           </Button>
                           <Button
                             onClick={confirmRemove}
-                            color="error"
+                            color='error'
                             autoFocus
                           >
                             Yes
@@ -244,7 +244,7 @@ function Buttons(props: ButtonProps) {
 export function Deck() {
   const { deckId } = useParams<{ deckId: string }>();
   const { data, isFetched, isError } = useQuery({
-    queryKey: ["main", "deck", "deckId"] as const,
+    queryKey: ['main', 'deck', 'deckId'] as const,
     queryFn: async () => {
       const response = await axios.get<DeckQueryData>(`/Decks/${deckId}/deck`);
       return response.data;
@@ -255,29 +255,29 @@ export function Deck() {
     !isError && data ? (
       <Box
         sx={{
-          flexDirection: "column",
-          display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "space-between",
-          minWidth: "100%",
+          flexDirection: 'column',
+          display: 'flex',
+          alignItems: 'flex-start',
+          justifyContent: 'space-between',
+          minWidth: '100%',
         }}
       >
         <Box
           sx={{
             paddingLeft: 4,
             paddingRight: 4,
-            bgcolor: "lightgray",
-            flexDirection: "row",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            minWidth: "94.3%",
+            bgcolor: 'lightgray',
+            flexDirection: 'row',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            minWidth: '94.3%',
             //marginTop: '20px',
-            borderRadius: "6px",
+            borderRadius: '6px',
           }}
         >
-          <Typography level="h1">{data.title}</Typography>
-          <Buttons isOwner={data.isOwner} inCollection={false} />{" "}
+          <Typography level='h1'>{data.title}</Typography>
+          <Buttons isOwner={data.isOwner} inCollection={false} />{' '}
           {/*Provide actual values when users are implemented*/}
         </Box>
         <h2>Tags:</h2>

@@ -8,8 +8,5 @@
 
         public required string Answer { get; set; }
 
-        public int? lastInterval { get; set; }
-
-        public DateOnly? nextShow { get; set; }
     }
 }

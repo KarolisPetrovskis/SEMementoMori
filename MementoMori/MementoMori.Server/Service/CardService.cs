@@ -71,11 +71,6 @@ namespace MementoMori.Server.Service
             _context.UserCards.Update(userCardData);
 
             var changes = await _context.SaveChangesAsync();
-
-            if (changes == 0)
-            {
-                throw new Exception("Database update failed. No rows affected.");
-            }
         }
 
 

@@ -34,8 +34,6 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
                     Question = "What is the capital of France?",
                     Description = "Geography question",
                     Answer = "Paris",
-                    lastInterval = null,
-                    nextShow = null,
                 },
                 new Card
                 {
@@ -43,8 +41,6 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
                     Question = "What is 2 + 2?",
                     Description = "Simple math question",
                     Answer = "4",
-                    lastInterval = null,
-                    nextShow = null,
                 },
                 new Card
                 {
@@ -52,8 +48,6 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
                     Question = "Who wrote 'To Kill a Mockingbird'?",
                     Description = "Literature question",
                     Answer = "Harper Lee",
-                    lastInterval = null,
-                    nextShow = null,
                 }
             ];
             var editedDeck = new EditedDeckDTO{
@@ -86,8 +80,6 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
                         Question = "What is the capital of France?",
                         Answer = "Paris",
                         Description = "Geography question",
-                        lastInterval = null,
-                        nextShow = null,
                     },
                     new Card
                     {
@@ -96,8 +88,6 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
                         Question = "What is 2 + 2?",
                         Answer = "4",
                         Description = "Math question",
-                        lastInterval = null,
-                        nextShow = null
                     }
                 }
             };

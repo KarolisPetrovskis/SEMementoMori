@@ -3,7 +3,6 @@ import Home from "./Home";
 import Browser from "./deckBrowser/Browser";
 import "./App.css";
 import DeckPage from "./mainFunctionality/DeckPage";
-import SpecificDeck from "./SpecificDeck.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Deck } from "./decks/Deck.tsx";
 import { Login } from "./Login.tsx";
@@ -26,7 +25,6 @@ function App() {
           <Route path="/browser" element={<Browser />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/chosenDeck" element={<SpecificDeck />} />
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>
