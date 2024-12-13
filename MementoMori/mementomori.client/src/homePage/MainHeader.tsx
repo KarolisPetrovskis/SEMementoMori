@@ -42,6 +42,7 @@ export default function MainHeader() {
       const response = await axios.post('/auth/logout');
       if (response.status === 200) {
         setIsLoggedIn(false);
+        location.reload();
       } else {
         console.error('Error logging out:', response.data);
       }
