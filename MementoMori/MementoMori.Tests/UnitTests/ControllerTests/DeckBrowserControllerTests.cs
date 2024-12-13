@@ -12,12 +12,15 @@ namespace MementoMori.Tests.UnitTests.ControllerTests
     public class DeckBrowserControllerTests
     {
         private readonly Mock<IDeckHelper> _mockDeckHelper;
+        private readonly Mock<IAuthService> _mockAuthService;
         private readonly DeckBrowserController _controller;
 
         public DeckBrowserControllerTests()
         {
             _mockDeckHelper = new Mock<IDeckHelper>();
-            _controller = new DeckBrowserController(_mockDeckHelper.Object);
+            _mockAuthService = new Mock<IAuthService>();
+
+            _controller = new DeckBrowserController(_mockDeckHelper.Object, _mockAuthService.Object);
         }
 
         [Fact]
@@ -26,7 +29,7 @@ namespace MementoMori.Tests.UnitTests.ControllerTests
             var tags = new string[] { "Science" };
             var searchString = "Physics";
             _mockDeckHelper
-                .Setup(d => d.Filter(It.IsAny<Guid[]>(), searchString, tags))
+                .Setup(d => d.Filter(It.IsAny<Guid[]>(), searchString, tags, null))
                 .ReturnsAsync([]);
 
             var result = await _controller.GetDecksAsync(tags, searchString);
@@ -74,7 +77,7 @@ namespace MementoMori.Tests.UnitTests.ControllerTests
                 }
             };
             _mockDeckHelper
-                .Setup(dh => dh.Filter(It.IsAny<Guid[]>(), It.IsAny<string>(), It.IsAny<string[]>()))
+                .Setup(dh => dh.Filter(It.IsAny<Guid[]>(), It.IsAny<string>(), It.IsAny<string[]>(), null))
                 .ReturnsAsync(decks);
 
             var result = await _controller.GetDecksAsync(Array.Empty<string>(), null);
@@ -116,7 +119,7 @@ namespace MementoMori.Tests.UnitTests.ControllerTests
                 }
             };
             _mockDeckHelper
-                .Setup(dh => dh.Filter(It.IsAny<Guid[]>(), It.IsAny<string>(), It.IsAny<string[]>()))
+                .Setup(dh => dh.Filter(It.IsAny<Guid[]>(), It.IsAny<string>(), It.IsAny<string[]>(), null))
                 .ReturnsAsync(decks);
 
             var result = await _controller.GetDecksAsync([], null);
