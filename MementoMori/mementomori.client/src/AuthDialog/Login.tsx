@@ -31,6 +31,7 @@ export function Login(props: AuthDialogProps) {
       if (props.isAuthenticatedCallback) {
         props.isAuthenticatedCallback();
       }
+      location.reload();
       props.closeCallback();
     },
     onError: () => {
