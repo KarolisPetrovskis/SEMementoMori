@@ -9,5 +9,6 @@ namespace MementoMori.Server.Interfaces
         User[] GetAllUsers();
         Task<User> GetUserByIdAsync(Guid id);
         Task<User> GetUserByUsernameAsync(string username);
+        Task<bool> SaveAsync();
     }
 }

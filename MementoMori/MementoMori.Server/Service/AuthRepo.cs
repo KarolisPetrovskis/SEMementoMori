@@ -67,5 +67,10 @@ namespace MementoMori.Server.Service
             }
             return user;
         }
+        public async Task<bool> SaveAsync()
+        {
+            return await _context.SaveChangesAsync() > 0;
+        }
+
     }
 }

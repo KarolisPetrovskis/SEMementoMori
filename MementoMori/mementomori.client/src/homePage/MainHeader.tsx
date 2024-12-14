@@ -13,11 +13,10 @@ import HomeIcon from '@mui/icons-material/Home';
 import Breadcrumb from './Breadcrumb';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useHeaderColor } from '../shop/HeaderColorContext.tsx';
 import { AuthDialog } from '../AuthDialog/AuthDialog.tsx';
 
 export default function MainHeader() {
-  const { color, setColor } = useHeaderColor();
+  const [color, setColor] = useState('white');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAuthDialogVisible, setIsAuthDialogVisible] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -59,13 +58,14 @@ export default function MainHeader() {
         setIsLoggedIn(response.data.isLoggedIn);
 
         if (response.data.isLoggedIn) {
-          console.log('User is logged in');
-
-          const userColorResponse = await axios.get('/auth/color');
+          const userColorResponse = await axios.get('/auth/color', {
+            headers: { 'Cache-Control': 'no-cache' },
+          });
+          console.log('Response Headers:', userColorResponse.headers); // Log headers to debug
+          console.log('Color response:', userColorResponse.data); // Log this to check what the server is sending
           setColor(userColorResponse.data.color);
         } else {
           setColor('white');
-          console.log('User is not logged in');
         }
       } catch (error) {
         console.error('Error fetching login status or user color:', error);

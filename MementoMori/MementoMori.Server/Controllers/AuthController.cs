@@ -122,5 +122,31 @@ namespace MementoMori.Server.Controllers
 
             return Ok(new { color = user.HeaderColor });
         }
+
+        [HttpPost("newColor")]
+        public async Task<IActionResult> UpdateUserColor([FromBody] UpdateColorRequest request)
+        {
+            var userId = _authService.GetRequesterId(HttpContext);
+            if (!userId.HasValue)
+            {
+                return Unauthorized();
+            }
+
+            var user = await _authRepo.GetUserByIdAsync(userId.Value);
+            if (user == null)
+            {
+                return NotFound(new { Message = "User not found." });
+            }
+
+            user.HeaderColor = request.NewColor;
+
+            var success = await _authRepo.SaveAsync();
+            if (!success)
+            {
+                return StatusCode(500, new { Message = "Failed to update user color." });
+            }
+
+            return Ok(new { Message = "Header color updated successfully." });
+        }
     }
 }
