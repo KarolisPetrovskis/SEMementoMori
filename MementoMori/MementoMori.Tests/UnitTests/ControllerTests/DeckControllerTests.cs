@@ -41,10 +41,10 @@ public class DecksControllerTests
     }
 
     [Fact]
-    public async Task ViewAsync_ReturnsBadRequest_WhenGuidEmpty() 
+    public async Task ViewAsync_ReturnsBadRequest_WhenGuidEmpty()
     {
         var deckId = Guid.Empty;
-        
+
         var result = await _controller.ViewAsync(deckId);
 
         Assert.IsType<BadRequestObjectResult>(result);
@@ -59,7 +59,7 @@ public class DecksControllerTests
         {
             Id = deckId,
             Title = "Test Deck",
-            Creator = new User { Id = creatorId, Username = "TestUser", Password = "Password" },
+            Creator = new User { Id = creatorId, Username = "TestUser", Password = "Password", HeaderColor = "white" },
             CardCount = 1,
             Modified = DateOnly.FromDateTime(DateTime.UtcNow),
             Rating = 4.5,
@@ -143,7 +143,7 @@ public class DecksControllerTests
         Assert.Equal("Q1", editorDTO.Cards?.First().Question);
     }
 
-    
+
 
 
 }

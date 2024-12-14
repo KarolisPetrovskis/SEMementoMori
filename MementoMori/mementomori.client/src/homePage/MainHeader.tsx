@@ -58,11 +58,7 @@ export default function MainHeader() {
         setIsLoggedIn(response.data.isLoggedIn);
 
         if (response.data.isLoggedIn) {
-          const userColorResponse = await axios.get('/auth/color', {
-            headers: { 'Cache-Control': 'no-cache' },
-          });
-          console.log('Response Headers:', userColorResponse.headers); // Log headers to debug
-          console.log('Color response:', userColorResponse.data); // Log this to check what the server is sending
+          const userColorResponse = await axios.get('/auth/color', {});
           setColor(userColorResponse.data.color);
         } else {
           setColor('white');
