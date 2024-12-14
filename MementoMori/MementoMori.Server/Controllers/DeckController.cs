@@ -88,38 +88,29 @@ namespace MementoMori.Server.Controllers
         public IActionResult GetDueCards(Guid deckId)
         {
 
-            try
+            Guid? userId = _authService.GetRequesterId(HttpContext);
+
+            if (deckId == Guid.Empty || userId == Guid.Empty)
             {
-                Guid? userId = _authService.GetRequesterId(HttpContext);
-
-                if (deckId == Guid.Empty || userId == Guid.Empty)
-                {
-                    return BadRequest(new { errorCode = "InvalidInput", message = "Invalid deck or user ID." });
-                }
-
-                List<Card> dueForReviewCards = _cardService.GetCardsForReview(deckId, userId.Value);
-
-                if (!dueForReviewCards.Any())
-                {
-                    return NotFound("No cards due for review.");
-                }
-
-                var dueCardDtos = dueForReviewCards.Select(c => new CardDTO
-                {
-                    Id = c.Id,
-                    Question = c.Question,
-                    Description = c.Description,
-                    Answer = c.Answer
-                }).ToList();
-                
-                return Ok(dueCardDtos);
+                return BadRequest(new { errorCode = "InvalidInput", message = "Invalid deck or user ID." });
             }
-            catch (Exception ex)
+
+            List<Card> dueForReviewCards = _cardService.GetCardsForReview(deckId, userId.Value);
+
+            if (!dueForReviewCards.Any())
             {
-                Console.Error.WriteLine($"Error in GetDueCards: {ex.Message}\n{ex.StackTrace}");
-                Console.Error.WriteLine($"DeckId: {deckId}, UserId: {_authService.GetRequesterId(HttpContext)}");
-                return StatusCode(500, new { errorCode = "ServerError", message = "An unexpected error occurred." });
+                return NotFound("No cards due for review.");
             }
+
+            var dueCardDtos = dueForReviewCards.Select(c => new CardDTO
+            {
+                Id = c.Id,
+                Question = c.Question,
+                Description = c.Description,
+                Answer = c.Answer
+            }).ToList();
+            
+            return Ok(dueCardDtos);
         }
         [HttpPost("addToCollection")]
         public IActionResult AddCardsToCollection(Guid deckId)
@@ -133,7 +124,7 @@ namespace MementoMori.Server.Controllers
             if(userId != null)
                 _cardService.AddCardsToCollection(userId.Value, deckId); 
 
-            return Ok(new { message = "Deck successfully added to user's collection." });
+            return Ok();
         }
                 
         [HttpPost("cards/update/{cardId}")]
@@ -149,7 +140,7 @@ namespace MementoMori.Server.Controllers
             try
             {
                 await _cardService.UpdateSpacedRepetition(userId.Value, deckId, cardId, quality);
-                return Ok(new { message = "Card updated successfully" });
+                return Ok();
             }
             catch (KeyNotFoundException ex)
             {
@@ -158,7 +149,7 @@ namespace MementoMori.Server.Controllers
             catch (Exception ex)
             {
                 Console.Error.WriteLine($"Error updating card: {ex.Message}\n{ex.StackTrace}");
-                return StatusCode(500, new { errorCode = "ServerError", message = "An unexpected error occurred." });
+                return StatusCode(500);
             }
         }
         [HttpPost("editDeck")]
