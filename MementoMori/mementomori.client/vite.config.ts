@@ -101,6 +101,10 @@ export default defineConfig({
         target,
         secure: false,
       },
+      '^/auth/color': {
+        target,
+        secure: false,
+      },
       '^/UserDecks/userInformation': {
         target,
         secure: false,

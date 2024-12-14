@@ -11,12 +11,13 @@ import Logout from '@mui/icons-material/Logout';
 import Button from '@mui/material/Button';
 import HomeIcon from '@mui/icons-material/Home';
 import Breadcrumb from './Breadcrumb';
-import React from 'react';
-import { AuthDialog } from '../AuthDialog/AuthDialog.tsx';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useHeaderColor } from '../shop/HeaderColorContext.tsx';
+import { AuthDialog } from '../AuthDialog/AuthDialog.tsx';
 
 export default function MainHeader() {
+  const { color, setColor } = useHeaderColor();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAuthDialogVisible, setIsAuthDialogVisible] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -56,8 +57,18 @@ export default function MainHeader() {
       try {
         const response = await axios.get('/auth/loginResponse');
         setIsLoggedIn(response.data.isLoggedIn);
+
+        if (response.data.isLoggedIn) {
+          console.log('User is logged in');
+
+          const userColorResponse = await axios.get('/auth/color');
+          setColor(userColorResponse.data.color);
+        } else {
+          setColor('white');
+          console.log('User is not logged in');
+        }
       } catch (error) {
-        console.error('Error fetching login status:', error);
+        console.error('Error fetching login status or user color:', error);
       }
     };
 
@@ -84,7 +95,7 @@ export default function MainHeader() {
           borderWidth: 2,
           textAlign: 'center',
           justifyContent: 'space-between',
-          bgcolor: 'white',
+          bgcolor: color, // Apply dynamic color from header context
           gap: 2,
           zIndex: 99,
         }}

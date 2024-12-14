@@ -9,13 +9,13 @@ namespace MementoMori.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class AuthController: ControllerBase
+    public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
         private readonly IAuthRepo _authRepo;
         private static readonly ConcurrentDictionary<string, User> _registeredUsers = new();
         private static bool initialized = false;
-        
+
         public AuthController(IAuthService authService, IAuthRepo authRepo)
         {
             _authService = authService;
@@ -45,7 +45,8 @@ namespace MementoMori.Server.Controllers
             {
                 Username = registerDetails.Username,
                 Password = string.Empty,
-                Id = Guid.Empty
+                Id = Guid.Empty,
+                HeaderColor = "white"
             };
             _registeredUsers.TryAdd(registerDetails.Username, placeholderUser);
 
@@ -83,20 +84,43 @@ namespace MementoMori.Server.Controllers
         [HttpGet("loginResponse")]
         public IActionResult GetLoginResponse()
         {
-            bool isLoggedIn = _authService.GetRequesterId(HttpContext).HasValue;
+            var userId = _authService.GetRequesterId(HttpContext);
+            if (!userId.HasValue)
+            {
+                return Ok(new LoginResponse { IsLoggedIn = false });
+            }
 
             var loginResponse = new LoginResponse
             {
-                IsLoggedIn = isLoggedIn
+                IsLoggedIn = true
             };
 
             return Ok(loginResponse);
         }
+
         [HttpPost("logout")]
         public IActionResult Logout()
         {
             _authService.RemoveCookie(HttpContext);
             return Ok();
+        }
+
+        [HttpGet("color")]
+        public async Task<IActionResult> GetUserColor()
+        {
+            var userId = _authService.GetRequesterId(HttpContext);
+            if (!userId.HasValue)
+            {
+                return BadRequest(new { Message = "User ID not found." });
+            }
+
+            var user = await _authRepo.GetUserByIdAsync(userId.Value);
+            if (user == null)
+            {
+                return NotFound(new { Message = "User not found." });
+            }
+
+            return Ok(new { color = user.HeaderColor });
         }
     }
 }

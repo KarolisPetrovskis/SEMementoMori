@@ -260,7 +260,7 @@ export default function DeckMenu() {
             }}
             onClick={() =>
               (window.location.href = window.location.href =
-                `https://localhost:5173//shop`)
+                `https://localhost:5173/shop`)
             }
           >
             Go to Shop
