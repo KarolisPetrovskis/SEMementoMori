@@ -437,10 +437,8 @@ public class DecksControllerTests
             .ReturnsAsync(new List<Deck> { deck });
 
         var result = await _controller.GetCards(deckId);
-        
         var okResult = Assert.IsType<OkObjectResult>(result);
         var returnedCards = Assert.IsType<List<CardDTO>>(okResult.Value);
-
         Assert.Equal(cards.Count, returnedCards.Count);
         Assert.Equal(cards[0].Id, returnedCards[0].Id);
         Assert.Equal(cards[0].Question, returnedCards[0].Question);
