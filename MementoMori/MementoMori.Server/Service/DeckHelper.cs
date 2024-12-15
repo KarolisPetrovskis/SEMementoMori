@@ -1,4 +1,4 @@
-﻿﻿using MementoMori.Server.Database;
+﻿using MementoMori.Server.Database;
 using MementoMori.Server.DTOS;
 using MementoMori.Server.Exceptions;
 using MementoMori.Server.Interfaces;
@@ -137,6 +137,29 @@ namespace MementoMori.Server.Service
                 })
                 .ToArrayAsync();
             return userDecks;
+        }
+        public async Task<UserDeckDTO[]> GetUserCollectionDecks(Guid userId)
+        {
+            var userCollectionDecks = await _context.UserCards
+                .Where(userCard  => userCard.UserId == userId)
+                .Join(_context.Decks, userDeck => userDeck.DeckId, deck => deck.Id, (userDeck, deck) => new UserDeckDTO
+                    {
+                        Id = userDeck.DeckId,
+                        Title = deck.Title
+                    })
+                .ToArrayAsync();
+            return userCollectionDecks;
+        }
+        public async Task DeleteUserCollectionDeck(Guid deckId, Guid userId)
+        {
+            var userCardsToDelete = _context.UserCards
+                .Where(card => card.DeckId == deckId && card.UserId == userId)
+                .ToList();
+
+            int size = userCardsToDelete.Count;
+            _context.UserCards.RemoveRange(userCardsToDelete);
+            await _context.SaveChangesAsync();
+            return;
         }
     }
 }
