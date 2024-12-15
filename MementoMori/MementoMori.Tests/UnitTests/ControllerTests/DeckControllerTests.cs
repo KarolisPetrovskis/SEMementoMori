@@ -33,7 +33,7 @@ public class DecksControllerTests
     {
         var deckId = Guid.NewGuid();
         _mockDeckHelper
-            .Setup(d => d.Filter(It.Is<Guid[]>(ids => ids.Contains(deckId)), null, null))
+            .Setup(d => d.Filter(It.Is<Guid[]>(ids => ids.Contains(deckId)), null, null, null))
             .ReturnsAsync(new List<Deck>());
 
         var result = await _controller.ViewAsync(deckId);
@@ -70,7 +70,7 @@ public class DecksControllerTests
             Cards = new List<Card> { new Card { Id = Guid.NewGuid(), Question = "Q1", Answer = "A1" } }
         };
         _mockDeckHelper
-            .Setup(d => d.Filter(It.Is<Guid[]>(ids => ids.Contains(deckId)), null, null))
+            .Setup(d => d.Filter(It.Is<Guid[]>(ids => ids.Contains(deckId)), null, null, It.Is<Guid?>(id => id == creatorId)))
             .ReturnsAsync([deck]);
         _mockAuthService
             .Setup(a => a.GetRequesterId(It.IsAny<HttpContext>()))
@@ -101,7 +101,7 @@ public class DecksControllerTests
     {
         var deckId = Guid.NewGuid();
         _mockDeckHelper
-            .Setup(d => d.Filter(It.Is<Guid[]>(ids => ids.Contains(deckId)), null, null))
+            .Setup(d => d.Filter(It.Is<Guid[]>(ids => ids.Contains(deckId)), null, null, null))
             .ReturnsAsync([]);
 
         var result = await _controller.EditorViewAsync(deckId);
@@ -129,7 +129,7 @@ public class DecksControllerTests
         };
 
         _mockDeckHelper
-            .Setup(d => d.Filter(It.Is<Guid[]>(ids => ids.Contains(deckId)), null, null))
+            .Setup(d => d.Filter(It.Is<Guid[]>(ids => ids.Contains(deckId)), null, null, null))
             .ReturnsAsync([deck]);
 
         var result = await _controller.EditorViewAsync(deckId);
