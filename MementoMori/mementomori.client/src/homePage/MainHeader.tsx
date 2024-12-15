@@ -58,7 +58,7 @@ export default function MainHeader() {
         setIsLoggedIn(response.data.isLoggedIn);
 
         if (response.data.isLoggedIn) {
-          const userColorResponse = await axios.get('/auth/color', {});
+          const userColorResponse = await axios.get('/color/color');
           setColor(userColorResponse.data.color);
         } else {
           setColor('white');
@@ -91,7 +91,7 @@ export default function MainHeader() {
           borderWidth: 2,
           textAlign: 'center',
           justifyContent: 'space-between',
-          bgcolor: color, // Apply dynamic color from header context
+          bgcolor: color,
           gap: 2,
           zIndex: 99,
         }}

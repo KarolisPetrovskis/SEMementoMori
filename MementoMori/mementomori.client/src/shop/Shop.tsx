@@ -4,7 +4,7 @@ import axios from 'axios';
 const Shop: React.FC = () => {
   const updateHeaderColor = async (newColor: string) => {
     try {
-      const response = await axios.post('/auth/newColor', {
+      const response = await axios.post('/color/newColor', {
         NewColor: newColor,
       });
       if (response.status === 200) {

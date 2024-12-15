@@ -7,7 +7,7 @@ import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
-import DeckCreateButton from '../DeckCreateButton.tsx';
+import DeckCreateButton from './DeckCreateButton.tsx';
 import axios from 'axios';
 import { Box } from '@mui/material';
 

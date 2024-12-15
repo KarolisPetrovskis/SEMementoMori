@@ -101,11 +101,11 @@ export default defineConfig({
         target,
         secure: false,
       },
-      '^/auth/color': {
+      '^/color/color': {
         target,
         secure: false,
       },
-      '^/auth/newColor': {
+      '^/color/newColor': {
         target,
         secure: false,
       },
