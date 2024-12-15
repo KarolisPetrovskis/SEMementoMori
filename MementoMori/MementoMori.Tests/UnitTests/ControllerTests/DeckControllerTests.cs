@@ -396,8 +396,8 @@ public class DecksControllerTests
     public async Task GetCards_ShouldReturnNotFound_WhenDeckDoesNotExist()
     {
         var deckId = Guid.NewGuid();
-        _mockDeckHelper.Setup(helper => helper.Filter(It.Is<Guid[]>(ids => ids.Contains(deckId)), null, null))
-                    .ReturnsAsync(new List<Deck>());
+        _mockDeckHelper.Setup(helper => helper.Filter(It.Is<Guid[]>(ids => ids.Contains(deckId)), null, null, null))
+            .ReturnsAsync(new List<Deck>());
 
         InvalidOperationException? caughtException = null;
         try
@@ -422,12 +422,22 @@ public class DecksControllerTests
             new Card { Id = Guid.NewGuid(), Question = "Q1", Description = "D1", Answer = "A1" },
             new Card { Id = Guid.NewGuid(), Question = "Q2", Description = "D2", Answer = "A2" }
         };
-        var deck = new Deck { Id = deckId, Cards = cards, isPublic = true, CardCount = 2, Title = "A title", Modified = DateOnly.FromDateTime(DateTime.Now)};
+        var deck = new Deck
+        {
+            Id = deckId,
+            Cards = cards,
+            isPublic = true,
+            CardCount = cards.Count,
+            Title = "A title",
+            Modified = DateOnly.FromDateTime(DateTime.UtcNow)
+        };
 
-        _mockDeckHelper.Setup(helper => helper.Filter(It.Is<Guid[]>(ids => ids.Contains(deckId)), null, null))
-                    .ReturnsAsync(new List<Deck> { deck });
+        _mockDeckHelper
+            .Setup(helper => helper.Filter(It.Is<Guid[]>(ids => ids.Contains(deckId)), null, null, null))
+            .ReturnsAsync(new List<Deck> { deck });
 
         var result = await _controller.GetCards(deckId);
+        
         var okResult = Assert.IsType<OkObjectResult>(result);
         var returnedCards = Assert.IsType<List<CardDTO>>(okResult.Value);
 
@@ -436,5 +446,5 @@ public class DecksControllerTests
         Assert.Equal(cards[0].Question, returnedCards[0].Question);
         Assert.Equal(cards[0].Description, returnedCards[0].Description);
         Assert.Equal(cards[0].Answer, returnedCards[0].Answer);
-    } 
+    }
 }
