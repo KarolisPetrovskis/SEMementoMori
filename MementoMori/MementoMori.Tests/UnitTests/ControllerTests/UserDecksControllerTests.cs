@@ -45,9 +45,9 @@ public class UserDecksControllerTests
             var userInfo = Assert.IsType<UserDeckInformationDTO>(okResult.Value);
 
             Assert.True(userInfo.IsLoggedIn);
-            Assert.Equal(userDecks.Length, userInfo.Decks.Length);
-            Assert.Equal(userDecks[0].Title, userInfo.Decks[0].Title);
-            Assert.Equal(userDecks[1].Title, userInfo.Decks[1].Title);
+            Assert.Equal(userDecks.Length, userInfo.Decks?.Length);
+            Assert.Equal(userDecks[0].Title, userInfo.Decks?[0].Title);
+            Assert.Equal(userDecks[1].Title, userInfo.Decks?[1].Title);
         }
 
         [Fact]
@@ -78,6 +78,7 @@ public class UserDecksControllerTests
             var userInfo = Assert.IsType<UserDeckInformationDTO>(okResult.Value);
 
             Assert.True(userInfo.IsLoggedIn);
+            Assert.NotNull(userInfo.Decks);
             Assert.Empty(userInfo.Decks);
         }
 }
