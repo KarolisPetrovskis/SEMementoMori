@@ -155,8 +155,6 @@ namespace MementoMori.Server.Service
             var userCardsToDelete = _context.UserCards
                 .Where(card => card.DeckId == deckId && card.UserId == userId)
                 .ToList();
-
-            int size = userCardsToDelete.Count;
             _context.UserCards.RemoveRange(userCardsToDelete);
             await _context.SaveChangesAsync();
             return;
