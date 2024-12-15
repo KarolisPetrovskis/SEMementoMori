@@ -63,7 +63,7 @@ export default function DeckMenu() {
         await axios.post(`/UserDecks/userCollectionRemoveDeckController`, {
           Id: deckToDelete,
         });
-        await fetchCollectionDecks(); // Refresh the collection decks
+        await fetchCollectionDecks();
       } catch (error) {
         console.error('Error removing deck:', error);
       } finally {
