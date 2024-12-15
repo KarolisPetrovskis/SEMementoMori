@@ -403,5 +403,164 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
             Assert.Equal(deck.Id, userDeck.Id);
             Assert.Equal(deck.Title, userDeck.Title);
         }
+
+        [Fact]
+        public async Task UpdateDeckAsync_UpdatesCards_Successfully()
+        {
+            var context = CreateDbContext();
+            var helper = new DeckHelper(context);
+            var deck = createTestDeck2();
+            context.Decks.Add(deck);
+            await context.SaveChangesAsync();
+            var editor = deck.CreatorId;
+            var editedDeck = new EditedDeckDTO{
+                Deck = deck,
+                Cards =
+                [
+                    new CardEditableProperties {Id = deck.Cards[0].Id, Question = "New Card 1 Question", Answer = deck.Cards[0].Answer,  Description = deck.Cards[0].Description},
+                    new CardEditableProperties {Id = deck.Cards[1].Id, Question = deck.Cards[1].Question, Answer = "New Card 2 Answer",  Description = "New Card 2 Description"},                
+                ]
+            };
+            await helper.UpdateDeckAsync(editedDeck, editor);
+            var updatedDeck = await context.Decks.Include(d => d.Cards).FirstOrDefaultAsync(d => d.Id == deck.Id);
+            Assert.NotNull(updatedDeck);
+            Assert.Equal(deck.Id, updatedDeck.Id);   
+            Assert.Equal("New Card 1 Question", updatedDeck.Cards[0].Question);
+            Assert.Equal(deck.Cards[0].Answer, updatedDeck.Cards[0].Answer);
+            Assert.Equal(deck.Cards[0].Description, updatedDeck.Cards[0].Description);
+            Assert.Equal(deck.Cards[1].Question, updatedDeck.Cards[1].Question);
+            Assert.Equal("New Card 2 Answer", updatedDeck.Cards[1].Answer);
+            Assert.Equal("New Card 2 Description", updatedDeck.Cards[1].Description);
+        }
+        [Fact]
+        public async Task UpdateDeckAsync_UpdatesDeck_Successfully()
+        {
+            var context = CreateDbContext();
+            var helper = new DeckHelper(context);
+            var deck = createTestDeck2();
+            
+            context.Decks.Add(deck);
+            await context.SaveChangesAsync();
+            
+            var editor = deck.CreatorId;
+            var newTags = new List<TagTypes> { TagTypes.Advanced, TagTypes.Art };
+            var editedDeck = new EditedDeckDTO{
+                Deck = new DeckEditableProperties{
+                    Id = deck.Id,
+                    isPublic = false,
+                    Title = "New Title",
+                    Description = "New Description",
+                    Tags = newTags,
+                }
+            };
+            
+            await helper.UpdateDeckAsync(editedDeck, editor);
+            var updatedDeck = await context.Decks.Include(d => d.Cards).FirstOrDefaultAsync(d => d.Id == deck.Id);
+            Assert.NotNull(updatedDeck);
+            Assert.False(updatedDeck.isPublic);
+            Assert.Equal("New Title", updatedDeck.Title);
+            Assert.Equal("New Description", updatedDeck.Description);
+            Assert.Equal(newTags, updatedDeck.Tags);
+        }
+        [Fact]
+        public async Task UpdateDeckAsync_AddNewCards_Successfully()
+        {
+            var context = CreateDbContext();
+            var helper = new DeckHelper(context);
+            var deckId = Guid.NewGuid();
+            var editor = Guid.NewGuid();
+            var originalDeck = new Deck{
+                Id = deckId,
+                CreatorId = editor,
+                isPublic = true,
+                Title = "Test Deck",
+                Description = "Test Description",
+                CardCount = 0,
+                Rating = 0,
+                RatingCount = 0,
+                Modified = DateOnly.FromDateTime(DateTime.Now),
+                Tags = new List<TagTypes> { TagTypes.Music, TagTypes.Mathematics },
+
+            };
+            context.Decks.Add(originalDeck);
+            context.SaveChanges();
+            var deck = new EditedDeckDTO
+            {
+                Deck = originalDeck,
+                NewCards = [
+                    new Card{
+                    DeckId = deckId,
+                    Question = "Q1",
+                    Answer = "A1"}, 
+                    new Card{
+                    DeckId = deckId,
+                    Question = "Q2",
+                    Answer = "A2"} 
+                ]
+            };
+            await helper.UpdateDeckAsync(deck, editor);
+            var updatedDeck = await context.Decks.Include(d => d.Cards).FirstOrDefaultAsync(d => d.Id == deckId);
+            Assert.NotNull(updatedDeck);
+            Assert.Equal("Q1", updatedDeck.Cards[0].Question);
+            Assert.Equal("A1", updatedDeck.Cards[0].Answer);
+            Assert.Equal("Q2", updatedDeck.Cards[1].Question);
+            Assert.Equal("A2", updatedDeck.Cards[1].Answer);
+        }
+
+       [Fact]
+        public async Task UpdateDeckAsync_RemovesCards_Successfully()
+        {
+            var context = CreateDbContext();
+            var helper = new DeckHelper(context);
+            var deck = createTestDeck2();
+            context.Decks.Add(deck);
+            await context.SaveChangesAsync();
+            var editor = deck.CreatorId;
+            var editedDeck = new EditedDeckDTO
+            {
+                Deck = new DeckEditableProperties
+                {
+                    Id = deck.Id,
+                    isPublic = deck.isPublic,
+                    Title = deck.Title,
+                    Description = deck.Description,
+                    Tags = deck.Tags
+                },
+                RemovedCards = [deck.Cards[0].Id, deck.Cards[1].Id]
+            };
+
+            await helper.UpdateDeckAsync(editedDeck, editor);
+            var updatedDeck = await context.Decks.Include(d => d.Cards).FirstOrDefaultAsync(d => d.Id == deck.Id);
+            Assert.NotNull(updatedDeck);
+            Assert.Empty(updatedDeck.Cards);
+            Assert.DoesNotContain(updatedDeck.Cards, c => c.Id == deck.Cards[0].Id);
+            Assert.DoesNotContain(updatedDeck.Cards, c => c.Id == deck.Cards[1].Id);
+        }
+
+        [Fact]
+        public async Task UpdateDeckAsync_ThrowsUnauthorizedEditingException_ForInvalidEditor()
+        {
+            var context = CreateDbContext();
+            var helper = new DeckHelper(context);
+            var deck = createTestDeck2();
+            context.Decks.Add(deck);
+            await context.SaveChangesAsync();
+            var invalidEditor = Guid.NewGuid();
+            var editedDeck = new EditedDeckDTO
+            {
+                Deck = new DeckEditableProperties
+                {
+                    Id = deck.Id,
+                    isPublic = deck.isPublic,
+                    Title = "Unauthorized Update",
+                    Description = deck.Description,
+                    Tags = deck.Tags
+                }
+            };
+
+            await Assert.ThrowsAsync<UnauthorizedEditingException>(async () =>
+                await helper.UpdateDeckAsync(editedDeck, invalidEditor));
+        }
+
     }
 }
