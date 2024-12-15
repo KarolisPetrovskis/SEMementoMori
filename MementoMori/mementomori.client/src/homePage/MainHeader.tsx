@@ -16,7 +16,6 @@ import axios from 'axios';
 import { AuthDialog } from '../AuthDialog/AuthDialog.tsx';
 
 export default function MainHeader() {
-  const [color, setColor] = useState('white');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAuthDialogVisible, setIsAuthDialogVisible] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -56,15 +55,8 @@ export default function MainHeader() {
       try {
         const response = await axios.get('/auth/loginResponse');
         setIsLoggedIn(response.data.isLoggedIn);
-
-        if (response.data.isLoggedIn) {
-          const userColorResponse = await axios.get('/color/color');
-          setColor(userColorResponse.data.color);
-        } else {
-          setColor('white');
-        }
       } catch (error) {
-        console.error('Error fetching login status or user color:', error);
+        console.error('Error fetching login status:', error);
       }
     };
 
@@ -91,7 +83,7 @@ export default function MainHeader() {
           borderWidth: 2,
           textAlign: 'center',
           justifyContent: 'space-between',
-          bgcolor: color,
+          bgcolor: 'white',
           gap: 2,
           zIndex: 99,
         }}

@@ -1,10 +1,5 @@
-using MementoMori.Server.DTOS;
-using MementoMori.Server.Exceptions;
 using MementoMori.Server.Interfaces;
-using MementoMori.Server.Models;
-using MementoMori.Server.Service;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Concurrent;
 
 namespace MementoMori.Server.Controllers
 {
@@ -37,7 +32,7 @@ namespace MementoMori.Server.Controllers
         public async Task<IActionResult> UpdateUserColor([FromBody] UpdateColorRequest request)
         {
             var userId = _authService.GetRequesterId(HttpContext);
-            if (!userId.HasValue)
+            if (userId == null)
             {
                 return Unauthorized();
             }
@@ -49,12 +44,6 @@ namespace MementoMori.Server.Controllers
             }
 
             user.HeaderColor = request.NewColor;
-
-            var success = await _authRepo.SaveAsync();
-            if (!success)
-            {
-                return StatusCode(500, new { Message = "Failed to update user color." });
-            }
 
             return Ok();
         }
