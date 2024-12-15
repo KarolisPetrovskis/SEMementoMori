@@ -5,23 +5,20 @@ namespace MementoMori.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class UserDecksController: ControllerBase
+    public class UserDecksController(IDeckHelper deckHelper, IAuthService authService) : ControllerBase
     {
-        private readonly IAuthService _authService;
-        private readonly IDeckHelper _deckHelper;
-        public UserDecksController(IAuthService authService, IDeckHelper deckHelper)
-        {
-            _authService = authService;
-            _deckHelper = deckHelper;
-        }
-                [HttpGet("userInformation")]
-        public async Task<ActionResult> userInformation()
+        private readonly IAuthService _authService = authService;
+        private readonly IDeckHelper _deckHelper = deckHelper;
+
+        [HttpGet("userInformation")]
+        public async Task<ActionResult> UserInformation()
         {
             var requesterId = _authService.GetRequesterId(HttpContext);
             if (requesterId != null)
             {
                 var userDecks = await _deckHelper.GetUserDecks((Guid)requesterId);
-                var userInfo = new UserDeckInformationDTO{
+                var userInfo = new UserDeckInformationDTO
+                {
                     Decks = userDecks ?? [],
                     IsLoggedIn = true,
                 };
@@ -33,7 +30,6 @@ namespace MementoMori.Server.Controllers
                 var userDecks = new UserDeckInformationDTO{Decks = null, IsLoggedIn = false};
                 return Ok(userDecks);
             }
-
         }
     }
 }
