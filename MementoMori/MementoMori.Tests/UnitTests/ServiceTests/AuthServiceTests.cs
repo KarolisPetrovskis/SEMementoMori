@@ -77,7 +77,7 @@ public class AuthServiceTests
     [Fact]
     public async Task CreateUserAsync_ThrowsException_WhenUsernameExists()
     {
-        var existingUser = new User { Username = "existinguser", Password = "SecurePassword123" };
+        var existingUser = new User { Username = "existinguser", Password = "SecurePassword123", HeaderColor = "white" };
         _context.Users.Add(existingUser);
         await _context.SaveChangesAsync();
 
@@ -103,9 +103,9 @@ public class AuthServiceTests
         var username3 = "existinguser3";
         var password = "password";
         var passwordHash = _authService.HashPassword(password);
-        var user1 = new User { Id = Guid.NewGuid(), Username = username1, Password = password };
-        var user2 = new User { Id = userId, Username = username2, Password = password };
-        var user3 = new User { Id = Guid.NewGuid(), Username = username3, Password = password };
+        var user1 = new User { Id = Guid.NewGuid(), Username = username1, Password = password, HeaderColor = "white" };
+        var user2 = new User { Id = userId, Username = username2, Password = password, HeaderColor = "white" };
+        var user3 = new User { Id = Guid.NewGuid(), Username = username3, Password = password, HeaderColor = "white" };
         _context.Users.AddRange([user1, user2]);
         await _context.SaveChangesAsync();
 
@@ -129,7 +129,7 @@ public class AuthServiceTests
     {
         var username = "existinguser";
         var password = "password";
-        var user = new User { Username = username, Password = password };
+        var user = new User { Username = username, Password = password, HeaderColor = "white" };
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 

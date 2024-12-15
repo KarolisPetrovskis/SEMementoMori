@@ -11,10 +11,9 @@ import Logout from '@mui/icons-material/Logout';
 import Button from '@mui/material/Button';
 import HomeIcon from '@mui/icons-material/Home';
 import Breadcrumb from './Breadcrumb';
-import React from 'react';
-import { AuthDialog } from '../AuthDialog/AuthDialog.tsx';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { AuthDialog } from '../AuthDialog/AuthDialog.tsx';
 
 export default function MainHeader() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);

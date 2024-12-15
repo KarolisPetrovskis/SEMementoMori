@@ -42,10 +42,10 @@ public class DecksControllerTests
     }
 
     [Fact]
-    public async Task ViewAsync_ReturnsBadRequest_WhenGuidEmpty() 
+    public async Task ViewAsync_ReturnsBadRequest_WhenGuidEmpty()
     {
         var deckId = Guid.Empty;
-        
+
         var result = await _controller.ViewAsync(deckId);
 
         Assert.IsType<BadRequestObjectResult>(result);
@@ -60,7 +60,7 @@ public class DecksControllerTests
         {
             Id = deckId,
             Title = "Test Deck",
-            Creator = new User { Id = creatorId, Username = "TestUser", Password = "Password" },
+            Creator = new User { Id = creatorId, Username = "TestUser", Password = "Password", HeaderColor = "white" },
             CardCount = 1,
             Modified = DateOnly.FromDateTime(DateTime.UtcNow),
             Rating = 4.5,
@@ -165,11 +165,11 @@ public class DecksControllerTests
                 new Card{
                 DeckId = deckId,
                 Question = "Q1",
-                Answer = "A1"}, 
+                Answer = "A1"},
                  new Card{
                 DeckId = deckId,
                 Question = "Q2",
-                Answer = "A2"} 
+                Answer = "A2"}
             ]
         };
         var result = await _controller.CreateDeck(deck);
@@ -203,11 +203,11 @@ public class DecksControllerTests
                 new Card{
                 DeckId = newDeckId,
                 Question = "Q1",
-                Answer = "A1"}, 
+                Answer = "A1"},
                  new Card{
                 DeckId = newDeckId,
                 Question = "Q2",
-                Answer = "A2"} 
+                Answer = "A2"}
             ]
         };
 
@@ -231,7 +231,7 @@ public class DecksControllerTests
         _mockDeckHelper
             .Setup(helper => helper.CreateDeckAsync(It.IsAny<EditedDeckDTO>(), requesterId))
             .ThrowsAsync(new Exception());
-        
+
         var newDeckId = Guid.NewGuid();
         var deck = new EditedDeckDTO
         {
@@ -247,11 +247,11 @@ public class DecksControllerTests
                 new Card{
                 DeckId = newDeckId,
                 Question = "Q1",
-                Answer = "A1"}, 
+                Answer = "A1"},
                  new Card{
                 DeckId = newDeckId,
                 Question = "Q2",
-                Answer = "A2"} 
+                Answer = "A2"}
             ]
         };
 
@@ -302,7 +302,7 @@ public class DecksControllerTests
 
         var result = await _controller.DeleteDeck(deckId);
         var statusCodeResult = Assert.IsType<StatusCodeResult>(result);
-        Assert.Equal(500, statusCodeResult.StatusCode);    
+        Assert.Equal(500, statusCodeResult.StatusCode);
     }
     [Fact]
     public async Task EditDeck_ValidRequest_ReturnsOk()
@@ -368,7 +368,7 @@ public class DecksControllerTests
             }
         };
 
-         var requesterId = Guid.NewGuid();
+        var requesterId = Guid.NewGuid();
         _mockAuthService.Setup(auth => auth.GetRequesterId(It.IsAny<HttpContext>()))
                         .Returns(requesterId);
 

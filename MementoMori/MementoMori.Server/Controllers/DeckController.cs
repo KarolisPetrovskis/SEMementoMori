@@ -109,7 +109,7 @@ namespace MementoMori.Server.Controllers
         }
 
         [HttpPost("editDeck")]
-        public async Task<ActionResult> EditDeck(EditedDeckDTO editedDeckDTO) 
+        public async Task<ActionResult> EditDeck(EditedDeckDTO editedDeckDTO)
         {
             var requesterId = _authService.GetRequesterId(HttpContext);
             if (requesterId == null)
@@ -147,7 +147,7 @@ namespace MementoMori.Server.Controllers
             var requesterId = _authService.GetRequesterId(HttpContext);
             try
             {
-                if(requesterId != null)
+                if (requesterId != null)
                 {
                     await _deckHelper.DeleteDeckAsync(deckId, (Guid)requesterId);
                     return Ok();

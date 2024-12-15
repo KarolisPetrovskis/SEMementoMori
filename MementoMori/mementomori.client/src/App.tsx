@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Deck } from './decks/Deck.tsx';
 import EditDeck from './Editor/DeckEditor.tsx';
 import MainHeader from './homePage/MainHeader';
+import Shop from './shop/Shop.tsx';
 
 const client = new QueryClient();
 
@@ -21,6 +22,7 @@ function App() {
           <Route path="/decks/:deckId" element={<Deck />} />
           <Route path="/decks/:deckId/practice" element={<DeckPage />} />
           <Route path="/browser" element={<Browser />} />
+          <Route path="/shop" element={<Shop />} />
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>
