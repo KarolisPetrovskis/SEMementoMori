@@ -18,12 +18,12 @@ const DynamicBreadcrumb: React.FC = () => {
   // Extract deckId from the URL
   const deckIdSegmentIndex = pathnameSegments.indexOf('decks') + 1;
   const deckId =
-    !isBrowserPage && deckIdSegmentIndex < pathnameSegments.length
+    deckIdSegmentIndex > 0 && pathnameSegments[deckIdSegmentIndex] !== ''
       ? pathnameSegments[deckIdSegmentIndex]
       : null;
 
   // Check if we are on the "new deck" route
-  const isNewDeck = deckId === '00000000-0000-0000-0000-000000000000';
+  const isNewDeck = deckId && deckId === '00000000-0000-0000-0000-000000000000';
 
   const {
     data: deckTitle,
@@ -102,8 +102,9 @@ const DynamicBreadcrumb: React.FC = () => {
         }
 
         if (
-          isNewDeck &&
-          pathSegment === '00000000-0000-0000-0000-000000000000'
+          deckId &&
+          deckIdSegmentIndex > 0 &&
+          deckId === '00000000-0000-0000-0000-000000000000'
         ) {
           return (
             <Link
