@@ -11,14 +11,12 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 interface Quest {
-  id: string;
+  nr: number;
   title: string;
   description: string;
   progress: number;
   required: number;
   reward: string;
-  color?: string;
-  status?: string;
 }
 
 export default function QuestList() {
@@ -30,7 +28,7 @@ export default function QuestList() {
   useEffect(() => {
     const fetchQuests = async () => {
       try {
-        const response = await axios.get('quests.json');
+        const response = await axios.get('/quest/getQuests');
         setQuestData(response.data);
         setIsLoading(false);
 
@@ -61,7 +59,7 @@ export default function QuestList() {
     } else {
       setQuests(
         questData.map((quest) => (
-          <ListItem key={quest.id} alignItems="center">
+          <ListItem key={quest.nr} alignItems="center">
             <ListItemAvatar>
               <Avatar>
                 <AssignmentIcon />

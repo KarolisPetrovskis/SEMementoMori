@@ -113,7 +113,7 @@ export default defineConfig({
         target,
         secure: false,
       },
-      '^/QuestController/quests': {
+      '^/quest/getQuests': {
         target,
         secure: false,
       },

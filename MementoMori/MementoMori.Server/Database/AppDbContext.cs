@@ -6,33 +6,33 @@ using Microsoft.Extensions.Configuration;
 
 namespace MementoMori.Server.Database
 {
-    public class AppDbContext : DbContext 
+    public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options ?? throw new ArgumentNullException(nameof(options))) { }
-    public override int SaveChanges()
-    {
-        PerformCascadingDeletes();
-        return base.SaveChanges();
-    }
-
-    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-    {
-        PerformCascadingDeletes();
-        return await base.SaveChangesAsync(cancellationToken);
-    }
-
-    private void PerformCascadingDeletes()
-    {
-        var deletedDecks = ChangeTracker.Entries<Deck>()
-            .Where(e => e.State == EntityState.Deleted)
-            .Select(e => e.Entity)
-            .ToList();
-        foreach (var deck in deletedDecks)
+        public override int SaveChanges()
         {
-            var relatedCards = Cards.Where(c => c.DeckId == deck.Id).ToList();
-            Cards.RemoveRange(relatedCards);
+            PerformCascadingDeletes();
+            return base.SaveChanges();
         }
-    }
+
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            PerformCascadingDeletes();
+            return await base.SaveChangesAsync(cancellationToken);
+        }
+
+        private void PerformCascadingDeletes()
+        {
+            var deletedDecks = ChangeTracker.Entries<Deck>()
+                .Where(e => e.State == EntityState.Deleted)
+                .Select(e => e.Entity)
+                .ToList();
+            foreach (var deck in deletedDecks)
+            {
+                var relatedCards = Cards.Where(c => c.DeckId == deck.Id).ToList();
+                Cards.RemoveRange(relatedCards);
+            }
+        }
         public async Task SecureUpdateAsync<T, P>(P item, Guid changedBy) where T : P where P : DatabaseObject
         {
             var entity = await Set<T>().FirstOrDefaultAsync(e => e.Id == item.Id);
@@ -41,7 +41,7 @@ namespace MementoMori.Server.Database
                 return;
             }
 
-            if (!entity.CanEdit(changedBy)) 
+            if (!entity.CanEdit(changedBy))
             {
                 throw new UnauthorizedEditingException();
             }
@@ -57,16 +57,18 @@ namespace MementoMori.Server.Database
             {
                 return;
             }
-            if (!entity.CanEdit(changedBy)) 
+            if (!entity.CanEdit(changedBy))
             {
                 throw new UnauthorizedEditingException();
             }
             Remove(entity);
         }
-    
+
         public DbSet<Deck> Decks { get; set; }
         public DbSet<Card> Cards { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<UserQuests> UserQuests { get; set; }
+        public DbSet<Quest> Quests { get; set; }
     }
 
 }

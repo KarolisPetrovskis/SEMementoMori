@@ -1,6 +1,6 @@
 namespace MementoMori.Server.Models
 {
-    public class UserQuest : DatabaseObject
+    public class UserQuests : DatabaseObject
     {
         public required int QuestNr { get; set; }
         public Guid UserId { get; set; }
