@@ -9,13 +9,13 @@ namespace MementoMori.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class AuthController: ControllerBase
+    public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
         private readonly IAuthRepo _authRepo;
         private static readonly ConcurrentDictionary<string, User> _registeredUsers = new();
         private static bool initialized = false;
-        
+
         public AuthController(IAuthService authService, IAuthRepo authRepo)
         {
             _authService = authService;
@@ -32,7 +32,6 @@ namespace MementoMori.Server.Controllers
             }
         }
 
-
         [HttpPost("register")]
         public async Task<ActionResult> Register([FromBody] RegisterDetails registerDetails)
         {
@@ -45,7 +44,8 @@ namespace MementoMori.Server.Controllers
             {
                 Username = registerDetails.Username,
                 Password = string.Empty,
-                Id = Guid.Empty
+                Id = Guid.Empty,
+                HeaderColor = "white"
             };
             _registeredUsers.TryAdd(registerDetails.Username, placeholderUser);
 
@@ -83,20 +83,17 @@ namespace MementoMori.Server.Controllers
         [HttpGet("loginResponse")]
         public IActionResult GetLoginResponse()
         {
-            bool isLoggedIn = _authService.GetRequesterId(HttpContext).HasValue;
-
-            var loginResponse = new LoginResponse
-            {
-                IsLoggedIn = isLoggedIn
-            };
-
-            return Ok(loginResponse);
+            var userId = _authService.GetRequesterId(HttpContext);
+            bool isLoggedIn = userId.HasValue;
+            return Ok(isLoggedIn);
         }
+
         [HttpPost("logout")]
         public IActionResult Logout()
         {
             _authService.RemoveCookie(HttpContext);
             return Ok();
         }
+
     }
 }

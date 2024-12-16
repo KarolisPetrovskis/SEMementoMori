@@ -109,6 +109,14 @@ export default defineConfig({
         target,
         secure: false,
       },
+      '^/color/color': {
+        target,
+        secure: false,
+      },
+      '^/color/newColor': {
+        target,
+        secure: false,
+      },
       '^/UserDecks/userCollectionDecksController': {
         target,
         secure: false,
@@ -117,11 +125,6 @@ export default defineConfig({
         target,
         secure: false,
       },
-      '^/auth/logout': {
-        target,
-        secure: false,
-      },
-
       '^/QuestController/quests': {
         target,
         secure: false,

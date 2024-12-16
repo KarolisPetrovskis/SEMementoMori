@@ -90,7 +90,7 @@ namespace MementoMori.Server.Controllers
 
             Guid? userId = _authService.GetRequesterId(HttpContext);
 
-            if (deckId == Guid.Empty || userId == Guid.Empty)
+            if (deckId == Guid.Empty || userId == null)
             {
                 return BadRequest(new { errorCode = "InvalidInput", message = "Invalid deck or user ID." });
             }
@@ -122,7 +122,7 @@ namespace MementoMori.Server.Controllers
                 return BadRequest(new { errorCode = "InvalidInput", message = "Invalid deck or user ID." });
             }
             if(userId != null)
-                _cardService.AddCardsToCollection(userId.Value, deckId); 
+                _cardService.AddCardsToCollection((Guid)userId, deckId); 
 
             return Ok();
         }
@@ -132,14 +132,14 @@ namespace MementoMori.Server.Controllers
         {
             Guid? userId = _authService.GetRequesterId(HttpContext);
 
-            if (deckId == Guid.Empty || userId == Guid.Empty || cardId == Guid.Empty)
+            if (deckId == Guid.Empty || userId == null || cardId == Guid.Empty)
             {
                 return BadRequest(new { errorCode = "InvalidInput", message = "Invalid deck, card, or user ID." });
             }
 
             try
             {
-                await _cardService.UpdateSpacedRepetition(userId.Value, deckId, cardId, quality);
+                await _cardService.UpdateSpacedRepetition((Guid)userId, deckId, cardId, quality);
                 return Ok();
             }
             catch (KeyNotFoundException ex)
@@ -153,7 +153,7 @@ namespace MementoMori.Server.Controllers
             }
         }
         [HttpPost("editDeck")]
-        public async Task<ActionResult> EditDeck(EditedDeckDTO editedDeckDTO) 
+        public async Task<ActionResult> EditDeck(EditedDeckDTO editedDeckDTO)
         {
             var requesterId = _authService.GetRequesterId(HttpContext);
             if (requesterId == null)
@@ -167,27 +167,6 @@ namespace MementoMori.Server.Controllers
                 return Unauthorized();
             }
             return Ok();
-        }
-        [HttpPost("deleteDeck")]
-        public async Task<ActionResult> DeleteDeck(Guid deckId)
-        {
-            var requesterId = _authService.GetRequesterId(HttpContext);
-            try
-            {
-                if(requesterId != null)
-                {
-                    await _deckHelper.DeleteDeckAsync(deckId, (Guid)requesterId);
-                    return Ok();
-                }
-                else
-                    return Unauthorized();
-
-            }
-            catch
-            {
-                return StatusCode(500);
-            }
-        
         }
         
         [HttpPost("createDeck")]
@@ -206,8 +185,30 @@ namespace MementoMori.Server.Controllers
                 return StatusCode(500);
             }
         }
+        [HttpPost("deleteDeck")]
+        public async Task<ActionResult> DeleteDeck(Guid deckId)
+        {
+            var requesterId = _authService.GetRequesterId(HttpContext);
+            try
+            {
+                if (requesterId != null)
+                {
+                    await _deckHelper.DeleteDeckAsync(deckId, (Guid)requesterId);
+                    return Ok();
+                }
+                else
+                    return Unauthorized();
+
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
+        
+        }
 
     }
+    
 }
 
 

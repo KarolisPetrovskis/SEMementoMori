@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
 interface Card {
   id: string;
   question: string;
   description?: string | null;
   answer: string;
-  lastReviewed?: string; // Optional: For tracking spaced repetition dates
+  lastReviewed?: string;
 }
 
 export default function DeckPage() {
@@ -23,16 +23,16 @@ export default function DeckPage() {
           `https://localhost:5173/decks/${deckId}/cards`
         );
         const text = await response.text();
-        console.log("Raw Response:", text);
+        console.log('Raw Response:', text);
 
         try {
           const data = JSON.parse(text);
           setCards(data);
         } catch (jsonError) {
-          console.error("Failed to parse JSON:", jsonError);
+          console.error('Failed to parse JSON:', jsonError);
         }
       } catch (error) {
-        console.error("Failed to fetch cards", error);
+        console.error('Failed to fetch cards', error);
       }
     };
 
@@ -42,6 +42,8 @@ export default function DeckPage() {
   useEffect(() => {
     if (cards.length > 0) {
       setCurrentCard(cards[currentIndex]);
+    } else {
+      setCurrentCard(null);
     }
   }, [cards, currentIndex]);
 
@@ -64,51 +66,57 @@ export default function DeckPage() {
       const response = await fetch(
         `https://localhost:5173/Decks/${deckId}/cards/update/${currentCard.id}`,
         {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(quality),
         }
       );
 
       if (response.ok) {
         console.log(`Successfully updated card with quality: ${quality}`);
-        handleNext(); // Move to the next card after submitting quality
+
+        // Remove the current card from the list
+        setCards((prevCards) =>
+          prevCards.filter((card) => card.id !== currentCard.id)
+        );
       } else {
-        console.error("Failed to update card");
+        console.error('Failed to update card');
       }
     } catch (error) {
-      console.error("Error updating card", error);
+      console.error('Error updating card', error);
     }
   };
 
   return (
     <div>
-      {cards.length && currentCard ? (
-        <div className="card-container">
-          <div className="card">
+      {cards.length > 0 && currentCard ? (
+        <div className='card-container'>
+          <div className='card'>
             <h2>{currentCard.question}</h2>
             <p>{currentCard.description}</p>
 
-            {showAnswer && (
+            {showAnswer ? (
               <p>
                 <strong>Answer: </strong>
-                {currentCard.answer ?? "No answer provided"}
+                {currentCard.answer ?? 'No answer provided'}
               </p>
+            ) : (
+              <button onClick={() => setShowAnswer(true)}>Reveal Answer</button>
             )}
 
-            <div className="navigation">
+            <div className='navigation'>
               <button onClick={handlePrev}>Previous</button>
               <button onClick={handleNext}>Next</button>
             </div>
 
-            <div className="spaced-repetition-buttons">
+            <div className='spaced-repetition-buttons'>
               <button
                 onClick={() => {
                   setShowAnswer(true);
                   handleQualitySubmit(1);
                 }}
               >
-                Hard
+                Forgot
               </button>
               <button
                 onClick={() => {
@@ -130,7 +138,7 @@ export default function DeckPage() {
           </div>
         </div>
       ) : (
-        <div>Loading cards...</div>
+        <div>No cards due for review are left</div>
       )}
     </div>
   );

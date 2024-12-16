@@ -12,7 +12,7 @@ namespace MementoMori.Server.Controllers
         private readonly IDeckHelper _deckHelper = deckHelper;
 
         [HttpGet("userInformation")]
-        public async Task<ActionResult> userInformation()
+        public async Task<ActionResult> UserInformation()
         {
             var requesterId = _authService.GetRequesterId(HttpContext);
             if (requesterId != null)

@@ -6,7 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
-import DeckCreateButton from '../DeckCreateButton.tsx';
+import DeckCreateButton from './DeckCreateButton.tsx';
 import axios from 'axios';
 import { Box, Dialog } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -320,7 +320,7 @@ export default function DeckMenu() {
             }}
             onClick={() =>
               (window.location.href = window.location.href =
-                `https://localhost:5173//shop`)
+                `https://localhost:5173/shop`)
             }
           >
             Go to Shop

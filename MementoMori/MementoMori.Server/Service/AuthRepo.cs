@@ -38,7 +38,8 @@ namespace MementoMori.Server.Service
             var user = new User
             {
                 Username = registerDetails.Username,
-                Password = hashedPassword
+                Password = hashedPassword,
+                HeaderColor = "white"
             };
 
             _context.Users.Add(user);
@@ -60,11 +61,16 @@ namespace MementoMori.Server.Service
         public async Task<User> GetUserByUsernameAsync(string username)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
-            if (user == null) 
+            if (user == null)
             {
                 throw new UserNotFoundException();
             }
             return user;
         }
+        public async Task<bool> SaveAsync()
+        {
+            return await _context.SaveChangesAsync() > 0;
+        }
+
     }
 }

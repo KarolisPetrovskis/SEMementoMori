@@ -10,7 +10,7 @@ using MementoMori.Server.Service;
 using Moq;
 using MementoMori.Server;
 
-namespace MementoMori.Tests
+namespace MementoMori.Tests.UnitTests.ServiceTests
 {
     public class CardServiceTests
     {
@@ -32,7 +32,6 @@ namespace MementoMori.Tests
         [Fact]
         public void AddCardsToCollection_ValidDeck_AddsNewUserCards()
         {
-            // Arrange
             var userId = Guid.NewGuid();
             var deckId = Guid.NewGuid();
             var card1 = new Card { Id = Guid.NewGuid(), Answer = "", Question = "" };
@@ -44,10 +43,8 @@ namespace MementoMori.Tests
             _context.Decks.Add(deck);
             _context.SaveChanges();
 
-            // Act
             _service.AddCardsToCollection(userId, deckId);
 
-            // Assert
             var userCards = _context.UserCards.Where(uc => uc.UserId == userId && uc.DeckId == deckId).ToList();
             Assert.Equal(2, userCards.Count);
             Assert.Contains(userCards, uc => uc.CardId == card1.Id);
@@ -57,18 +54,15 @@ namespace MementoMori.Tests
         [Fact]
         public void AddCardsToCollection_InvalidDeck_ThrowsException()
         {
-            // Arrange
             var userId = Guid.NewGuid();
             var deckId = Guid.NewGuid();
 
-            // Act & Assert
             Assert.Throws<Exception>(() => _service.AddCardsToCollection(userId, deckId));
         }
 
         [Fact]
         public async Task UpdateSpacedRepetition_ValidCard_UpdatesCardData()
         {
-            // Arrange
             var userId = Guid.NewGuid();
             var deckId = Guid.NewGuid();
             var cardId = Guid.NewGuid();
@@ -88,10 +82,8 @@ namespace MementoMori.Tests
             _context.UserCards.Add(userCard);
             _context.SaveChanges();
 
-            // Act
             await _service.UpdateSpacedRepetition(userId, deckId, cardId, quality);
 
-            // Assert
             _mockSpacedRepetition.Verify(s => s.UpdateCard(userCard, quality), Times.Once);
             var updatedCard = _context.UserCards.FirstOrDefault(uc => uc.UserId == userId && uc.DeckId == deckId && uc.CardId == cardId);
             Assert.NotNull(updatedCard);
@@ -101,13 +93,11 @@ namespace MementoMori.Tests
         [Fact]
         public async Task UpdateSpacedRepetition_InvalidCard_ThrowsException()
         {
-            // Arrange
             var userId = Guid.NewGuid();
             var deckId = Guid.NewGuid();
             var cardId = Guid.NewGuid();
             var quality = 5;
 
-            // Act & Assert
             await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
                 await _service.UpdateSpacedRepetition(userId, deckId, cardId, quality));
         }
@@ -115,7 +105,6 @@ namespace MementoMori.Tests
         [Fact]
         public void GetCardsForReview_ValidData_ReturnsCardsForReview()
         {
-            // Arrange
             var userId = Guid.NewGuid();
             var deckId = Guid.NewGuid();
             var cardId = Guid.NewGuid();
@@ -136,10 +125,8 @@ namespace MementoMori.Tests
             _context.Cards.Add(card);
             _context.SaveChanges();
 
-            // Act
             var result = _service.GetCardsForReview(deckId, userId);
 
-            // Assert
             Assert.Single(result);
             Assert.Equal(cardId, result.First().Id);
         }
@@ -147,14 +134,11 @@ namespace MementoMori.Tests
         [Fact]
         public void GetCardsForReview_NoCards_ReturnsEmptyList()
         {
-            // Arrange
             var userId = Guid.NewGuid();
             var deckId = Guid.NewGuid();
 
-            // Act
             var result = _service.GetCardsForReview(deckId, userId);
 
-            // Assert
             Assert.Empty(result);
         }
     }
