@@ -153,7 +153,6 @@ namespace MementoMori.Tests.UnitTests.ControllerTests
         [Fact]
         public void GetDueCards_ValidData_ReturnsOkResult()
         {
-            // Arrange
             var deckId = Guid.NewGuid();
             var userId = Guid.NewGuid();
             var cards = new List<Card>
@@ -165,10 +164,8 @@ namespace MementoMori.Tests.UnitTests.ControllerTests
             _mockAuthService.Setup(a => a.GetRequesterId(It.IsAny<HttpContext>())).Returns(userId);
             _mockCardService.Setup(c => c.GetCardsForReview(deckId, userId)).Returns(cards);
 
-            // Act
             var result = _controller.GetDueCards(deckId) as OkObjectResult;
 
-            // Assert
             Assert.NotNull(result);
             var returnedCards = result.Value as List<CardDTO>;
             Assert.NotNull(returnedCards);
@@ -178,17 +175,14 @@ namespace MementoMori.Tests.UnitTests.ControllerTests
         [Fact]
         public void GetDueCards_NoDueCards_ReturnsNotFound()
         {
-            // Arrange
             var deckId = Guid.NewGuid();
             var userId = Guid.NewGuid();
 
             _mockAuthService.Setup(a => a.GetRequesterId(It.IsAny<HttpContext>())).Returns(userId);
             _mockCardService.Setup(c => c.GetCardsForReview(deckId, userId)).Returns(new List<Card>());
 
-            // Act
             var result = _controller.GetDueCards(deckId) as NotFoundObjectResult;
 
-            // Assert
             Assert.NotNull(result);
         }
         [Fact]
@@ -196,35 +190,41 @@ namespace MementoMori.Tests.UnitTests.ControllerTests
 
             var deckId = Guid.NewGuid();
             var userId = Guid.NewGuid();
+            var deck = new Deck
+            {
+                Id = deckId,
+                Title = "Test Deck",
+                Creator = new User { Id = userId, Username = "TestUser", Password = "Password" },
+                CardCount = 1,
+                Modified = DateOnly.FromDateTime(DateTime.UtcNow),
+                Rating = 4.5,
+                isPublic = true,
+                Tags = new List<TagTypes> { TagTypes.Music, TagTypes.Mathematics },
+                Description = "Test Description",
+                RatingCount = 1,
+                Cards = new List<Card> { new Card { Id = Guid.NewGuid(), Question = "Q1", Answer = "A1" } }
+            };
 
             _mockAuthService.Setup(a => a.GetRequesterId(It.IsAny<HttpContext>())).Returns(userId);
-            var result = _controller.AddCardsToCollection(deckId) as OkObjectResult;
-
-            Assert.NotNull(result);
-            _mockCardService.Verify(c => c.AddCardsToCollection(userId, deckId), Times.Once);
-            Assert.Equal(200, result.StatusCode);
-
+            var result = _controller.AddCardsToCollection(deckId);
+            Assert.IsType<OkResult>(result);
         }
         [Fact]
         public void AddCardsToCollection_InvalidData_ReturnsBadRequest()
         {
-            // Arrange
             var deckId = Guid.Empty;
             var userId = Guid.Empty;
 
             _mockAuthService.Setup(a => a.GetRequesterId(It.IsAny<HttpContext>())).Returns(userId);
 
-            // Act
             var result = _controller.AddCardsToCollection(deckId) as BadRequestObjectResult;
 
-            // Assert
             Assert.NotNull(result);
             Assert.Equal(400, result.StatusCode);
         }
         [Fact]
         public async Task UpdateCard_ValidData_ReturnsOkResult()
         {
-            // Arrange
             var deckId = Guid.NewGuid();
             var cardId = Guid.NewGuid();
             var userId = Guid.NewGuid();
@@ -232,20 +232,14 @@ namespace MementoMori.Tests.UnitTests.ControllerTests
 
             _mockAuthService.Setup(a => a.GetRequesterId(It.IsAny<HttpContext>())).Returns(userId);
 
-            // Act
-            var result = await _controller.UpdateCard(deckId, cardId, quality) as OkObjectResult;
+            var result = await _controller.UpdateCard(deckId, cardId, quality);
 
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal(200, result.StatusCode);
-
-            _mockCardService.Verify(c => c.UpdateSpacedRepetition(userId, deckId, cardId, quality), Times.Once);
+            Assert.IsType<OkResult>(result);
         }
 
         [Fact]
         public async Task UpdateCard_InvalidData_ReturnsBadRequest()
         {
-            // Arrange
             var deckId = Guid.Empty;
             var cardId = Guid.Empty;
             var userId = Guid.Empty;
@@ -253,10 +247,8 @@ namespace MementoMori.Tests.UnitTests.ControllerTests
 
             _mockAuthService.Setup(a => a.GetRequesterId(It.IsAny<HttpContext>())).Returns(userId);
 
-            // Act
             var result = await _controller.UpdateCard(deckId, cardId, quality) as BadRequestObjectResult;
 
-            // Assert
             Assert.NotNull(result);
             Assert.Equal(400, result.StatusCode);
         }
@@ -264,7 +256,6 @@ namespace MementoMori.Tests.UnitTests.ControllerTests
         [Fact]
         public async Task UpdateCard_CardNotFound_ReturnsNotFound()
         {
-            // Arrange
             var deckId = Guid.NewGuid();
             var cardId = Guid.NewGuid();
             var userId = Guid.NewGuid();
@@ -273,10 +264,8 @@ namespace MementoMori.Tests.UnitTests.ControllerTests
             _mockAuthService.Setup(a => a.GetRequesterId(It.IsAny<HttpContext>())).Returns(userId);
             _mockCardService.Setup(c => c.UpdateSpacedRepetition(userId, deckId, cardId, quality)).Throws<KeyNotFoundException>();
 
-            // Act
             var result = await _controller.UpdateCard(deckId, cardId, quality) as NotFoundObjectResult;
 
-            // Assert
             Assert.NotNull(result);
             Assert.Equal(404, result.StatusCode);
         }

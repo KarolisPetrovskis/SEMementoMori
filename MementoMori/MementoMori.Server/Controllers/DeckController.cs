@@ -90,7 +90,7 @@ namespace MementoMori.Server.Controllers
 
             Guid? userId = _authService.GetRequesterId(HttpContext);
 
-            if (deckId == Guid.Empty || userId == Guid.Empty)
+            if (deckId == Guid.Empty || userId == null)
             {
                 return BadRequest(new { errorCode = "InvalidInput", message = "Invalid deck or user ID." });
             }
@@ -122,7 +122,7 @@ namespace MementoMori.Server.Controllers
                 return BadRequest(new { errorCode = "InvalidInput", message = "Invalid deck or user ID." });
             }
             if(userId != null)
-                _cardService.AddCardsToCollection(userId.Value, deckId); 
+                _cardService.AddCardsToCollection((Guid)userId, deckId); 
 
             return Ok();
         }
@@ -132,14 +132,14 @@ namespace MementoMori.Server.Controllers
         {
             Guid? userId = _authService.GetRequesterId(HttpContext);
 
-            if (deckId == Guid.Empty || userId == Guid.Empty || cardId == Guid.Empty)
+            if (deckId == Guid.Empty || userId == null || cardId == Guid.Empty)
             {
                 return BadRequest(new { errorCode = "InvalidInput", message = "Invalid deck, card, or user ID." });
             }
 
             try
             {
-                await _cardService.UpdateSpacedRepetition(userId.Value, deckId, cardId, quality);
+                await _cardService.UpdateSpacedRepetition((Guid)userId, deckId, cardId, quality);
                 return Ok();
             }
             catch (KeyNotFoundException ex)

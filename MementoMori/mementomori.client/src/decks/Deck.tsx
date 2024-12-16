@@ -110,7 +110,7 @@ function Buttons(props: ButtonProps) {
       return axios.post(`/Decks/${deckId}/addToCollection`);
     },
     onSuccess: (response) => {
-      console.log(response.data.message); // Show success message
+      console.log(response.data.message);
       setInCollection(true);
     },
     onError: (error) => {
