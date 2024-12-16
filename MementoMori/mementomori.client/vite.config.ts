@@ -117,6 +117,14 @@ export default defineConfig({
         target,
         secure: false,
       },
+      '^/UserDecks/userCollectionDecksController': {
+        target,
+        secure: false,
+      },
+      '^/UserDecks/userCollectionRemoveDeckController': {
+        target,
+        secure: false,
+      },
       '^/QuestController/quests': {
         target,
         secure: false,

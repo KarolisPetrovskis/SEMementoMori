@@ -2,14 +2,17 @@ import React, { useEffect, useState } from 'react';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
-import SettingsIcon from '@mui/icons-material/Settings';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import DeckCreateButton from './DeckCreateButton.tsx';
 import axios from 'axios';
-import { Box } from '@mui/material';
+import { Box, Dialog } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
 
 interface Deck {
   id: string;
@@ -22,15 +25,20 @@ interface UserInformationResponse {
 export default function DeckMenu() {
   const [isLoggedOn, setIsLoggedOn] = useState<boolean>(false);
   const [decks, setDecks] = useState<Deck[] | null>(null);
-  const data = [
-    { id: 1, name: 'Deck 1' },
-    { id: 2, name: 'Deck 2' },
-    { id: 3, name: 'Deck 3' },
-    { id: 4, name: 'Deck 4' },
-    { id: 5, name: 'Deck 5' },
-    { id: 6, name: 'Deck 6' },
-    { id: 7, name: 'Deck 7' },
-  ];
+  const [collectionDecks, setCollectionDecks] = useState<Deck[] | null>(null);
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [deckToDelete, setDeckToDelete] = useState<string | null>(null);
+
+  async function fetchCollectionDecks() {
+    try {
+      const response = await axios.get<UserInformationResponse>(
+        `/UserDecks/userCollectionDecksController`
+      );
+      setCollectionDecks(response.data.decks);
+    } catch (error) {
+      console.error('Error fetching decks in collection:', error);
+    }
+  }
 
   useEffect(() => {
     async function fetchDeck() {
@@ -45,10 +53,55 @@ export default function DeckMenu() {
       }
     }
     fetchDeck();
+    fetchCollectionDecks();
   }, []);
+
+  const handleDelete = async () => {
+    console.log('handleDelete: ', deckToDelete);
+    if (deckToDelete) {
+      try {
+        await axios.post(`/UserDecks/userCollectionRemoveDeckController`, {
+          Id: deckToDelete,
+        });
+        await fetchCollectionDecks();
+      } catch (error) {
+        console.error('Error removing deck:', error);
+      } finally {
+        setDeckToDelete(null);
+        setOpenDialog(false);
+      }
+    }
+  };
+
+  const handleOpenDialog = (deckId: string) => {
+    console.log('handleOpenDialog: ', deckId);
+    setDeckToDelete(deckId);
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDeckToDelete(null);
+    setOpenDialog(false);
+  };
 
   return (
     <Box sx={{ boxSizing: 'border-box', width: '30%' }}>
+      {/* Confirmation Dialog */}
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>Confirm Deletion</DialogTitle>
+        <DialogContent>
+          Are you sure you want to remove this deck from your collection?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            No
+          </Button>
+          <Button onClick={handleDelete} color="error">
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       <Typography
         variant="h6"
         sx={{
@@ -90,7 +143,6 @@ export default function DeckMenu() {
             flexDirection: 'column',
             height: '100%',
             boxSizing: 'border-box',
-            //borderRight: 'none',
           }}
         >
           <List
@@ -100,44 +152,52 @@ export default function DeckMenu() {
               maxHeight: '400px',
             }}
           >
-            {data.length > 0 ? (
-              data.map((deck, index) => (
-                <React.Fragment key={deck.id}>
-                  <ListItem disableGutters>
-                    <Button
-                      variant="text"
-                      sx={{ cursor: 'pointer' }}
-                      onClick={() => {
-                        console.log(`Line item ${deck.name} clicked`);
-                      }}
-                    >
-                      <ListItemText
-                        primary={deck.name}
-                        primaryTypographyProps={{
-                          sx: {
-                            color: 'black',
-                          },
+            {isLoggedOn ? (
+              collectionDecks && collectionDecks.length > 0 ? (
+                collectionDecks.map((deck, index) => (
+                  <React.Fragment key={deck.id}>
+                    <>{console.log('DeckId: ', deck.id)}</>
+                    <ListItem disableGutters>
+                      <Button
+                        variant="text"
+                        sx={{ cursor: 'pointer' }}
+                        onClick={() => {
+                          window.location.href = `https://localhost:5173/decks/${deck.id}/practice`;
                         }}
-                      />
-                    </Button>
-                    <IconButton
-                      aria-label="settings"
-                      sx={{ cursor: 'pointer' }}
-                      onClick={() => {
-                        console.log(`Settings of ${deck.name} clicked`);
-                      }}
-                      style={{ marginLeft: 'auto' }}
-                    >
-                      <SettingsIcon />
-                    </IconButton>
-                  </ListItem>
-                  {index !== data.length - 1 && <Divider />}
-                </React.Fragment>
-              ))
+                      >
+                        <ListItemText
+                          primary={deck.title}
+                          primaryTypographyProps={{
+                            sx: {
+                              color: 'black',
+                            },
+                          }}
+                        />
+                      </Button>
+                      <IconButton
+                        aria-label="settings"
+                        sx={{ cursor: 'pointer' }}
+                        onClick={() => handleOpenDialog(deck.id)}
+                        style={{ marginLeft: 'auto' }}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </ListItem>
+                    {index !== collectionDecks.length - 1 && <Divider />}
+                  </React.Fragment>
+                ))
+              ) : (
+                <ListItem>
+                  <ListItemText
+                    primary="No decks in collection"
+                    sx={{ color: 'black', fontSize: 20 }}
+                  />
+                </ListItem>
+              )
             ) : (
               <ListItem>
                 <ListItemText
-                  primary="No decks in collection"
+                  primary="Log in to see the decks that you have in collection"
                   sx={{ color: 'black', fontSize: 20 }}
                 />
               </ListItem>

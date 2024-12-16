@@ -9,6 +9,9 @@ namespace MementoMori.Server.Interfaces
         Task UpdateDeckAsync(EditedDeckDTO editedDeckDTO, Guid editorId);
         Task<Guid> CreateDeckAsync (EditedDeckDTO createDeck, Guid requesterId);
         Task DeleteDeckAsync(Guid deckId, Guid requesterId);
-        Task<UserDeckDTO[]> GetUserDecks(Guid userId);
+        Task<UserDeckDTO[]?> GetUserDecks(Guid userId);
+        Task<UserDeckDTO[]> GetUserCollectionDecks(Guid userId);
+        Task DeleteUserCollectionDeck(Guid deckId, Guid userId);
+
     }
 }
