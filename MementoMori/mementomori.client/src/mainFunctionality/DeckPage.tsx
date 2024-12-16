@@ -42,6 +42,8 @@ export default function DeckPage() {
   useEffect(() => {
     if (cards.length > 0) {
       setCurrentCard(cards[currentIndex]);
+    } else {
+      setCurrentCard(null);
     }
   }, [cards, currentIndex]);
 
@@ -72,7 +74,11 @@ export default function DeckPage() {
 
       if (response.ok) {
         console.log(`Successfully updated card with quality: ${quality}`);
-        handleNext(); // Move to the next card after submitting quality
+
+        // Remove the current card from the list
+        setCards((prevCards) =>
+          prevCards.filter((card) => card.id !== currentCard.id)
+        );
       } else {
         console.error('Failed to update card');
       }
@@ -83,17 +89,19 @@ export default function DeckPage() {
 
   return (
     <div>
-      {cards.length && currentCard ? (
+      {cards.length > 0 && currentCard ? (
         <div className='card-container'>
           <div className='card'>
             <h2>{currentCard.question}</h2>
             <p>{currentCard.description}</p>
 
-            {showAnswer && (
+            {showAnswer ? (
               <p>
                 <strong>Answer: </strong>
                 {currentCard.answer ?? 'No answer provided'}
               </p>
+            ) : (
+              <button onClick={() => setShowAnswer(true)}>Reveal Answer</button>
             )}
 
             <div className='navigation'>
@@ -108,7 +116,7 @@ export default function DeckPage() {
                   handleQualitySubmit(1);
                 }}
               >
-                Hard
+                Forgot
               </button>
               <button
                 onClick={() => {
@@ -130,7 +138,7 @@ export default function DeckPage() {
           </div>
         </div>
       ) : (
-        <div>Loading cards...</div>
+        <div>No cards due for review are left</div>
       )}
     </div>
   );
