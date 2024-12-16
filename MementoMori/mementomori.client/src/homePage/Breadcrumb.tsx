@@ -1,15 +1,29 @@
 import { Breadcrumbs, Link } from '@mui/material';
-import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
 const DynamicBreadcrumb: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const pathname = location.pathname.split('/');
-  pathname.shift();
 
-  const { deckId } = useParams<{ deckId: string }>();
+  // Split pathname by "/" and remove the first empty element
+  const pathnameSegments = location.pathname
+    .split('/')
+    .filter((segment) => segment);
+
+  // Check if we're on the /browser page
+  const isBrowserPage = location.pathname === '/browser';
+
+  // Extract deckId from the URL
+  const deckIdSegmentIndex = pathnameSegments.indexOf('decks') + 1;
+  const deckId =
+    !isBrowserPage && deckIdSegmentIndex < pathnameSegments.length
+      ? pathnameSegments[deckIdSegmentIndex]
+      : null;
+
+  // Check if we are on the "new deck" route
+  const isNewDeck = deckId === '00000000-0000-0000-0000-000000000000';
 
   const {
     data: deckTitle,
@@ -18,28 +32,32 @@ const DynamicBreadcrumb: React.FC = () => {
   } = useQuery<string, Error>({
     queryKey: ['deckTitle', deckId],
     queryFn: async () => {
-      try {
-        const response = await axios.get(`/deck/getTitle/${deckId}`);
-        console.log(
-          'fgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg'
-        );
-        return response.data;
-      } catch (err) {
-        console.error('Error fetching deck title:', err);
-        throw err;
-      }
+      if (isNewDeck) return 'New deck'; // Display "New deck" if it's the specific UUID route
+      if (!deckId) throw new Error('deckId not found');
+      const response = await axios.get(`/Decks/${deckId}/DeckTitle`);
+      return response.data;
     },
-    enabled: !!deckId,
+    enabled: !isNewDeck && !!deckId,
   });
 
   const handleNavigate = (path: string[]) => {
     navigate(`/${path.join('/')}`);
   };
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const styles = {
     breadcrumb: {
       color: 'indigo',
       fontSize: '1.5rem',
+    },
+    breadcrumbLink: {
+      cursor: 'pointer', // Change cursor to pointer on hover
+      '&:hover': {
+        textDecoration: 'underline', // Optional: underline on hover
+      },
     },
   };
 
@@ -48,16 +66,57 @@ const DynamicBreadcrumb: React.FC = () => {
 
   return (
     <Breadcrumbs separator="›" aria-label="breadcrumb" sx={styles.breadcrumb}>
-      {pathname.map((pathSegment, index) => {
+      {pathnameSegments.map((pathSegment, index) => {
+        if (isBrowserPage) {
+          return (
+            <Link
+              key={index}
+              underline="hover"
+              color="inherit"
+              sx={styles.breadcrumbLink}
+              onClick={() => {
+                navigate('/browser');
+                scrollToTop(); // Scroll to top when clicking the breadcrumb
+              }}
+            >
+              Deck browser
+            </Link>
+          );
+        }
+
         if (pathSegment === 'decks' && index === 0) {
           return (
             <Link
               key={index}
               underline="hover"
               color="inherit"
-              onClick={() => navigate('/browser')}
+              sx={styles.breadcrumbLink}
+              onClick={() => {
+                navigate('/browser');
+                scrollToTop(); // Scroll to top when clicking the breadcrumb
+              }}
             >
               Deck browser
+            </Link>
+          );
+        }
+
+        if (
+          isNewDeck &&
+          pathSegment === '00000000-0000-0000-0000-000000000000'
+        ) {
+          return (
+            <Link
+              key={index}
+              underline="hover"
+              color="inherit"
+              sx={styles.breadcrumbLink}
+              onClick={() => {
+                window.location.reload();
+                scrollToTop(); // Scroll to top when clicking the breadcrumb
+              }}
+            >
+              New deck
             </Link>
           );
         }
@@ -66,13 +125,17 @@ const DynamicBreadcrumb: React.FC = () => {
           if (isError) {
             return <div key={index}>Error loading deck title.</div>;
           }
-          if (isFetched) {
+          if (isFetched && deckTitle) {
             return (
               <Link
                 key={index}
                 underline="hover"
                 color="inherit"
-                onClick={() => handleNavigate(pathname.slice(0, index + 1))}
+                sx={styles.breadcrumbLink}
+                onClick={() => {
+                  handleNavigate(pathnameSegments.slice(0, index + 1));
+                  scrollToTop(); // Scroll to top when clicking the breadcrumb
+                }}
               >
                 {deckTitle}
               </Link>
@@ -86,7 +149,11 @@ const DynamicBreadcrumb: React.FC = () => {
             key={index}
             underline="hover"
             color="inherit"
-            onClick={() => handleNavigate(pathname.slice(0, index + 1))}
+            sx={styles.breadcrumbLink}
+            onClick={() => {
+              handleNavigate(pathnameSegments.slice(0, index + 1));
+              scrollToTop(); // Scroll to top when clicking the breadcrumb
+            }}
           >
             {capitalize(pathSegment)}
           </Link>

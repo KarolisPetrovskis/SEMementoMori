@@ -81,7 +81,7 @@ export default defineConfig({
         target,
         secure: false,
       },
-      '^/deck/getTitle/.*': {
+      '^/Decks/.*?/DeckTitle': {
         target,
         secure: false,
 },
