@@ -46,7 +46,7 @@ namespace MementoMori.Server.Migrations
 
                     b.HasIndex("DeckId");
 
-                    b.ToTable("Cards");
+                    b.ToTable("Cards", (string)null);
                 });
 
             modelBuilder.Entity("MementoMori.Server.Deck", b =>
@@ -87,7 +87,7 @@ namespace MementoMori.Server.Migrations
 
                     b.HasIndex("CreatorId");
 
-                    b.ToTable("Decks");
+                    b.ToTable("Decks", (string)null);
                 });
 
             modelBuilder.Entity("MementoMori.Server.Models.User", b =>
@@ -106,7 +106,7 @@ namespace MementoMori.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("MementoMori.Server.Models.UserCardData", b =>

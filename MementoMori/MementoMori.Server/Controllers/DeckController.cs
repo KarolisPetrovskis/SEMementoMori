@@ -153,7 +153,7 @@ namespace MementoMori.Server.Controllers
             }
         }
         [HttpPost("editDeck")]
-        public async Task<ActionResult> EditDeck(EditedDeckDTO editedDeckDTO) 
+        public async Task<ActionResult> EditDeck(EditedDeckDTO editedDeckDTO)
         {
             var requesterId = _authService.GetRequesterId(HttpContext);
             if (requesterId == null)
@@ -167,27 +167,6 @@ namespace MementoMori.Server.Controllers
                 return Unauthorized();
             }
             return Ok();
-        }
-        [HttpPost("deleteDeck")]
-        public async Task<ActionResult> DeleteDeck(Guid deckId)
-        {
-            var requesterId = _authService.GetRequesterId(HttpContext);
-            try
-            {
-                if(requesterId != null)
-                {
-                    await _deckHelper.DeleteDeckAsync(deckId, (Guid)requesterId);
-                    return Ok();
-                }
-                else
-                    return Unauthorized();
-
-            }
-            catch
-            {
-                return StatusCode(500);
-            }
-        
         }
         
         [HttpPost("createDeck")]
@@ -206,8 +185,30 @@ namespace MementoMori.Server.Controllers
                 return StatusCode(500);
             }
         }
+        [HttpPost("deleteDeck")]
+        public async Task<ActionResult> DeleteDeck(Guid deckId)
+        {
+            var requesterId = _authService.GetRequesterId(HttpContext);
+            try
+            {
+                if (requesterId != null)
+                {
+                    await _deckHelper.DeleteDeckAsync(deckId, (Guid)requesterId);
+                    return Ok();
+                }
+                else
+                    return Unauthorized();
+
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
+        
+        }
 
     }
+    
 }
 
 

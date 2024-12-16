@@ -109,11 +109,14 @@ export default defineConfig({
         target,
         secure: false,
       },
-      '^/auth/logout': {
+      '^/color/color': {
         target,
         secure: false,
       },
-
+      '^/color/newColor': {
+        target,
+        secure: false,
+      },
       '^/QuestController/quests': {
         target,
         secure: false,
