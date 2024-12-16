@@ -124,7 +124,7 @@ namespace MementoMori.Server.Controllers
             }
             return Ok();
         }
-        
+
         [HttpPost("createDeck")]
         public async Task<ActionResult<Guid>> CreateDeck(EditedDeckDTO createDeckDTO)
         {
@@ -161,5 +161,29 @@ namespace MementoMori.Server.Controllers
                 return StatusCode(500);
             }
         }
+        [HttpGet("getTitle")]
+        public async Task<IActionResult> GetDeckTitle(Guid deckId)
+        {
+            if (deckId == Guid.Empty)
+            {
+                return BadRequest(new { errorCode = ErrorCode.InvalidInput, message = "Invalid deck ID." });
+            }
+
+            try
+            {
+                var deck = await _deckHelper.GetDeckAsync(deckId);
+                return Ok(deck.Title);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound(new { errorCode = ErrorCode.NotFound, message = "Deck not found." });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception for debugging (optional)
+                return StatusCode(500, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
+
     }
 }

@@ -81,6 +81,10 @@ export default defineConfig({
         target,
         secure: false,
       },
+      '^/deck/getTitle/.*': {
+        target,
+        secure: false,
+},
       '^/QuestController/isComplete': {
         target,
         secure: false,
