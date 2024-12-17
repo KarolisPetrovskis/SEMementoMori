@@ -43,7 +43,7 @@ namespace MementoMori.Server.Service
                         Interval = 1,
                         Repetitions = 0,
                         EaseFactor = 2.5,
-                        LastReviewed = DateTime.UtcNow
+                        LastReviewed = DateTime.UtcNow.AddDays(-2)
                     });
                 }
             }

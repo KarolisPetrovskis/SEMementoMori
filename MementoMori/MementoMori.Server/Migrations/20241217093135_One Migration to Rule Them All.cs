@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MementoMori.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class newM : Migration
+    public partial class OneMigrationtoRuleThemAll : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -34,7 +34,8 @@ namespace MementoMori.Server.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Username = table.Column<string>(type: "text", nullable: false),
-                    Password = table.Column<string>(type: "text", nullable: false)
+                    Password = table.Column<string>(type: "text", nullable: false),
+                    CardColor = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -46,14 +47,14 @@ namespace MementoMori.Server.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreatorId = table.Column<Guid>(type: "uuid", nullable: true),
-                    isPublic = table.Column<bool>(type: "boolean", nullable: false),
-                    Title = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: true),
+                    CreatorId = table.Column<Guid>(type: "uuid", nullable: false),
                     Rating = table.Column<double>(type: "double precision", nullable: false),
                     RatingCount = table.Column<long>(type: "bigint", nullable: false),
                     Modified = table.Column<DateOnly>(type: "date", nullable: false),
                     CardCount = table.Column<long>(type: "bigint", nullable: false),
+                    isPublic = table.Column<bool>(type: "boolean", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
                     Tags = table.Column<int[]>(type: "integer[]", nullable: true)
                 },
                 constraints: table =>
@@ -63,7 +64,8 @@ namespace MementoMori.Server.Migrations
                         name: "FK_Decks_Users_CreatorId",
                         column: x => x.CreatorId,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -71,10 +73,10 @@ namespace MementoMori.Server.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    DeckId = table.Column<Guid>(type: "uuid", nullable: false),
                     Question = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
-                    Answer = table.Column<string>(type: "text", nullable: false),
-                    DeckId = table.Column<Guid>(type: "uuid", nullable: true)
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    Answer = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -83,7 +85,8 @@ namespace MementoMori.Server.Migrations
                         name: "FK_Cards_Decks_DeckId",
                         column: x => x.DeckId,
                         principalTable: "Decks",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(

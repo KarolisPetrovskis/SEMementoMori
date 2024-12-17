@@ -79,5 +79,42 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
 
             Assert.False(isDue);
         }
+
+        [Fact]
+        public void UpdateCard_SetsIntervalToOne_WhenRepetitionsIsZeroAndQualityIsThreeOrMore()
+        {
+            var card = new UserCardData
+            {
+                Repetitions = 0,
+                Interval = 0,
+                EaseFactor = 2.5
+            };
+            int quality = 3;
+
+            var updatedCard = _spacedRepetition.UpdateCard(card, quality);
+
+            Assert.Equal(1, updatedCard.Interval);
+            Assert.Equal(1, updatedCard.Repetitions);
+        }
+
+        [Fact]
+        public void UpdateCard_RecalculatesInterval_WhenRepetitionsAreMoreThanOne()
+        {
+            var card = new UserCardData
+            {
+                Repetitions = 2,
+                Interval = 6,
+                EaseFactor = 2.5
+            };
+            int quality = 4;
+
+            var expectedInterval = (int)Math.Round(6 * 2.5);
+
+            var updatedCard = _spacedRepetition.UpdateCard(card, quality);
+
+            Assert.Equal(expectedInterval, updatedCard.Interval);
+            Assert.Equal(3, updatedCard.Repetitions);
+        }
+
     }
 }

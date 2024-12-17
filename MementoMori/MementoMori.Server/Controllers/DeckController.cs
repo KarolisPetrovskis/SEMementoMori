@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MementoMori.Server.DTOS;
 using MementoMori.Server.Extensions;
-using MementoMori.Server.Service;
-using Microsoft.VisualBasic;
-using System.Collections.Concurrent;
 using MementoMori.Server.Interfaces;
 using MementoMori.Server.Exceptions;
 
@@ -12,11 +9,12 @@ namespace MementoMori.Server.Controllers
 {
     [ApiController]
     [Route("[controller]/{deckId}")]
-    public class DecksController(IDeckHelper deckHelper, IAuthService authService, ICardService cardService) : ControllerBase
+    public class DecksController(IDeckHelper deckHelper, IAuthService authService, ICardService cardService, IAuthRepo authRepo) : ControllerBase
     {
         private readonly IDeckHelper _deckHelper = deckHelper;
         private readonly IAuthService _authService = authService;
         private readonly ICardService _cardService = cardService;
+        private readonly IAuthRepo _authRepo = authRepo;
 
         [HttpGet("deck")]
         public async Task<ActionResult> ViewAsync(Guid deckId)
@@ -38,13 +36,14 @@ namespace MementoMori.Server.Controllers
             {
                 Id = deck.Id,
                 CreatorName = deck.Creator?.Username ?? "deleted",
-                CardCount = deck.CardCount,
+                CardCount = deck.Cards.Count,
                 Modified = deck.Modified,
                 Rating = deck.Rating,
                 Tags = deck.TagsToString(),
                 Title = deck.Title,
                 Description = deck.Description,
                 IsOwner = requesterId != null && requesterId == deck.Creator?.Id,
+                InCollection = await _deckHelper.IsDeckInCollection(deckId, requesterId)
             };
             return Ok(DeckDTO);
         }
@@ -69,7 +68,7 @@ namespace MementoMori.Server.Controllers
             {
                 Id = deck.Id,
                 isPublic = deck.isPublic,
-                CardCount = deck.CardCount,
+                CardCount = deck.Cards.Count,
                 Description = deck.Description,
                 Tags = deck.TagsToString(),
                 Title = deck.Title,
@@ -86,7 +85,7 @@ namespace MementoMori.Server.Controllers
         }
 
         [HttpGet("cards")]
-        public IActionResult GetDueCards(Guid deckId)
+        public async Task<ActionResult> GetDueCards(Guid deckId)
         {
 
             Guid? userId = _authService.GetRequesterId(HttpContext);
@@ -96,7 +95,13 @@ namespace MementoMori.Server.Controllers
                 return BadRequest(new { errorCode = "InvalidInput", message = "Invalid deck or user ID." });
             }
 
+            var user = await _authRepo.GetUserByIdAsync((Guid)userId);
             List<Card> dueForReviewCards = _cardService.GetCardsForReview(deckId, userId.Value);
+
+            if (user == null) 
+            {
+                return BadRequest(new { errorCode = "InvalidInput", message = "Invalid deck or user ID." });
+            }
 
             if (!dueForReviewCards.Any())
             {
@@ -111,7 +116,7 @@ namespace MementoMori.Server.Controllers
                 Answer = c.Answer
             }).ToList();
             
-            return Ok(dueCardDtos);
+            return Ok(new { Cards=dueCardDtos, Color=user.CardColor });
         }
         [HttpPost("addToCollection")]
         public IActionResult AddCardsToCollection(Guid deckId)

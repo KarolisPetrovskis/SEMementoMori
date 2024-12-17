@@ -46,22 +46,22 @@ export function Login(props: AuthDialogProps) {
   };
 
   return (
-    <Container maxWidth="xs">
+    <Container maxWidth='xs'>
       <form onSubmit={handleSubmit}>
         <FormControl fullWidth>
           <TextField
-            label="Username"
-            variant="outlined"
-            margin="normal"
+            label='Username'
+            variant='outlined'
+            margin='normal'
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
           />
           <TextField
-            label="Password"
-            variant="outlined"
-            type="password"
-            margin="normal"
+            label='Password'
+            variant='outlined'
+            type='password'
+            margin='normal'
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -71,17 +71,17 @@ export function Login(props: AuthDialogProps) {
               <Checkbox
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
-                color="primary"
+                color='primary'
               />
             }
-            label="Remember Me"
+            label='Remember Me'
           />
-          {error && <Alert severity="error">{error}</Alert>}
+          {error && <Alert severity='error'>{error}</Alert>}
           {isPending ? (
             <Button
-              type="submit"
-              variant="contained"
-              color="primary"
+              type='submit'
+              variant='contained'
+              color='primary'
               disabled
               style={{ marginTop: '16px' }}
             >
@@ -89,9 +89,9 @@ export function Login(props: AuthDialogProps) {
             </Button>
           ) : (
             <Button
-              type="submit"
-              variant="contained"
-              color="primary"
+              type='submit'
+              variant='contained'
+              color='primary'
               style={{ marginTop: '16px' }}
             >
               Login

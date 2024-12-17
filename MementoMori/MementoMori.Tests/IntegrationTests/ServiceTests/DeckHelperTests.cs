@@ -151,7 +151,7 @@ namespace MementoMori.Tests.IntegrationTests.ServiceTests
 
         private void FillTestData(AppDbContext context)
         {
-            var user = new User { Id = Guid.NewGuid(), Username = "Test User", Password = "psw", HeaderColor = "white" };
+            var user = new User { Id = Guid.NewGuid(), Username = "Test User", Password = "psw", CardColor = "white" };
 
             var decks = new List<Deck>
             {

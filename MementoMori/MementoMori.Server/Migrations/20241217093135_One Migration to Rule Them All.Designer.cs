@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MementoMori.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241118151202_newM")]
-    partial class newM
+    [Migration("20241217093135_One Migration to Rule Them All")]
+    partial class OneMigrationtoRuleThemAll
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,11 +35,10 @@ namespace MementoMori.Server.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("DeckId")
+                    b.Property<Guid>("DeckId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Question")
@@ -62,7 +61,7 @@ namespace MementoMori.Server.Migrations
                     b.Property<long>("CardCount")
                         .HasColumnType("bigint");
 
-                    b.Property<Guid?>("CreatorId")
+                    b.Property<Guid>("CreatorId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Description")
@@ -99,6 +98,10 @@ namespace MementoMori.Server.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
+
+                    b.Property<string>("CardColor")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -145,14 +148,18 @@ namespace MementoMori.Server.Migrations
                 {
                     b.HasOne("MementoMori.Server.Deck", null)
                         .WithMany("Cards")
-                        .HasForeignKey("DeckId");
+                        .HasForeignKey("DeckId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("MementoMori.Server.Deck", b =>
                 {
                     b.HasOne("MementoMori.Server.Models.User", "Creator")
                         .WithMany()
-                        .HasForeignKey("CreatorId");
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Creator");
                 });

@@ -153,6 +153,7 @@ namespace MementoMori.Server.Service
                         Id = userDeck.DeckId,
                         Title = deck.Title
                     })
+                .Distinct()
                 .ToArrayAsync();
             return userCollectionDecks;
         }
@@ -164,6 +165,16 @@ namespace MementoMori.Server.Service
             _context.UserCards.RemoveRange(userCardsToDelete);
             await _context.SaveChangesAsync();
             return;
+        }
+
+        public async Task<Boolean> IsDeckInCollection(Guid deckId, Guid? userId) 
+        {
+            if (userId == null) 
+            {
+                return false;
+            }
+            var decks = await GetUserCollectionDecks((Guid)userId);
+            return decks.Any(x => x.Id == deckId);
         }
     }
 }

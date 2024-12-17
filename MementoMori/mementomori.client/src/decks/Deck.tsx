@@ -33,6 +33,7 @@ type DeckQueryData = {
   title: string;
   description: string;
   isOwner: boolean;
+  inCollection: boolean;
 };
 
 type TagsProps = {
@@ -98,7 +99,7 @@ function Buttons(props: ButtonProps) {
 
   const onRemoveClick = async () => {
     // send req to backend
-    // show spinner til response
+    RemoveFromCollection();
     setInCollection(false);
   };
 
@@ -112,6 +113,21 @@ function Buttons(props: ButtonProps) {
     onSuccess: (response) => {
       console.log(response.data.message);
       setInCollection(true);
+    },
+    onError: (error) => {
+      console.error('Failed to add cards to collection', error);
+    },
+  });
+
+  const { mutate: RemoveFromCollection } = useMutation({
+    mutationFn: async () => {
+      return axios.post(`/UserDecks/userCollectionRemoveDeckController`, {
+        id: deckId,
+      });
+    },
+    onSuccess: (response) => {
+      console.log(response.data.message);
+      setInCollection(false);
     },
     onError: (error) => {
       console.error('Failed to add cards to collection', error);
@@ -290,7 +306,10 @@ export function Deck() {
           }}
         >
           <Typography level='h1'>{data.title}</Typography>
-          <Buttons isOwner={data.isOwner} inCollection={false} />{' '}
+          <Buttons
+            isOwner={data.isOwner}
+            inCollection={data.inCollection}
+          />{' '}
           {/*Provide actual values when users are implemented*/}
         </Box>
         <h2>Tags:</h2>

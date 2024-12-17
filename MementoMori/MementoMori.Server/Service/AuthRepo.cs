@@ -39,7 +39,7 @@ namespace MementoMori.Server.Service
             {
                 Username = registerDetails.Username,
                 Password = hashedPassword,
-                HeaderColor = "white"
+                CardColor = "white"
             };
 
             _context.Users.Add(user);
@@ -67,10 +67,16 @@ namespace MementoMori.Server.Service
             }
             return user;
         }
-        public async Task<bool> SaveAsync()
-        {
-            return await _context.SaveChangesAsync() > 0;
-        }
 
+        public async Task UpdateUserCardColor(Guid userId, string newColor) 
+        {
+            var user = await GetUserByIdAsync(userId);
+            if (user == null) 
+            {
+                throw new UserNotFoundException();
+            }
+            user.CardColor = newColor;
+            await _context.SaveChangesAsync();
+        }
     }
 }

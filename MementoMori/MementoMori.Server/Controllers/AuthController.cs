@@ -45,7 +45,7 @@ namespace MementoMori.Server.Controllers
                 Username = registerDetails.Username,
                 Password = string.Empty,
                 Id = Guid.Empty,
-                HeaderColor = "white"
+                CardColor = "white"
             };
             _registeredUsers.TryAdd(registerDetails.Username, placeholderUser);
 

@@ -15,6 +15,7 @@ export default function DeckPage() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentCard, setCurrentCard] = useState<Card | null>(null);
   const [showAnswer, setShowAnswer] = useState(false);
+  const [color, setColor] = useState('white');
 
   useEffect(() => {
     const fetchCards = async () => {
@@ -27,7 +28,9 @@ export default function DeckPage() {
 
         try {
           const data = JSON.parse(text);
-          setCards(data);
+          setColor(data.color);
+          setCards(data.cards);
+          if (data.cards.length > 0) setCurrentCard(data.cards[0]);
         } catch (jsonError) {
           console.error('Failed to parse JSON:', jsonError);
         }
@@ -38,26 +41,6 @@ export default function DeckPage() {
 
     fetchCards();
   }, [deckId]);
-
-  useEffect(() => {
-    if (cards.length > 0) {
-      setCurrentCard(cards[currentIndex]);
-    } else {
-      setCurrentCard(null);
-    }
-  }, [cards, currentIndex]);
-
-  const handleNext = () => {
-    setShowAnswer(false); // Hide answer for next card
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % cards.length);
-  };
-
-  const handlePrev = () => {
-    setShowAnswer(false); // Hide answer for previous card
-    setCurrentIndex(
-      (prevIndex) => (prevIndex - 1 + cards.length) % cards.length
-    );
-  };
 
   const handleQualitySubmit = async (quality: number) => {
     if (!currentCard) return;
@@ -75,10 +58,20 @@ export default function DeckPage() {
       if (response.ok) {
         console.log(`Successfully updated card with quality: ${quality}`);
 
-        // Remove the current card from the list
-        setCards((prevCards) =>
-          prevCards.filter((card) => card.id !== currentCard.id)
-        );
+        setCards((prevCards) => {
+          const updatedCards = prevCards.filter(
+            (card) => card.id !== currentCard.id
+          );
+          if (updatedCards.length > 0) {
+            setCurrentIndex(0);
+            setCurrentCard(updatedCards[0]);
+          } else {
+            setCurrentCard(null);
+          }
+          return updatedCards;
+        });
+
+        setShowAnswer(false);
       } else {
         console.error('Failed to update card');
       }
@@ -89,11 +82,32 @@ export default function DeckPage() {
 
   return (
     <div>
-      {cards.length > 0 && currentCard ? (
-        <div className='card-container'>
-          <div className='card'>
-            <h2>{currentCard.question}</h2>
-            <p>{currentCard.description}</p>
+      {currentCard ? (
+        <div
+          className='card-container'
+          style={{ display: 'flex', justifyContent: 'center' }}
+        >
+          <div
+            className='card'
+            style={{
+              backgroundColor: color,
+              boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.2)', // Elevation effect
+              borderRadius: '12px',
+              padding: '20px',
+              maxWidth: '500px',
+              width: '100%',
+              textAlign: 'center',
+              margin: '20px',
+            }}
+          >
+            <h2 style={{ margin: '0 0 10px', color: '#333' }}>
+              {currentCard.question}
+            </h2>
+            {currentCard.description && (
+              <p style={{ color: '#555', marginBottom: '15px' }}>
+                {currentCard.description}
+              </p>
+            )}
 
             {showAnswer ? (
               <p>
@@ -101,15 +115,24 @@ export default function DeckPage() {
                 {currentCard.answer ?? 'No answer provided'}
               </p>
             ) : (
-              <button onClick={() => setShowAnswer(true)}>Reveal Answer</button>
+              <button
+                onClick={() => setShowAnswer(true)}
+                style={{
+                  margin: '10px',
+                  padding: '8px 16px',
+                  cursor: 'pointer',
+                  border: 'none',
+                  borderRadius: '8px',
+                }}
+              >
+                Reveal Answer
+              </button>
             )}
 
-            <div className='navigation'>
-              <button onClick={handlePrev}>Previous</button>
-              <button onClick={handleNext}>Next</button>
-            </div>
-
-            <div className='spaced-repetition-buttons'>
+            <div
+              className='spaced-repetition-buttons'
+              style={{ marginTop: '20px' }}
+            >
               <button
                 onClick={() => {
                   setShowAnswer(true);

@@ -26,7 +26,7 @@ namespace MementoMori.Server.Controllers
                 Title = deck.Title,
                 Rating = deck.Rating,
                 Modified = deck.Modified,
-                Cards = deck.CardCount,
+                Cards = deck.Cards.Count,
                 Tags = deck.TagsToString(),
             }).ToArray();
 

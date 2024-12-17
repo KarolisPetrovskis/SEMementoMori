@@ -13,6 +13,6 @@ namespace MementoMori.Server.Interfaces
         Task<UserDeckDTO[]> GetUserCollectionDecks(Guid userId);
         Task<Deck> GetDeckAsync(Guid deckId);
         Task DeleteUserCollectionDeck(Guid deckId, Guid userId);
-
+        Task<bool> IsDeckInCollection(Guid deckId, Guid? userId);
     }
 }

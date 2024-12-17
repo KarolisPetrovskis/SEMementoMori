@@ -7,6 +7,7 @@ using MementoMori.Server.DTOS;
 using MementoMori.Server.Models;
 using MementoMori.Server;
 using MementoMori.Server.Exceptions;
+using MementoMori.Server.Service;
 
 namespace MementoMori.Tests.UnitTests.ControllerTests
 {
@@ -14,7 +15,7 @@ namespace MementoMori.Tests.UnitTests.ControllerTests
     {
         private readonly Mock<IDeckHelper> _mockDeckHelper;
         private readonly Mock<IAuthService> _mockAuthService;
-
+        private readonly Mock<IAuthRepo> _mockAuthRepo;
         private readonly Mock<ICardService> _mockCardService;
         private readonly DecksController _controller;
 
@@ -23,8 +24,9 @@ namespace MementoMori.Tests.UnitTests.ControllerTests
             _mockDeckHelper = new Mock<IDeckHelper>();
             _mockAuthService = new Mock<IAuthService>();
             _mockCardService = new Mock<ICardService>();
+            _mockAuthRepo = new Mock<IAuthRepo>();
 
-            _controller = new DecksController(_mockDeckHelper.Object, _mockAuthService.Object, _mockCardService.Object);
+            _controller = new DecksController(_mockDeckHelper.Object, _mockAuthService.Object, _mockCardService.Object, _mockAuthRepo.Object);
 
             var httpContext = new DefaultHttpContext();
             _controller.ControllerContext = new ControllerContext
@@ -65,7 +67,7 @@ namespace MementoMori.Tests.UnitTests.ControllerTests
             {
                 Id = deckId,
                 Title = "Test Deck",
-                Creator = new User { Id = creatorId, Username = "TestUser", Password = "Password", HeaderColor = "white" },
+                Creator = new User { Id = creatorId, Username = "TestUser", Password = "Password", CardColor = "white" },
                 CardCount = 1,
                 Modified = DateOnly.FromDateTime(DateTime.UtcNow),
                 Rating = 4.5,
@@ -396,7 +398,7 @@ namespace MementoMori.Tests.UnitTests.ControllerTests
             {
                 Id = deckId,
                 Title = "Test Deck",
-                Creator = new User { Id = userId, Username = "TestUser", Password = "Password", HeaderColor = "blue" },
+                Creator = new User { Id = userId, Username = "TestUser", Password = "Password", CardColor = "blue" },
                 CardCount = 1,
                 Modified = DateOnly.FromDateTime(DateTime.UtcNow),
                 Rating = 4.5,
@@ -471,5 +473,58 @@ namespace MementoMori.Tests.UnitTests.ControllerTests
             Assert.NotNull(result);
             Assert.Equal(404, result.StatusCode);
         }
+
+
+        [Fact]
+        public async Task GetDeckTitle_ReturnsNotFound_WhenDeckDoesNotExist()
+        {
+            var deckId = Guid.NewGuid();
+            _mockDeckHelper.Setup(helper => helper.GetDeckAsync(deckId)).ReturnsAsync((Deck)null);
+
+            var result = await _controller.GetDeckTitle(deckId);
+
+            var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+            Assert.Equal(404, notFoundResult.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetDeckTitle_ReturnsOk_WithDeckTitle()
+        {
+            var deckId = Guid.NewGuid();
+            var deck = new Deck
+            {
+                Id = deckId,
+                Title = "Test Deck",
+                Creator = new User { Id = Guid.NewGuid(), Username = "TestUser", Password = "Password", CardColor = "white" },
+                CardCount = 1,
+                Modified = DateOnly.FromDateTime(DateTime.UtcNow),
+                Rating = 4.5,
+                isPublic = true,
+                Tags = new List<TagTypes> { TagTypes.Music, TagTypes.Mathematics },
+                Description = "Test Description",
+                Cards = new List<Card> { new Card { Id = Guid.NewGuid(), Question = "Q1", Answer = "A1" } }
+            };
+            _mockDeckHelper.Setup(helper => helper.GetDeckAsync(deckId)).ReturnsAsync(deck);
+
+            var result = await _controller.GetDeckTitle(deckId);
+
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            Assert.Equal("Test Deck", okResult.Value);
+        }
+
+        [Fact]
+        public async Task GetDueCards_ReturnsBadRequest_WhenInvalidDeckOrUserId()
+        {
+            var invalidDeckId = Guid.Empty;
+
+            _mockAuthService
+                .Setup(auth => auth.GetRequesterId(It.IsAny<HttpContext>()))
+                .Returns((Guid?)null);
+
+            var result = await _controller.GetDueCards(invalidDeckId);
+
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+        }
+
     }
 }

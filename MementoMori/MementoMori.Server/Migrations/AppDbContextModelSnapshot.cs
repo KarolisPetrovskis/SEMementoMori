@@ -96,7 +96,7 @@ namespace MementoMori.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("HeaderColor")
+                    b.Property<string>("CardColor")
                         .IsRequired()
                         .HasColumnType("text");
 

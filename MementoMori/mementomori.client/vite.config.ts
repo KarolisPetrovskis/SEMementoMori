@@ -121,7 +121,7 @@ export default defineConfig({
         target,
         secure: false,
       },
-      '^/color/newColor': {
+      '^/Shop/newColor': {
         target,
         secure: false,
       },

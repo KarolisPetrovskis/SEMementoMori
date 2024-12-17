@@ -42,7 +42,7 @@ namespace MementoMori.Tests.UnitTests.ControllerTests
             var userId = Guid.NewGuid();
             _mockAuthRepo
                 .Setup(service => service.CreateUserAsync(registerDetails))
-                .ReturnsAsync(new User { Id = userId, Username = "Username", Password = "Password", HeaderColor = "white" });
+                .ReturnsAsync(new User { Id = userId, Username = "Username", Password = "Password", CardColor = "white" });
             _mockAuthService
                 .Setup(service => service.AddCookie(It.IsAny<HttpContext>(), userId, registerDetails.RememberMe));
 
@@ -61,7 +61,7 @@ namespace MementoMori.Tests.UnitTests.ControllerTests
                 RememberMe = true
             };
             var userId = Guid.NewGuid();
-            var mockUser = new User { Id = userId, Username = "Username", Password = "hashedPassword", HeaderColor = "white" };
+            var mockUser = new User { Id = userId, Username = "Username", Password = "hashedPassword", CardColor = "white" };
             _mockAuthRepo
                 .Setup(service => service.GetUserByUsernameAsync(loginDetails.Username))
                 .ReturnsAsync(mockUser);
@@ -101,7 +101,7 @@ namespace MementoMori.Tests.UnitTests.ControllerTests
                 Username = "testUser",
                 Password = "WrongPassword!"
             };
-            var mockUser = new User { Id = Guid.NewGuid(), Username = "Username", Password = "hashedPassword", HeaderColor = "white" };
+            var mockUser = new User { Id = Guid.NewGuid(), Username = "Username", Password = "hashedPassword", CardColor = "white" };
             _mockAuthRepo
                 .Setup(service => service.GetUserByUsernameAsync(loginDetails.Username))
                 .ReturnsAsync(mockUser);
