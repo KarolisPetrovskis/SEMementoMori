@@ -1,27 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 const Shop: React.FC = () => {
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+
   const updateHeaderColor = async (newColor: string) => {
     try {
-      const response = await axios.post('/color/newColor', {
-        NewColor: newColor,
+      const response = await axios.post('/Shop/newColor', {
+        newColor: newColor,
       });
       if (response.status === 200) {
-        console.log('Header color updated successfully.');
-        window.location.reload();
+        setSnackbarMessage(`Card color updated to ${newColor}`);
+        setSnackbarOpen(true);
       } else {
         console.error('Failed to update header color:', response.data);
       }
     } catch (error) {
-      console.error('Error updating header color:', error);
+      console.error('Error updating card color:', error);
     }
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
   };
 
   return (
     <div style={{ padding: '20px' }}>
       <h1>Shop Page</h1>
-      <p>Select a header background color:</p>
+      <p>Select a card background color:</p>
       <div>
         <button
           onClick={() => updateHeaderColor('lightblue')}
@@ -84,6 +93,22 @@ const Shop: React.FC = () => {
           Reset to White
         </button>
       </div>
+
+      {/* MUI Snackbar */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity="success"
+          sx={{ width: '100%' }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

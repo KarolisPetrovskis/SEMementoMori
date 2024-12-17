@@ -6,18 +6,36 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MementoMori.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class Currentmigration : Migration
+    public partial class OneMigrationtoRuleThemAll : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "UserCards",
+                columns: table => new
+                {
+                    CardId = table.Column<Guid>(type: "uuid", nullable: false),
+                    DeckId = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Interval = table.Column<int>(type: "integer", nullable: false),
+                    Repetitions = table.Column<int>(type: "integer", nullable: false),
+                    EaseFactor = table.Column<double>(type: "double precision", nullable: false),
+                    LastReviewed = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserCards", x => new { x.CardId, x.DeckId, x.UserId });
+                });
+
             migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Username = table.Column<string>(type: "text", nullable: false),
-                    Password = table.Column<string>(type: "text", nullable: false)
+                    Password = table.Column<string>(type: "text", nullable: false),
+                    CardColor = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -58,9 +76,7 @@ namespace MementoMori.Server.Migrations
                     DeckId = table.Column<Guid>(type: "uuid", nullable: false),
                     Question = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
-                    Answer = table.Column<string>(type: "text", nullable: false),
-                    lastInterval = table.Column<int>(type: "integer", nullable: true),
-                    nextShow = table.Column<DateOnly>(type: "date", nullable: true)
+                    Answer = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -89,6 +105,9 @@ namespace MementoMori.Server.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Cards");
+
+            migrationBuilder.DropTable(
+                name: "UserCards");
 
             migrationBuilder.DropTable(
                 name: "Decks");

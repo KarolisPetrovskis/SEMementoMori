@@ -21,5 +21,7 @@ namespace MementoMori.Server.DTOS
         public List<string>? Tags { get; set; }
 
         public bool IsOwner { get; set; }
+
+        public bool InCollection { get; set; }
     }
 }

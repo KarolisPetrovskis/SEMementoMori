@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MementoMori.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241125141407_Current migration")]
-    partial class Currentmigration
+    [Migration("20241217093135_One Migration to Rule Them All")]
+    partial class OneMigrationtoRuleThemAll
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,12 +44,6 @@ namespace MementoMori.Server.Migrations
                     b.Property<string>("Question")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<int?>("lastInterval")
-                        .HasColumnType("integer");
-
-                    b.Property<DateOnly?>("nextShow")
-                        .HasColumnType("date");
 
                     b.HasKey("Id");
 
@@ -105,6 +99,10 @@ namespace MementoMori.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("CardColor")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("text");
@@ -116,6 +114,34 @@ namespace MementoMori.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("MementoMori.Server.Models.UserCardData", b =>
+                {
+                    b.Property<Guid>("CardId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("DeckId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<double>("EaseFactor")
+                        .HasColumnType("double precision");
+
+                    b.Property<int>("Interval")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("LastReviewed")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Repetitions")
+                        .HasColumnType("integer");
+
+                    b.HasKey("CardId", "DeckId", "UserId");
+
+                    b.ToTable("UserCards");
                 });
 
             modelBuilder.Entity("MementoMori.Server.Card", b =>

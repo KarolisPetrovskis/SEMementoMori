@@ -3,6 +3,8 @@ using MementoMori.Server.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using MementoMori.Server.Interfaces;
+using System.Collections.Concurrent;
+using MementoMori.Server;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +18,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IDeckHelper, DeckHelper>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAuthRepo, AuthRepo>();
+builder.Services.AddScoped<ICardService, CardService>();
+builder.Services.AddScoped<ISpacedRepetition, SpacedRepetition>();
 builder.Services.AddControllers();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

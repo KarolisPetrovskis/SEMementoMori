@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Typography } from '@mui/joy';
@@ -33,6 +33,7 @@ type DeckQueryData = {
   title: string;
   description: string;
   isOwner: boolean;
+  inCollection: boolean;
 };
 
 type TagsProps = {
@@ -51,7 +52,7 @@ function Tags(props: TagsProps) {
       }}
     >
       {props.tags.map((tag) => (
-        <Chip label={tag} variant="outlined" />
+        <Chip label={tag} variant='outlined' />
       ))}
     </Box>
   ) : (
@@ -90,24 +91,48 @@ function Buttons(props: ButtonProps) {
     window.location.href = `/decks/${deckId}/practice`;
   };
   const onAddToMyCollectionClick = () => {
-    // send request to backend to verify that can add and then add
+    // send request to backend, verify that can add and then add
     // show spinner until response
+    AddToCollection();
     setInCollection(true);
   };
 
   const onRemoveClick = async () => {
     // send req to backend
-    // show spinner til response
+    RemoveFromCollection();
     setInCollection(false);
   };
 
   const onEditClick = () => {
     window.location.href = `/decks/${deckId}/edit`;
   };
+  const { mutate: AddToCollection } = useMutation({
+    mutationFn: async () => {
+      return axios.post(`/Decks/${deckId}/addToCollection`);
+    },
+    onSuccess: (response) => {
+      console.log(response.data.message);
+      setInCollection(true);
+    },
+    onError: (error) => {
+      console.error('Failed to add cards to collection', error);
+    },
+  });
 
-  const onUseAsTemplateClick = () => {
-    console.error();
-  };
+  const { mutate: RemoveFromCollection } = useMutation({
+    mutationFn: async () => {
+      return axios.post(`/UserDecks/userCollectionRemoveDeckController`, {
+        id: deckId,
+      });
+    },
+    onSuccess: (response) => {
+      console.log(response.data.message);
+      setInCollection(false);
+    },
+    onError: (error) => {
+      console.error('Failed to add cards to collection', error);
+    },
+  });
 
   const onDeleteClick = async () => {
     try {
@@ -148,33 +173,33 @@ function Buttons(props: ButtonProps) {
       }}
     >
       {inCollection ? (
-        <Button color="success" onClick={onPracticeClick} variant="contained">
+        <Button color='success' onClick={onPracticeClick} variant='contained'>
           Practice
         </Button>
       ) : (
         <Button
-          color="success"
+          color='success'
           onClick={onAddToMyCollectionClick}
-          variant="contained"
+          variant='contained'
         >
           Add to my collection
         </Button>
       )}
       {inCollection ? (
-        <Button color="error" onClick={onRemoveClick} variant="contained">
+        <Button color='error' onClick={onRemoveClick} variant='contained'>
           Remove
         </Button>
       ) : null}
       {props.isOwner ? (
         <>
           <ButtonGroup
-            color="info"
-            variant="contained"
+            color='info'
+            variant='contained'
             ref={anchorRef}
-            aria-label="Button group with a nested menu"
+            aria-label='Button group with a nested menu'
           >
             <Button onClick={onEditClick}>Edit</Button>
-            <Button size="small" onClick={handleToggle}>
+            <Button size='small' onClick={handleToggle}>
               <ArrowDropDown />
             </Button>
           </ButtonGroup>
@@ -196,7 +221,7 @@ function Buttons(props: ButtonProps) {
               >
                 <Paper>
                   <ClickAwayListener onClickAway={handleClose}>
-                    <MenuList id="split-button-menu" autoFocusItem>
+                    <MenuList id='split-button-menu' autoFocusItem>
                       <MenuItem
                         sx={{ color: 'red' }}
                         // onDeleteClick
@@ -208,25 +233,25 @@ function Buttons(props: ButtonProps) {
                       <Dialog
                         open={dialogOpen}
                         onClose={closeDialog}
-                        aria-labelledby="alert-dialog-title"
-                        aria-describedby="alert-dialog-description"
+                        aria-labelledby='alert-dialog-title'
+                        aria-describedby='alert-dialog-description'
                       >
-                        <DialogTitle id="alert-dialog-title">
+                        <DialogTitle id='alert-dialog-title'>
                           {'Confirm Removal'}
                         </DialogTitle>
                         <DialogContent>
-                          <DialogContentText id="alert-dialog-description">
+                          <DialogContentText id='alert-dialog-description'>
                             Are you sure you want to remove this Deck from your
                             collection? This action cannot be undone.
                           </DialogContentText>
                         </DialogContent>
                         <DialogActions>
-                          <Button onClick={closeDialog} color="primary">
+                          <Button onClick={closeDialog} color='primary'>
                             No
                           </Button>
                           <Button
                             onClick={confirmRemove}
-                            color="error"
+                            color='error'
                             autoFocus
                           >
                             Yes
@@ -280,8 +305,11 @@ export function Deck() {
             borderRadius: '6px',
           }}
         >
-          <Typography level="h1">{data.title}</Typography>
-          <Buttons isOwner={data.isOwner} inCollection={false} />{' '}
+          <Typography level='h1'>{data.title}</Typography>
+          <Buttons
+            isOwner={data.isOwner}
+            inCollection={data.inCollection}
+          />{' '}
           {/*Provide actual values when users are implemented*/}
         </Box>
         <h2>Tags:</h2>

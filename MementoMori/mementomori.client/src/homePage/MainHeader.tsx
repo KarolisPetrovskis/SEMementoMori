@@ -25,7 +25,7 @@ export default function MainHeader() {
     setIsAuthDialogVisible(false);
 
     const response = await axios.get('/auth/loginResponse');
-    setIsLoggedIn(response.data.isLoggedIn);
+    setIsLoggedIn(response.data);
   };
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -54,7 +54,7 @@ export default function MainHeader() {
     const fetchLoginStatus = async () => {
       try {
         const response = await axios.get('/auth/loginResponse');
-        setIsLoggedIn(response.data.isLoggedIn);
+        setIsLoggedIn(response.data);
       } catch (error) {
         console.error('Error fetching login status:', error);
       }
@@ -79,7 +79,7 @@ export default function MainHeader() {
           minWidth: '85%',
           border: 1,
           borderRadius: '6px',
-          borderColor: '#D4A017',
+          borderColor: 'purple',
           borderWidth: 2,
           textAlign: 'center',
           justifyContent: 'space-between',
@@ -106,6 +106,16 @@ export default function MainHeader() {
         </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Button
+            sx={{ minWidth: 150, color: 'indigo', fontSize: 20 }}
+            style={{ textTransform: 'capitalize' }}
+            variant="text"
+            onClick={() =>
+              (window.location.href = `https://localhost:5173/shop`)
+            }
+          >
+            Shop
+          </Button>
           <Button
             sx={{ minWidth: 150, color: 'indigo', fontSize: 20 }}
             style={{ textTransform: 'capitalize' }}

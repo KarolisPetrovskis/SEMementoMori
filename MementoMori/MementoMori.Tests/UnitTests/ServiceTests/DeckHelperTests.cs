@@ -34,8 +34,6 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
                     Question = "What is the capital of France?",
                     Description = "Geography question",
                     Answer = "Paris",
-                    lastInterval = null,
-                    nextShow = null,
                 },
                 new Card
                 {
@@ -43,8 +41,6 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
                     Question = "What is 2 + 2?",
                     Description = "Simple math question",
                     Answer = "4",
-                    lastInterval = null,
-                    nextShow = null,
                 },
                 new Card
                 {
@@ -52,8 +48,6 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
                     Question = "Who wrote 'To Kill a Mockingbird'?",
                     Description = "Literature question",
                     Answer = "Harper Lee",
-                    lastInterval = null,
-                    nextShow = null,
                 }
             ];
             var editedDeck = new EditedDeckDTO{
@@ -86,8 +80,6 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
                         Question = "What is the capital of France?",
                         Answer = "Paris",
                         Description = "Geography question",
-                        lastInterval = null,
-                        nextShow = null,
                     },
                     new Card
                     {
@@ -96,8 +88,6 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
                         Question = "What is 2 + 2?",
                         Answer = "4",
                         Description = "Math question",
-                        lastInterval = null,
-                        nextShow = null
                     }
                 }
             };
@@ -402,6 +392,62 @@ namespace MementoMori.Tests.UnitTests.ServiceTests
 
             Assert.Equal(deck.Id, userDeck.Id);
             Assert.Equal(deck.Title, userDeck.Title);
+        }
+
+        [Fact]
+        public async Task GetUserCollectionDecks_ReturnsCorrectDecks()
+        {
+            var context = CreateDbContext();
+            var helper = new DeckHelper(context);
+
+            var userId = Guid.NewGuid();
+            var deck1Id = Guid.NewGuid();
+            var deck2Id = Guid.NewGuid();
+            var deck1 = new Deck { Id = deck1Id, Title = "Deck 1", CreatorId = userId, isPublic = true, CardCount = 1, Modified = DateOnly.FromDateTime(DateTime.UtcNow) };
+            var deck2 = new Deck { Id = deck2Id, Title = "Deck 2", CreatorId = userId, isPublic = false, CardCount = 1, Modified = DateOnly.FromDateTime(DateTime.UtcNow) };
+            var userCard1 = new UserCardData { UserId = userId, DeckId = deck1Id, CardId = Guid.NewGuid() };
+            var userCard2 = new UserCardData { UserId = userId, DeckId = deck2Id, CardId = Guid.NewGuid() };
+
+            await context.Decks.AddRangeAsync(deck1, deck2);
+            await context.UserCards.AddRangeAsync(userCard1, userCard2);
+            await context.SaveChangesAsync();
+
+            var result = await helper.GetUserCollectionDecks(userId);
+
+            Assert.NotNull(result);
+            Assert.Equal(2, result.Length);
+            Assert.Contains(result, d => d.Id == deck1Id && d.Title == "Deck 1");
+            Assert.Contains(result, d => d.Id == deck2Id && d.Title == "Deck 2");
+        }
+
+        [Fact]
+        public async Task GetUserCollectionDecks_ReturnsEmptyArray_WhenNoDecksFound()
+        {
+            var context = CreateDbContext();
+            var helper = new DeckHelper(context);
+            var userId = Guid.NewGuid();
+            var result = await helper.GetUserCollectionDecks(userId);
+
+            Assert.NotNull(result);
+            Assert.Empty(result);
+        }
+        
+        [Fact]
+        public async Task DeleteUserCollectionDeck_RemovesCardsCorrectly()
+        {
+            var context = CreateDbContext();
+            var helper = new DeckHelper(context);
+            var userId = Guid.NewGuid();
+            var deckId = Guid.NewGuid();
+            var userCard1 = new UserCardData { UserId = userId, DeckId = deckId, CardId = Guid.NewGuid() };
+            var userCard2 = new UserCardData { UserId = userId, DeckId = deckId, CardId = Guid.NewGuid() };
+
+            await context.UserCards.AddRangeAsync(userCard1, userCard2);
+            await context.SaveChangesAsync();
+            
+            await helper.DeleteUserCollectionDeck(deckId, userId);
+            var remainingCards = context.UserCards.Where(card => card.DeckId == deckId && card.UserId == userId).ToList();
+            Assert.Empty(remainingCards);
         }
 
         [Fact]

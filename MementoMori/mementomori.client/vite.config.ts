@@ -61,19 +61,7 @@ export default defineConfig({
         target,
         secure: false,
       },
-      '^/Decks/.*?/deck': {
-        target,
-        secure: false,
-      },
       '^/Decks/.*?/editDeck': {
-        target,
-        secure: false,
-      },
-      '^/Decks/.*?/createDeck': {
-        target,
-        secure: false,
-      },
-      '^/Decks/.*?/deleteDeck': {
         target,
         secure: false,
       },
@@ -81,6 +69,30 @@ export default defineConfig({
         target,
         secure: false,
       },
+      '^/Decks/.*?/createDeck': {
+        target,
+        secure: false,
+      },
+      '^/Decks/.*?/deck': {
+        target,
+        secure: false,
+      },
+      '^/Decks/.*?/addToCollection': {
+        target,
+        secure: false,
+      },
+      '^/Decks/.*?/deleteDeck': {
+        target,
+        secure: false,
+      },
+      '^/Decks/.*?/cards/update/.*?': {
+        target,
+        secure: false,
+      },
+      '^/Decks/.*?/DeckTitle': {
+        target,
+        secure: false,
+},
       '^/QuestController/isComplete': {
         target,
         secure: false,
@@ -93,11 +105,15 @@ export default defineConfig({
         target,
         secure: false,
       },
+      '^/auth/logout': {
+        target,
+        secure: false,
+      },
       '^/auth/loginResponse': {
         target,
         secure: false,
       },
-      '^/auth/logout': {
+      '^/UserDecks/userInformation': {
         target,
         secure: false,
       },
@@ -105,11 +121,15 @@ export default defineConfig({
         target,
         secure: false,
       },
-      '^/color/newColor': {
+      '^/Shop/newColor': {
         target,
         secure: false,
       },
-      '^/UserDecks/userInformation': {
+      '^/UserDecks/userCollectionDecksController': {
+        target,
+        secure: false,
+      },
+      '^/UserDecks/userCollectionRemoveDeckController': {
         target,
         secure: false,
       },
