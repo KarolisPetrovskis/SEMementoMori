@@ -1,3 +1,17 @@
+# This repository contains a university project developed for a Software Engineering course.
+# ⚠️Note: This project is no longer developed or maintained. 
+
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+# Old description below:
+
 # MementoMori
 
 MementoMori is a powerful and flexible web app designed to help users memorize everything from historical dates to complex concepts and vocabulary for learning new languages. Whether you are a student preparing for exams or someone looking to master a new language, MementoMori offers a customizable and engaging experience to improve memory retention and enhance learning.
