@@ -89,6 +89,10 @@ export default defineConfig({
         target,
         secure: false,
       },
+      '^/Decks/.*?/DeckTitle': {
+        target,
+        secure: false,
+},
       '^/QuestController/isComplete': {
         target,
         secure: false,
@@ -98,6 +102,10 @@ export default defineConfig({
         secure: false,
       },
       '^/auth/register': {
+        target,
+        secure: false,
+      },
+      '^/auth/logout': {
         target,
         secure: false,
       },

@@ -82,7 +82,7 @@ namespace MementoMori.Server.Service
                 throw;
             }
         }
-        public async Task<Guid> CreateDeckAsync (EditedDeckDTO createDeck, Guid requesterId)
+        public async Task<Guid> CreateDeckAsync(EditedDeckDTO createDeck, Guid requesterId)
         {
             Guid newDeckGuid = Guid.NewGuid();
             if (createDeck.Deck.Title == "" || createDeck.Deck.Title.TrimStart(' ').Length == 0)
@@ -90,7 +90,7 @@ namespace MementoMori.Server.Service
                 throw new ArgumentException();
             }
             var cards = createDeck.NewCards?.ToList() ?? [];
-            int cardCount = cards.Count; 
+            int cardCount = cards.Count;
             Deck newDeck = new()
             {
                 Id = newDeckGuid,
@@ -137,6 +137,12 @@ namespace MementoMori.Server.Service
                 })
                 .ToArrayAsync();
             return userDecks;
+        }
+        public async Task<Deck> GetDeckAsync(Guid deckId)
+        {
+            var deck = await _context.Decks
+                .FirstOrDefaultAsync(d => d.Id == deckId) ?? throw new KeyNotFoundException($"Deck with ID {deckId} not found.");
+            return deck;
         }
         public async Task<UserDeckDTO[]> GetUserCollectionDecks(Guid userId)
         {

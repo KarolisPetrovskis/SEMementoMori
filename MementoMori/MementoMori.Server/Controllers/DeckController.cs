@@ -7,6 +7,7 @@ using System.Collections.Concurrent;
 using MementoMori.Server.Interfaces;
 using MementoMori.Server.Exceptions;
 
+
 namespace MementoMori.Server.Controllers
 {
     [ApiController]
@@ -168,7 +169,7 @@ namespace MementoMori.Server.Controllers
             }
             return Ok();
         }
-        
+
         [HttpPost("createDeck")]
         public async Task<ActionResult<Guid>> CreateDeck(EditedDeckDTO createDeckDTO)
         {
@@ -205,6 +206,20 @@ namespace MementoMori.Server.Controllers
                 return StatusCode(500);
             }
         
+        }
+        [HttpGet("DeckTitle")]
+        public async Task<IActionResult> GetDeckTitle(Guid deckId)
+        {
+
+            var deck = await _deckHelper.GetDeckAsync(deckId);
+
+            if (deck == null)
+            {
+                return NotFound(new { errorCode = ErrorCode.NotFound, message = "Deck not found." });
+            }
+
+            return Ok(deck.Title);
+
         }
 
     }

@@ -25,7 +25,7 @@ export default function MainHeader() {
     setIsAuthDialogVisible(false);
 
     const response = await axios.get('/auth/loginResponse');
-    setIsLoggedIn(response.data.isLoggedIn);
+    setIsLoggedIn(response.data);
   };
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -54,7 +54,7 @@ export default function MainHeader() {
     const fetchLoginStatus = async () => {
       try {
         const response = await axios.get('/auth/loginResponse');
-        setIsLoggedIn(response.data.isLoggedIn);
+        setIsLoggedIn(response.data);
       } catch (error) {
         console.error('Error fetching login status:', error);
       }
